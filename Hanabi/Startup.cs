@@ -1,9 +1,13 @@
 ﻿using Hanabi.Hubs;
+using Hanabi.Services;
 
 namespace Hanabi {
     public class Startup {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+
+            services.AddSingleton<GameStateKeeper>();
+
             services.AddSignalR();
         }
 
@@ -18,8 +22,9 @@ namespace Hanabi {
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
+                endpoints.MapHub<GameHub>("/gamehub");
                 endpoints.MapHub<TestHub>("/testhub");
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

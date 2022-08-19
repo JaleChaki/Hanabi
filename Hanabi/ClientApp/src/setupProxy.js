@@ -12,7 +12,8 @@ const context =  [
 ];
 
 const wsContext = [
-    "/testhub"
+  "/testhub",
+  "/gamehub"
 ]
 
 module.exports = function(app) {

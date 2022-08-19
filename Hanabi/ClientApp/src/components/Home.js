@@ -7,14 +7,14 @@ export class Home extends Component {
     constructor() {
         super();
     }
-    
+
     componentDidMount() {
         this.initiateHubConnection();
     }
 
     initiateHubConnection() {
         let connection = new signalR.HubConnectionBuilder()
-            .configureLogging(signalR.LogLevel.Debug)
+            .configureLogging(signalR.LogLevel.Trace)
             .withUrl("/testhub", {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets
@@ -28,7 +28,7 @@ export class Home extends Component {
             var li = document.createElement("li");
             document.getElementById("messagesList").appendChild(li);
             // We can assign user-supplied strings to an element's textContent because it
-            // is not interpreted as markup. If you're assigning in any other way, you 
+            // is not interpreted as markup. If you're assigning in any other way, you
             // should be aware of possible script injection concerns.
             li.textContent = `${user} says ${message}`;
         });
