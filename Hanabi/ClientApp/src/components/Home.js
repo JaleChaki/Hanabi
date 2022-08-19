@@ -3,82 +3,60 @@ import * as signalR from "@microsoft/signalr";
 
 export class Home extends Component {
     static displayName = Home.name;
+    connection;
 
     constructor() {
         super();
+        this.state = {
+            cardsInDeck: 1488,
+            fireworks: [],
+            informationTokens: 8,
+            fuseTokens: 3
+        }
+        this.getGameState = this.getGameState.bind(this);
+        this.initHubConnection = this.initHubConnection.bind(this);
     }
 
     componentDidMount() {
-        this.initiateHubConnection();
+        this.initHubConnection();
     }
 
-    initiateHubConnection() {
-        let connection = new signalR.HubConnectionBuilder()
-            .configureLogging(signalR.LogLevel.Trace)
-            .withUrl("/testhub", {
+    initHubConnection() {
+        this.connection = new signalR.HubConnectionBuilder()
+            .withUrl("/gamehub", {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets
             })
             .build();
 
-        //Disable the send button until connection is established.
-        document.getElementById("sendButton").disabled = true;
-
-        connection.on("ReceiveMessage", function (user, message) {
-            var li = document.createElement("li");
-            document.getElementById("messagesList").appendChild(li);
-            // We can assign user-supplied strings to an element's textContent because it
-            // is not interpreted as markup. If you're assigning in any other way, you
-            // should be aware of possible script injection concerns.
-            li.textContent = `${user} says ${message}`;
+        this.connection.on("SetGameState", gameState => {
+            this.setState(gameState);
         });
 
-        connection.start().then(function () {
-            document.getElementById("sendButton").disabled = false;
+        this.connection.start().then(() => {
+            this.getGameState();
         }).catch(function (err) {
             return console.error(err.toString());
         });
 
-        document.getElementById("sendButton").addEventListener("click", function (event) {
-            var user = document.getElementById("userInput").value;
-            var message = document.getElementById("messageInput").value;
-            connection.invoke("SendMessage", user, message).catch(function (err) {
-                return console.error(err.toString());
-            });
-            event.preventDefault();
+    }
+
+    getGameState() {
+        this.connection.invoke("GetGameState").catch(function (err) {
+            return console.error(err.toString());
         });
     }
 
     render() {
         return (
             <div>
-                <div className="container">
-                    <div className="row">&nbsp;</div>
-                    <div className="row">
-                        <div className="col-2">User</div>
-                        <div className="col-4"><input type="text" id="userInput"/></div>
-                    </div>
-                    <div className="row">
-                        <div className="col-2">Message</div>
-                        <div className="col-4"><input type="text" id="messageInput"/></div>
-                    </div>
-                    <div className="row">&nbsp;</div>
-                    <div className="row">
-                        <div className="col-6">
-                            <input type="button" id="sendButton" value="Send Message"/>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-12">
-                        <hr/>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-6">
-                        <ul id="messagesList"></ul>
-                    </div>
-                </div>
+                <div className={"cardsDeck"}>{this.state.cardsInDeck}</div>
+                {this.state.fireworks.map((firework, i) => 
+                    <div className={"firework"} key={i}>{firework}</div>
+                )}
+                <div className={"informationTokens"}>{this.state.informationTokens}</div>
+                <div className={"fuseTokens"}>{this.state.fuseTokens}</div>
+                <button onClick={this.getGameState}>Get game state</button>
             </div>
         );
     }
