@@ -2,6 +2,7 @@
     public class Startup {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment environment) {
