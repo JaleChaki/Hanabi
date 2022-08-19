@@ -1,4 +1,6 @@
-﻿namespace Hanabi {
+﻿using Hanabi.Hubs;
+
+namespace Hanabi {
     public class Startup {
         public void ConfigureServices(IServiceCollection services) {
             services.AddControllers();
@@ -17,6 +19,7 @@
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
                 endpoints.MapFallbackToFile("index.html");
+                endpoints.MapHub<TestHub>("/testhub");
             });
         }
     }
