@@ -2,10 +2,7 @@ namespace Hanabi {
     internal static class Program {
         public static void Main(string[] args) {
             var builder = CreateHostBuilder(args);
-            builder.ConfigureServices(s =>
-            {
-                s.AddSignalR();
-            });
+            builder.ConfigureServices(s => { s.AddSignalR(); });
             builder.Build().Run();
         }
 
