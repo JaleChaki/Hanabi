@@ -15,7 +15,7 @@ export class Login extends Component {
     }
 
     async getLoginToken() {
-        return await fetch('/token', {
+        const resultJson = await fetch('/token', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -24,7 +24,8 @@ export class Login extends Component {
             body: JSON.stringify({
                 nickName: this.state.userName
             })
-        })
+        }).then(data => data.json());
+        return resultJson['access_token'];
     }
 
     async handleSubmit(e) {
