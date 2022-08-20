@@ -1,5 +1,5 @@
-﻿namespace Hanabi.Game {
-    public class GameState {
+﻿namespace Hanabi.Models {
+    public class SerializedGameState {
 
         public int CardsInDeck { get; set; }
 
