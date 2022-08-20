@@ -12,7 +12,7 @@ export class Home extends Component {
             informationTokens: 8,
             fuseTokens: 3
         }
-        this.loginToken = props.loginToken;
+        this.loginAccessToken = props.loginAccessToken;
         this.getGameState = this.getGameState.bind(this);
         this.initHubConnection = this.initHubConnection.bind(this);
     }
@@ -26,7 +26,7 @@ export class Home extends Component {
             .withUrl("/gamehub", {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets,
-                accessTokenFactory: () => this.loginToken
+                accessTokenFactory: () => this.loginAccessToken
             })
             .build();
 

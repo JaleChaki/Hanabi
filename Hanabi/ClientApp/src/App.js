@@ -1,37 +1,51 @@
 import React, {Component} from 'react';
-import {Route} from 'react-router';
+import {Route} from 'react-router-dom';
 import {Layout} from './components/Layout';
 import {Home} from './components/Home';
 import {FetchData} from './components/FetchData';
 import {Counter} from './components/Counter';
-
-import './custom.css'
 import {Login} from "./components/Login/Login";
 
-export default class App extends Component {
+import {instanceOf} from 'prop-types';
+import {withCookies, Cookies} from 'react-cookie';
+
+import './custom.css'
+
+class App extends Component {
     static displayName = App.name;
+    static propTypes = {
+        cookies: instanceOf(Cookies).isRequired
+    };
 
     constructor(props) {
         super(props);
+        this.LOGIN_COOKIE_NAME = 'loginAccessToken';
+
         this.state = {
-            loginToken: null
+            loginAccessToken: props.cookies.get(this.LOGIN_COOKIE_NAME) || null
         }
     }
 
     setToken(token) {
-        this.setState({loginToken: token})
+        this.setState({loginAccessToken: token.access_token})
+        this.props.cookies.set(this.LOGIN_COOKIE_NAME, token.access_token, {
+            path: '/',
+            expires: new Date(token.expired_at)
+        })
     }
 
     render() {
-        if (!this.state.loginToken) {
+        if (!this.state.loginAccessToken) {
             return <Login setToken={this.setToken.bind(this)}/>
         }
         return (
             <Layout>
-                <Route exact path='/' render={() => <Home loginToken={this.state.loginToken}/>}/>
+                <Route exact path='/' render={() => <Home loginAccessToken={this.state.loginAccessToken}/>}/>
                 <Route path='/counter' component={Counter}/>
                 <Route path='/fetch-data' component={FetchData}/>
             </Layout>
         );
     }
 }
+
+export default withCookies(App);
