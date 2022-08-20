@@ -3,10 +3,9 @@ import * as signalR from "@microsoft/signalr";
 
 export class Home extends Component {
     static displayName = Home.name;
-    connection;
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             cardsInDeck: 1488,
             fireworks: [],
@@ -25,7 +24,9 @@ export class Home extends Component {
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl("/gamehub", {
                 skipNegotiation: true,
-                transport: signalR.HttpTransportType.WebSockets
+                transport: signalR.HttpTransportType.WebSockets,
+                accessTokenFactory: () => this.loginToken
+
             })
             .build();
 
@@ -51,7 +52,7 @@ export class Home extends Component {
         return (
             <div>
                 <div className={"cardsDeck"}>{this.state.cardsInDeck}</div>
-                {this.state.fireworks.map((firework, i) => 
+                {this.state.fireworks.map((firework, i) =>
                     <div className={"firework"} key={i}>{firework}</div>
                 )}
                 <div className={"informationTokens"}>{this.state.informationTokens}</div>
