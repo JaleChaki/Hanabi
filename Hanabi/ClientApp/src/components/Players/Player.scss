@@ -1,0 +1,37 @@
+﻿.player {
+  width: 32%;
+  height: 50%;
+  border: 1px solid;
+  flex: 0 1 auto;
+
+  .card-container {
+    display: flex;
+    flex-flow: row;
+    
+    .card-square {
+      width: 1rem;
+      height: 1rem;
+      border: 1px solid black;
+      
+      &.color-red {
+        background-color: red;
+      }
+      
+      &.color-blue {
+        background-color: blue;
+      }
+      
+      &.color-green {
+        background-color: green;
+      }
+      
+      &.color-yellow {
+        background-color: yellow;
+      }
+      
+      &.color-white {
+        background-color: white;
+      }
+    }
+  }
+}

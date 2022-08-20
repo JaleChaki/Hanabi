@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import * as signalR from "@microsoft/signalr";
+import {MainLayout} from "./MainField/MainLayout";
 
 export class Home extends Component {
     static displayName = Home.name;
@@ -51,6 +52,8 @@ export class Home extends Component {
     render() {
         return (
             <div>
+                <MainLayout></MainLayout>
+                
                 <div className={"cardsDeck"}>{this.state.cardsInDeck}</div>
                 {this.state.fireworks.map((firework, i) =>
                     <div className={"firework"} key={i}>{firework}</div>
