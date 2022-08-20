@@ -9,6 +9,10 @@ namespace Hanabi.Services {
             CurrentGame = new GameController(GameModelBuilder.CreateNew());
         }
 
+        public GameController GetController(Guid playerId) {
+            return CurrentGame;
+        }
+
         public SerializedGameState GetGameState(Guid playerId) {
             return CurrentGame.CreateModel(playerId);
         }
