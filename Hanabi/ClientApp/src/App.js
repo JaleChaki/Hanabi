@@ -14,21 +14,21 @@ export default class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            token: null
+            loginToken: null
         }
     }
 
     setToken(token) {
-        this.setState({token})
+        this.setState({loginToken: token})
     }
 
     render() {
-        if (!this.state.token) {
+        if (!this.state.loginToken) {
             return <Login setToken={this.setToken.bind(this)}/>
         }
         return (
             <Layout>
-                <Route exact path='/' component={Home}/>
+                <Route exact path='/' render={() => <Home loginToken={this.state.loginToken}/>}/>
                 <Route path='/counter' component={Counter}/>
                 <Route path='/fetch-data' component={FetchData}/>
             </Layout>
