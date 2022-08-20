@@ -16,7 +16,7 @@
                     })
             );
 
-            return new GameModel(cards, 8, 0, 5, Array.Empty<Guid>());
+            return new GameModel(cards, 8, 0, 5, new [] { Guid.NewGuid(), Guid.NewGuid() });
         }
 
     }

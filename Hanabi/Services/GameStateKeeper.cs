@@ -1,4 +1,5 @@
 ﻿using Hanabi.Game;
+using Hanabi.Models;
 
 namespace Hanabi.Services {
     public class GameStateKeeper {
@@ -8,8 +9,8 @@ namespace Hanabi.Services {
             CurrentGame = new GameController(GameModelBuilder.CreateNew());
         }
 
-        public GameController GetGameState() {
-            return CurrentGame;
+        public SerializedGameState GetGameState() {
+            return CurrentGame.CreateModel();
         }
 
     }
