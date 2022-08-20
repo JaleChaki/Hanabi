@@ -24,13 +24,24 @@ export class Login extends Component {
             body: JSON.stringify({
                 nickName: this.state.userName
             })
-        }).then(data => data.json());
+        }).then(
+            data => data.json(),
+            err => {
+                return {err};
+            }
+        ).catch(err => {
+            return {err};
+        });
     }
 
     async handleSubmit(e) {
         e.preventDefault();
         const token = await this.getLoginToken();
-        this.props.setToken(token);
+        if (token.err) {
+            alert("Our server does not accept your nickname. Please, try another one, like 'jalechaki'")
+        } else {
+            this.props.setToken(token);
+        }
     }
 
     setUserName(name) {
@@ -48,12 +59,13 @@ export class Login extends Component {
                 <form onSubmit={this.handleSubmit}>
                     <label>
                         <p>Username</p>
-                        <input type="text" onChange={e => this.setUserName(e.target.value)}/>
+                        <input type="text" className="username" onChange={e => this.setUserName(e.target.value)}
+                               required/>
                     </label>
                     <label>
                         <p>Password</p>
-                        <input type="password" onChange={e => this.setPassword(e.target.value)}
-                               placeholder={"Password is not required"}/>
+                        <input type="password" className="password" onChange={e => this.setPassword(e.target.value)}
+                               placeholder="Password is not required"/>
                     </label>
                     <div>
                         <button type="submit">Submit</button>
