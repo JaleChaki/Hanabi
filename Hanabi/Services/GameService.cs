@@ -2,15 +2,15 @@
 using Hanabi.Models;
 
 namespace Hanabi.Services {
-    public class GameStateKeeper {
+    public class GameService {
         private GameController CurrentGame { get; }
 
-        public GameStateKeeper() {
+        public GameService() {
             CurrentGame = new GameController(GameModelBuilder.CreateNew());
         }
 
-        public SerializedGameState GetGameState() {
-            return CurrentGame.CreateModel();
+        public SerializedGameState GetGameState(Guid playerId) {
+            return CurrentGame.CreateModel(playerId);
         }
 
     }

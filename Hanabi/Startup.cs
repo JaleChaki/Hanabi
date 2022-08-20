@@ -48,7 +48,7 @@ namespace Hanabi {
                     };
                 });
 
-            services.AddSingleton<GameStateKeeper>();
+            services.AddSingleton<GameService>();
             services.AddSingleton<AccountService>();
 
             services.AddSignalR();

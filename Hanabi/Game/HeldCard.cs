@@ -6,6 +6,10 @@
             NumberIsKnown = numberIsKnown;
         }
 
+        public static HeldCard FromCard(Card card) {
+            return new HeldCard(card.Number, card.Color, false, false);
+        }
+
         public bool ColorIsKnown { get; set; }
 
         public bool NumberIsKnown { get; set; }
