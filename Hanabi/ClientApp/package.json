@@ -19,6 +19,7 @@
     "react-scripts": "^5.0.0",
     "reactstrap": "^8.9.0",
     "rimraf": "^2.6.2",
+    "sass": "^1.54.5",
     "web-vitals": "^0.2.4",
     "workbox-background-sync": "^5.1.3",
     "workbox-broadcast-update": "^5.1.3",
