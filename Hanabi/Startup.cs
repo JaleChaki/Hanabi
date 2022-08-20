@@ -7,7 +7,6 @@ using Newtonsoft.Json.Serialization;
 
 namespace Hanabi {
     public class Startup {
-
         public Startup(IConfiguration configuration) {
             Configuration = configuration;
         }
@@ -33,6 +32,19 @@ namespace Hanabi {
                         ValidateLifetime = false,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["SignKey"]))
+                    };
+
+                    // refers to https://docs.microsoft.com/en-us/aspnet/core/signalr/authn-and-authz?view=aspnetcore-6.0#built-in-jwt-authentication
+                    options.Events = new JwtBearerEvents {
+                        OnMessageReceived = context => {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            var path = context.HttpContext.Request.Path;
+                            if(!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/gamehub"))
+                                context.Token = accessToken;
+
+                            return Task.CompletedTask;
+                        }
                     };
                 });
 
