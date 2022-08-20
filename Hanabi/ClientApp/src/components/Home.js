@@ -26,7 +26,7 @@ export class Home extends Component {
             .withUrl("/gamehub", {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets,
-                accessTokenFactory: () => this.loginToken.access_token
+                accessTokenFactory: () => this.loginToken
             })
             .build();
 
