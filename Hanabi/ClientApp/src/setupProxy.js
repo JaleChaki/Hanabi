@@ -8,11 +8,10 @@ const wsTarget = env.ASPNETCORE_HTTPS_PORT ? `wss://localhost:${env.ASPNETCORE_H
     env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'ws://localhost:29022'
 
 const context =  [
-  "/weatherforecast"
+  "/token"
 ];
 
 const wsContext = [
-  "/testhub",
   "/gamehub"
 ]
 
