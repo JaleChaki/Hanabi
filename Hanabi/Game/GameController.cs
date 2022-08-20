@@ -12,8 +12,8 @@ namespace Hanabi.Game {
 
         private readonly object _syncRoot = new object();
 
-        public SerializedGameState CreateModel(Guid playerId) {
-            EnsurePlayerExists(playerId);
+        public SerializedGameState CreateModel() {
+            //EnsurePlayerExists(playerId);
 
             return new SerializedGameState {
                 FuseTokens = GameModel.FuseTokens,
