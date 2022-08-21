@@ -11,16 +11,16 @@ export const Player = (props: { info: IPlayer }) => {
     return (
         <div className="player">
             <p><strong>Nick: </strong>{props.info.nickname}</p>
-            <ul>
-                {props.info.cards.map((card, i) =>
-                    <li key={i}>
-                        <div className="card-container">
-                            <span>{card.number}</span>
-                            <div className={`card-square color-${card.color}`}></div>
-                        </div>
-                    </li>
-                )}
-            </ul>
+            <div className="cards-wrapper">
+            {props.info.cards.map((card, i) =>
+                <div className={`playing-card card-${i}`} key={i}>
+                    <div className="card-container">
+                        <span>{card.number}</span>
+                        <div className={`card-square color-${card.color}`}></div>
+                    </div>
+                </div>
+            )}
+            </div>
         </div>
     );
 }
