@@ -12,7 +12,7 @@ const rootElement = document.getElementById('root');
 
 ReactDOM.render(
     <CookiesProvider>
-        <BrowserRouter basename={baseUrl}>
+        <BrowserRouter basename={baseUrl} >
             <App/>
         </BrowserRouter>
     </CookiesProvider>,
