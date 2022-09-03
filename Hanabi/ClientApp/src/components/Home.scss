@@ -1,0 +1,11 @@
+﻿.active-games-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+
+  .active-game {
+    border: #e2e2e2 1rem dashed;
+    margin: 1rem;
+    min-width: 25%;
+    min-height: 6rem;
+  }
+}

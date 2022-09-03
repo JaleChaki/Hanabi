@@ -34,6 +34,9 @@
       <TypeScriptCompile Include="ClientApp\src\components\Card\TrashCanCard.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\Players\Player.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\Tokens\Token.tsx" />
+      <TypeScriptCompile Include="ClientApp\src\SerializationInterfaces\ICard.ts" />
+      <TypeScriptCompile Include="ClientApp\src\SerializationInterfaces\IGameState.ts" />
+      <TypeScriptCompile Include="ClientApp\src\SerializationInterfaces\IPlayer.ts" />
     </ItemGroup>
 
     <ItemGroup>

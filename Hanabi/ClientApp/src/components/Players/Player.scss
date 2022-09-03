@@ -50,23 +50,23 @@
         height: 1rem;
         border: 1px solid black;
 
-        &.color-red {
+        &.color-red, &.color-1 {
           background-color: red;
         }
 
-        &.color-blue {
+        &.color-blue, &.color-2 {
           background-color: blue;
         }
 
-        &.color-green {
+        &.color-green, &.color-3 {
           background-color: green;
         }
 
-        &.color-yellow {
+        &.color-yellow, &.color-4 {
           background-color: yellow;
         }
 
-        &.color-white {
+        &.color-white, &.color-5 {
           background-color: white;
         }
       }

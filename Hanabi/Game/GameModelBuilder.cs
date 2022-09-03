@@ -4,7 +4,7 @@
         public static GameModel CreateNew() {
 
             // TODO KISS
-            var cards = Enumerable.Range(0, 5).SelectMany(
+            var cards = Enumerable.Range(1, 5).SelectMany(
                 color => Enumerable.Range(1, 5)
                     .SelectMany(number => {
                         int amount = 2;

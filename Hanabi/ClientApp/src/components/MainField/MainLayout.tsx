@@ -1,30 +1,35 @@
-﻿import React from "react";
+﻿import React, {FC} from "react";
 import {History} from "./History";
 import {Players} from "../Players/Players";
 import {Solitaire} from "./Solitaire";
-
-import "./MainLayout.scss"
 import {TokenStorage} from "../Tokens/TokenStorage";
 import {TokenType} from "../Tokens/Token";
+import {IPlayer} from "../../SerializationInterfaces/IPlayer";
+import {IGameState} from "../../SerializationInterfaces/IGameState";
 
-export const MainLayout = () => {
-    const players = [{
-        nickname: 'staziz',
-        cards: [
-            {number: 1, color: 'green'},
-            {number: 2, color: 'red'},
-            {number: 3, color: 'yellow'},
-            {number: 4, color: 'white'},
-            {number: 5, color: 'green'}
+import "./MainLayout.scss"
+
+type MainLayoutProps = {
+    gameState: IGameState
+}
+export const MainLayout: FC<MainLayoutProps> = ({gameState: {players}}) => {
+    const players2: Array<IPlayer> = [{
+        nick: 'staziz',
+        heldCards: [
+            {number: 1, color: 3, colorIsKnown: false, numberIsKnown: false},
+            {number: 2, color: 1, colorIsKnown: false, numberIsKnown: false},
+            {number: 3, color: 4, colorIsKnown: false, numberIsKnown: false},
+            {number: 4, color: 5, colorIsKnown: false, numberIsKnown: false},
+            {number: 5, color: 3, colorIsKnown: false, numberIsKnown: false}
         ]
     }, {
-        nickname: 'jalechaki',
-        cards: [
-            {number: 1, color: 'blue'},
-            {number: 2, color: 'white'},
-            {number: 3, color: 'blue'},
-            {number: 4, color: 'red'},
-            {number: 5, color: 'yellow'}
+        nick: 'jalechaki',
+        heldCards: [
+            {number: 1, color: 2, colorIsKnown: false, numberIsKnown: false},
+            {number: 2, color: 5, colorIsKnown: false, numberIsKnown: false},
+            {number: 3, color: 2, colorIsKnown: false, numberIsKnown: false},
+            {number: 4, color: 1, colorIsKnown: false, numberIsKnown: false},
+            {number: 5, color: 4, colorIsKnown: false, numberIsKnown: false}
         ]
     }]
 

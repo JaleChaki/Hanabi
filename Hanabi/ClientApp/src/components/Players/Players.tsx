@@ -1,5 +1,6 @@
 ﻿import React from "react";
-import {IPlayer, Player} from "./Player";
+import {IPlayer} from "../../SerializationInterfaces/IPlayer";
+import {Player} from "./Player";
 
 import "./Players.scss"
 

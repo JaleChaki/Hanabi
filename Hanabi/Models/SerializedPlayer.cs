@@ -3,7 +3,7 @@
 
         public string Nick { get; init; }
 
-        public IReadOnlyList<SerializedCard> HeldCard { get; init; }
+        public IReadOnlyList<SerializedCard> HeldCards { get; init; }
 
     }
 }
