@@ -1,8 +1,8 @@
 ﻿namespace Hanabi.Game {
     public class GameModelBuilder {
 
-        public static GameModel CreateNew() {
-
+        public static GameModel CreateNew(long? seed = null) {
+            seed ??= DateTime.Now.Ticks;
             // TODO KISS
             var cards = Enumerable.Range(1, 5).SelectMany(
                 color => Enumerable.Range(1, 5)
@@ -14,7 +14,7 @@
                             amount = 1;
                         return Enumerable.Repeat(0, amount).Select(_ => new Card(number, color));
                     })
-            ).Reverse().ToList();
+            ).Shuffle(new Random((int)seed.Value)).ToList();
 
             var playerOrder = new[] {
                 Guid.Parse("6478E542-4E96-421B-987F-767A3171B766"),

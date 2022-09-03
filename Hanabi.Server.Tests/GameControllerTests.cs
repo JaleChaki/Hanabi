@@ -6,7 +6,7 @@ namespace Hanabi.Server.Tests {
     public class GameControllerTests {
 
         public GameControllerTests() {
-            GameModel = GameModelBuilder.CreateNew();
+            GameModel = GameModelBuilder.CreateNew(1337);
             FirstPlayer = GameModel.PlayerOrder[0];
             SecondPlayer = GameModel.PlayerOrder[1];
             GameController = new GameController(GameModel);
@@ -108,7 +108,7 @@ namespace Hanabi.Server.Tests {
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
             Assert.Equal(1, GameModel.FuseTokens);
-            Assert.True(Enumerable.SequenceEqual(prevHand.Skip(1), newHand.SkipLast(1)));
+            Assert.Equal(prevHand.Skip(1), newHand.SkipLast(1));
             Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
         }
 
