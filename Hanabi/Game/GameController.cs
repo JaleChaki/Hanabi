@@ -20,7 +20,16 @@ namespace Hanabi.Game {
                     FuseTokens = GameModel.FuseTokens,
                     InformationTokens = GameModel.InformationTokens,
                     CardsInDeck = GameModel.Deck.Count,
-                    Fireworks = GameModel.Fireworks
+                    Fireworks = GameModel.Fireworks,
+                    Players = GameModel.PlayerOrder.Select(id => new SerializedPlayer {
+                        Nick = id.ToString().ToUpper() == "6478E542-4E96-421B-987F-767A3171B766" ? "staziz" : "jalechaki", // TODO
+                        HeldCard = GameModel.PlayerHands[id].Select(card => new SerializedCard {
+                            Color = card.Color,
+                            Number = card.Number,
+                            ColorIsKnown = card.ColorIsKnown,
+                            NumberIsKnown = card.NumberIsKnown
+                        }).ToArray()
+                    }).ToArray()
                 };
             }
             return result;
