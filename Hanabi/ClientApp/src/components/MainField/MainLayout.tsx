@@ -4,6 +4,8 @@ import {Players} from "../Players/Players";
 import {Solitaire} from "./Solitaire";
 
 import "./MainLayout.scss"
+import {TokenStorage} from "../Tokens/TokenStorage";
+import {TokenType} from "../Tokens/Token";
 
 export const MainLayout = () => {
     const players = [{
@@ -34,8 +36,10 @@ export const MainLayout = () => {
                 <div className="main-footer">
                     <div className="card-deck"></div>
                     <Solitaire></Solitaire>
-                    <div className="info-tokens"></div>
-                    <div className="fuse-tokens"></div>
+                    <div className="token-storages">
+                        <TokenStorage type={TokenType.Info} currentCount={8}></TokenStorage>
+                        <TokenStorage type={TokenType.Fuse} currentCount={3}></TokenStorage>
+                    </div>
                 </div>
             </div>
         </div>

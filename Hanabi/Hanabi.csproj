@@ -33,6 +33,11 @@
       <TypeScriptCompile Include="ClientApp\src\components\Card\HeldCard.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\Card\TrashCanCard.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\Players\Player.tsx" />
+      <TypeScriptCompile Include="ClientApp\src\components\Tokens\Token.tsx" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="ClientApp\src\components\Tokens\icons" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
