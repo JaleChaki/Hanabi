@@ -3,7 +3,7 @@ import {Token, TokenType} from "./Token";
 
 import "./TokenStorage.scss"
 
-interface TokenStorageProps {
+type TokenStorageProps = {
     type: TokenType,
     currentCount: number
 }

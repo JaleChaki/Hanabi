@@ -6,7 +6,7 @@ export enum TokenType {
     Info,
     Fuse
 }
-interface TokenProps {
+type TokenProps = {
     type: TokenType,
     className?: string
 }

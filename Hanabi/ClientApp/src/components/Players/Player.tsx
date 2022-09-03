@@ -7,7 +7,7 @@ export interface IPlayer {
     cards: Array<{ number: number, color: string }>
 }
 
-interface PlayerProps {
+type PlayerProps = {
     info: IPlayer
 }
 
