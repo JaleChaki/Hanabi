@@ -94,8 +94,8 @@ namespace Hanabi.Server.Tests {
 
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
-            Assert.Equal(1, GameModel.Fireworks[0]);
-            Assert.True(Enumerable.SequenceEqual(prevHand.SkipLast(1), newHand.SkipLast(1)));
+            Assert.Equal(1, GameModel.Fireworks[1]);
+            Assert.Equal(prevHand.SkipLast(1), newHand.SkipLast(1));
             Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
         }
 
