@@ -20,11 +20,11 @@ namespace Hanabi.Game {
                     FuseTokens = GameModel.FuseTokens,
                     InformationTokens = GameModel.InformationTokens,
                     CardsInDeck = GameModel.Deck.Count,
-                    Fireworks = GameModel.Fireworks,
+                    Fireworks = GameModel.Fireworks.OrderBy(x => x.Key).Select(x => x.Value).ToArray(),
                     Players = GameModel.PlayerOrder.Select(id => new SerializedPlayer {
                         Nick = id.ToString().ToUpper() == "6478E542-4E96-421B-987F-767A3171B766" ? "staziz" : "jalechaki", // TODO
                         HeldCards = GameModel.PlayerHands[id].Select(card => new SerializedCard {
-                            Color = card.Color,
+                            Color = (int) card.Color,
                             Number = card.Number,
                             ColorIsKnown = card.ColorIsKnown,
                             NumberIsKnown = card.NumberIsKnown
@@ -40,8 +40,8 @@ namespace Hanabi.Game {
             EnsurePlayerExists(currentPlayerId);
             if(currentPlayerId == targetPlayerId)
                 throw new ArgumentException("current and target player can not be equal");
-            if(options.CardColor.HasValue && (options.CardColor.Value > 4 || options.CardColor.Value < 0))
-                throw new ArgumentException("wrong card color", nameof(options));
+            if(options.CardColor.HasValue && !GameModel.Fireworks.ContainsKey(options.CardColor.Value))
+                throw new ArgumentException("specified card color is not presented in game");
 
             lock(_syncRoot) {
                 EnsureCurrentPlayer(currentPlayerId);

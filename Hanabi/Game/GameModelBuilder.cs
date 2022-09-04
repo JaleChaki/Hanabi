@@ -12,7 +12,7 @@
                             amount = 3;
                         if(number == 5)
                             amount = 1;
-                        return Enumerable.Repeat(0, amount).Select(_ => new Card(number, color));
+                        return Enumerable.Repeat(0, amount).Select(_ => new Card(number, (CardColor) color));
                     })
             ).Shuffle(new Random((int)seed.Value)).ToList();
 
@@ -26,7 +26,7 @@
                 cards.RemoveRange(cards.Count - 5, 5);
             }
 
-            var model = new GameModel(cards, 8, 0, 5, playerOrder, playerHands);
+            var model = new GameModel(cards, 8, 0, Enum.GetValues<CardColor>().Take(5).ToArray(), playerOrder, playerHands);
             return model;
         }
 

@@ -1,14 +1,14 @@
 ﻿namespace Hanabi.Game {
     public class Card {
-        
-        public Card(int number, int color) {
+
+        public Card(int number, CardColor color) {
             Number = number;
             Color = color;
         }
 
         public int Number { get; }
 
-        public int Color { get; }
+        public CardColor Color { get; }
 
     }
 }

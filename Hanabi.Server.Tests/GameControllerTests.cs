@@ -19,10 +19,10 @@ namespace Hanabi.Server.Tests {
 
         [Fact]
         public void MakeHint_Color() {
-            GameController.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardColor(0));
+            GameController.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardColor(1));
 
             Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
-            Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => (card.ColorIsKnown && card.Color == 0) || (!card.ColorIsKnown && card.Color != 0)));
+            Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => (card.ColorIsKnown && card.Color == CardColor.Red) || (!card.ColorIsKnown && card.Color != CardColor.Red)));
             Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => !card.NumberIsKnown));
         }
 
@@ -90,12 +90,12 @@ namespace Hanabi.Server.Tests {
         public void PlayCard_Ok() {
             var prevHand = GameModel.PlayerHands[FirstPlayer].ToArray();
 
-            GameController.PlayCard(FirstPlayer, 4);
+            GameController.PlayCard(FirstPlayer, 0);
 
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
-            Assert.Equal(1, GameModel.Fireworks[1]);
-            Assert.Equal(prevHand.SkipLast(1), newHand.SkipLast(1));
+            Assert.Equal(1, GameModel.Fireworks[CardColor.Red]);
+            Assert.Equal(prevHand.Skip(1), newHand.SkipLast(1));
             Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
         }
 
@@ -103,12 +103,12 @@ namespace Hanabi.Server.Tests {
         public void PlayCard_Fall() {
             var prevHand = GameModel.PlayerHands[FirstPlayer].ToArray();
 
-            GameController.PlayCard(FirstPlayer, 0);
+            GameController.PlayCard(FirstPlayer, 2);
 
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
             Assert.Equal(1, GameModel.FuseTokens);
-            Assert.Equal(prevHand.Skip(1), newHand.SkipLast(1));
+            Assert.Equal(prevHand.Except(new [] { prevHand[2] }), newHand.SkipLast(1));
             Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
         }
 
