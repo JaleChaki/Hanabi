@@ -5,7 +5,7 @@ export type DeckCardProps = {
     cardsInDeck: number;
 }
 
-export class DeckCard extends Component<{}, DeckCardProps> {
+export class DeckCard extends Component<DeckCardProps, {}> {
 
     cardsInDeck: number;
 

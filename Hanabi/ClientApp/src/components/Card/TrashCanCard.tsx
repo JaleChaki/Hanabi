@@ -5,7 +5,7 @@ export type TrashCanCardProps = {
     cardsInTrash: number;
 }
 
-export class TrashCanCard extends Component<{}, TrashCanCardProps> {
+export class TrashCanCard extends Component<TrashCanCardProps, {}> {
 
     cardsInTrash: number;
 

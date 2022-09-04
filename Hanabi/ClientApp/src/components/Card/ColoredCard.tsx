@@ -1,5 +1,6 @@
 ﻿import React, {Component, MouseEventHandler} from "react";
 import "./Card.scss"
+import "../../Colors.scss"
 
 export type CardProps = {
     color: number;
@@ -9,7 +10,7 @@ export type CardProps = {
     colorClickHandler?: MouseEventHandler<HTMLElement>;
 }
 
-export abstract class ColoredCard extends Component<{}, CardProps> {
+export abstract class ColoredCard extends Component<CardProps, {}> {
 
     protected color: number;
     protected number: number;
