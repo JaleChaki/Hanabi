@@ -1,22 +1,32 @@
-﻿import {CardBase, CardProps} from "./CardBase";
+﻿import {ColoredCard, CardProps} from "./ColoredCard";
+import {getColorByCode} from "./ColorUtils";
 
-export class FireworkCard extends CardBase {
+export type FireworkCardProps = {
+    color: number;
+    number: number;
+}
 
-    constructor(props: { color: number, number: number }) {
+export class FireworkCard extends ColoredCard {
+
+    constructor(props: FireworkCardProps) {
         let superProps: CardProps = {
-            is_deck: false,
-            cards_in_deck: 0,
             color: props.color,
-            is_own: false,
-            cards_in_trash: 0,
-            game_mode: "default",
-            is_trash_can: false,
-            number: props.number,
-            number_is_known: true,
-            color_is_known: true,
-            is_firework: true
+            gameMode: "default", // TODO
+            number: props.number
         }
         super(superProps);
+    }
+
+    protected override getWrapperCssClasses() : Array<string> {
+        return ["color-" + getColorByCode(this.color, this.gameMode)];
+    }
+
+    protected override getDisplayText(): string {
+        return this.number.toString();
+    }
+
+    protected override getCardCssClasses(): Array<string> {
+        return ["card-" + getColorByCode(this.color, this.gameMode)];
     }
 
 }

@@ -28,6 +28,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <TypeScriptCompile Include="ClientApp\src\components\Card\ColoredCard.tsx" />
+      <TypeScriptCompile Include="ClientApp\src\components\Card\ColorUtils.ts" />
       <TypeScriptCompile Include="ClientApp\src\components\Card\DeckCard.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\Card\FireworkCard.tsx" />
       <TypeScriptCompile Include="ClientApp\src\components\Card\HeldCard.tsx" />
