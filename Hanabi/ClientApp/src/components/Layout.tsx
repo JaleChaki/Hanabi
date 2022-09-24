@@ -7,9 +7,9 @@ export const Layout: FC<MyProps> = (props) => {
     return (
         <div>
             <NavMenu/>
-            <Container>
+            <div>
                 {props.children}
-            </Container>
+            </div>
         </div>
     );
 }

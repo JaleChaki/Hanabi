@@ -1,16 +1,16 @@
-﻿import React, {Component, MouseEventHandler} from "react";
+﻿import React, {Component, MouseEventHandler, PropsWithChildren} from "react";
 import "./Card.scss"
 import "../../Colors.scss"
 
-export type CardProps = {
+export interface CardProps {
     color: number;
     number: number;
-    gameMode: string;
+    gameMode?: string;
     numberClickHandler?: MouseEventHandler<HTMLElement>;
     colorClickHandler?: MouseEventHandler<HTMLElement>;
 }
 
-export abstract class ColoredCard extends Component<CardProps, {}> {
+export abstract class ColoredCard<P extends CardProps = CardProps> extends Component<P> {
 
     protected color: number;
     protected number: number;
@@ -18,11 +18,11 @@ export abstract class ColoredCard extends Component<CardProps, {}> {
     protected numberClickHandler?: MouseEventHandler<HTMLElement>;
     protected colorClickHandler?: MouseEventHandler<HTMLElement>;
 
-    protected constructor(props: CardProps) {
+    protected constructor(props: P) {
         super(props);
         this.color = props.color;
         this.number = props.number;
-        this.gameMode = props.gameMode;
+        this.gameMode = props.gameMode || "";
         this.numberClickHandler = props.numberClickHandler;
         this.colorClickHandler = props.colorClickHandler;
     }
