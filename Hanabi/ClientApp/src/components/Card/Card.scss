@@ -1,43 +1,75 @@
-﻿.card {
+﻿$card-height: 8rem;
+$card-width: $card-height / 1.5;
+$card-offset: $card-width / 2;
+
+.card-wrapper {
+	width: fit-content;
+	height: fit-content;
+	border-radius: 1rem;
+	background-color: deeppink;
 	display: flex;
 	flex-direction: column;
-	border-radius: 1rem;
-	width: 5.5rem;
-	height: 8rem;
-	background-color: black;
-	color: white;
-	background-size: contain;
+	outline: 0.1rem white solid;
 
-	.card-number {
-		width: 100%;
-		height: 33%;
-		display: flex;
-		font-family: "Arial Black", serif;
-		font-size: 150%;
-
-		p {
-			margin-left: 0.3rem;
-		}
+	&:hover {
+		margin-top: -1rem;
 	}
 
-	.card-color {
-		width: 100%;
-		height: 67%;
+	&+.card-wrapper {
+		margin-left: -$card-offset;
 	}
 
-	.deck-card-number {
-		width: 100%;
-		height: 100%;
+	&>.card {
 		display: flex;
+		flex-direction: column;
+		border-radius: 1rem;
+		width: $card-width;
+		height: $card-height;
+		background-color: black;
+		color: white;
+		background-size: contain;
+		border-radius: 6px;
 		justify-content: center;
-		font-family: "Arial Black", serif;
-		font-size: 140%;
+		align-items: center;
+		text-align: center;
+		display: flex;
+		flex-flow: column nowrap;
+		font-size: 1.5em;
+		color: rgb(88 199 250 / 70%);
+		cursor: pointer;
+		font-family: cursive;
 
-		p {
-			top: 0;
-			bottom: 0;
-			margin: auto;
-			text-align: center;
+		&>.card-number {
+			width: 100%;
+			height: 33%;
+			display: flex;
+			// font-family: "Arial Black", serif;
+			font-size: 150%;
+
+			&>p {
+				margin-left: 0.3rem;
+			}
+		}
+
+		&>.card-color {
+			width: 100%;
+			height: 67%;
+		}
+
+		&>.deck-card-number {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			// font-family: "Arial Black", serif;
+			font-size: 140%;
+
+			&>p {
+				top: 0;
+				bottom: 0;
+				margin: auto;
+				text-align: center;
+			}
 		}
 	}
 }
@@ -76,16 +108,6 @@
 
 .card-unknown-color {
 	background-image: url("./icons/unknown_color.svg");
-}
-
-.card-wrapper {
-	width: fit-content;
-	height: fit-content;
-	border-radius: 1rem;
-	background-color: deeppink;
-	display: flex;
-	flex-direction: column;
-	outline: 0.1rem white solid;
 }
 
 .card-number-known {
