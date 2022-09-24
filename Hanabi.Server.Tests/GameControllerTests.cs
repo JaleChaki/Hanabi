@@ -94,7 +94,7 @@ namespace Hanabi.Server.Tests {
 
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
-            Assert.Equal(1, GameModel.Fireworks[CardColor.Red]);
+            Assert.Equal(0, GameModel.Fireworks[CardColor.Red]);
             Assert.Equal(prevHand.Skip(1), newHand.SkipLast(1));
             Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
         }
