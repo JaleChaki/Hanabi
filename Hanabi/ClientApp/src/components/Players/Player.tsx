@@ -5,10 +5,18 @@ import { HeldCard } from "../Card/HeldCard";
 import "./Player.scss"
 
 type PlayerProps = {
-    info: IPlayer
+    info: IPlayer,
+    actions: IPlayerActions
 }
 
-export const Player: FC<PlayerProps> = ({ info: { nick, heldCards } }) => {
+export interface IPlayerActions {
+    makeHintByColor: (nickname: string, cardcolor: number) => void,
+    makeHintByNumber: (nickname: string, cardNumber: number) => void,
+    dropCard: Function,
+    playCard: Function
+}
+
+export const Player: FC<PlayerProps> = ({ info: { nick, heldCards }, actions }) => {
     return (
         <div className="player">
             <p><strong>Nick: </strong>{nick}</p>
@@ -20,7 +28,9 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards } }) => {
                         numberIsKnown={card.colorIsKnown}
                         isOwn={false}
                         className={`card-${i}`}
-                        key={`${nick}PlayerCard${i}`}>
+                        key={`${nick}PlayerCard${i}`}
+                        numberClickHandler={() => actions.makeHintByNumber(nick, card.number)}
+                        colorClickHandler={() => actions.makeHintByColor(nick, card.color)}>
                     </HeldCard>
                 )}
             </div>

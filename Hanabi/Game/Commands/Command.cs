@@ -11,6 +11,7 @@
 
         protected void EndTurn() {
             GameModel.CurrentPlayerIndex = (GameModel.CurrentPlayerIndex + 1) % GameModel.PlayerOrder.Count;
+            GameModel.TotalTurnsCount++;
         }
 
         protected void DrawCard() {

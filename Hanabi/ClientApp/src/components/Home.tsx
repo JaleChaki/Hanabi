@@ -3,6 +3,7 @@ import * as signalR from "@microsoft/signalr";
 import {MainLayout} from "./MainField/MainLayout";
 import {HubConnection} from "@microsoft/signalr";
 import {IGameState} from '../SerializationInterfaces/IGameState';
+import { IPlayerActions } from './Players/Player';
 
 export const Home = (props: { loginAccessToken: string }) => {
     const [cardsInDeck, setCardsInDeck] = useState(50);
@@ -10,6 +11,16 @@ export const Home = (props: { loginAccessToken: string }) => {
     const [informationTokens, setInformationTokens] = useState(8);
     const [fuseTokens, setFuseTokens] = useState(3);
     const [gameState, setGameState] = useState<IGameState>({} as any);
+    const playerActions: IPlayerActions = {
+        makeHintByColor(nickname, cardcolor) {
+            connection.current.invoke("MakeColorHint", nickname, cardcolor);
+        },
+        makeHintByNumber(nickname, cardNumber) {
+            connection.current.invoke("MakeNumberHint", nickname, cardNumber);
+        },
+        dropCard() {},
+        playCard() {}
+    }
     const {loginAccessToken} = props;
     const connection: React.MutableRefObject<HubConnection> = useRef({} as any);
 
@@ -32,6 +43,7 @@ export const Home = (props: { loginAccessToken: string }) => {
             // setFireworks(gameState.fireworks);
             // setInformationTokens(gameState.informationTokens);
             // setFuseTokens(gameState.fuseTokens);
+            console.log(gameState);
             setGameState(gameState);
         });
 
@@ -54,7 +66,7 @@ export const Home = (props: { loginAccessToken: string }) => {
     } else {
         return (
             <Fragment>
-                <MainLayout gameState={gameState}></MainLayout>
+                <MainLayout gameState={gameState} playerActions={playerActions}></MainLayout>
                 <br/>
                 {/*<div className={"cardsDeck"}>{cardsInDeck}</div>*/}
                 {/*{fireworks.map((firework, i) =>*/}
