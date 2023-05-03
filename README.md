@@ -1,0 +1,1 @@
+![Productivity_meme_0](https://github.com/JaleChaki/Hanabi/blob/master/Memes/Productivity_meme_0.png?raw=true)
