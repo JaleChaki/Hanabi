@@ -22,9 +22,10 @@ namespace Hanabi.Hubs {
     }
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GameHub : Hub {
-
+        Dictionary<string, string> ClientIds;
         public GameHub(GameService gameService) {
             GameService = gameService;
+            ClientIds = new();
         }
 
         private GameService GameService { get; }
@@ -50,13 +51,21 @@ namespace Hanabi.Hubs {
             var userId = GetPlayerGuid(Context.User.Identity.Name);
             var targetPlayerId = GetPlayerGuid(targetPlayerNickname);
             GameService.GetController(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardColor(color));
-            await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
-            // TODO: check how to update other client
-            var tpcid = GameService.GetPlayerConnectionId(targetPlayerNickname);
-            var tpgs = GameService.GetGameState(targetPlayerId);
-            // await Clients.Client(tpcid).SendAsync("SetGameState", tpgs);
-            await Clients.User(targetPlayerNickname).SendAsync("SetGameState", tpgs);
-            // await Clients.Client(GameService.GetPlayerConnectionId(targetPlayerNickname)).SendAsync("SetGameState", GameService.GetGameState(targetPlayerId));
+            await Clients.All.SendAsync("RequestUpdate");
+            
+            // await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
+            // // TODO: check how to update other client
+
+            // var tpcid = GameService.GetPlayerConnectionId(targetPlayerNickname);
+            // var tpgs = GameService.GetGameState(targetPlayerId);
+            // // await Clients.Client(tpcid).SendAsync("SetGameState", tpgs);
+
+            // var clientId = ClientIds[targetPlayerNickname];
+            // var user = Clients.User(clientId);
+            // var client = Clients.Client(clientId);
+            // await client.SendAsync("SetGameState", GameService.GetGameState(userId));
+            // // await Clients.User(targetPlayerNickname).SendAsync("SetGameState", tpgs);
+            // // await Clients.Client(GameService.GetPlayerConnectionId(targetPlayerNickname)).SendAsync("SetGameState", GameService.GetGameState(targetPlayerId));
         }
 
         public async Task MakeNumberHint(string targetPlayerNickname, int number) {
@@ -90,5 +99,12 @@ namespace Hanabi.Hubs {
                 "test_player" => Guid.Parse("E05E5FA4-DA8C-4CBC-B9DB-231BAE63A970"),
                 _ => throw new ArgumentOutOfRangeException(nameof(nickname), $"Player with nickname '{nickname}' does not exist in current game")
         };
-    }
+		public override Task OnConnectedAsync() {
+            Console.WriteLine("New connection!");
+            // this.Clients.Client("XGgSrccsRa6o5GNKkimp9w").SendAsync()
+            // this.Clients.User("XGgSrccsRa6o5GNKkimp9w")
+            ClientIds.Add(Context.User.Identity.Name, Context.ConnectionId);
+			return base.OnConnectedAsync();
+		}
+	}
 }

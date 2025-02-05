@@ -1,8 +1,8 @@
-import React, {Fragment, useEffect, useRef, useState} from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import * as signalR from "@microsoft/signalr";
-import {MainLayout} from "./MainField/MainLayout";
-import {HubConnection} from "@microsoft/signalr";
-import {IGameState} from '../SerializationInterfaces/IGameState';
+import { MainLayout } from "./MainField/MainLayout";
+import { HubConnection } from "@microsoft/signalr";
+import { IGameState } from '../SerializationInterfaces/IGameState';
 import { IPlayerActions } from './Players/Player';
 
 export const Home = (props: { loginAccessToken: string }) => {
@@ -18,10 +18,10 @@ export const Home = (props: { loginAccessToken: string }) => {
         makeHintByNumber(nickname, cardNumber) {
             connection.current.invoke("MakeNumberHint", nickname, cardNumber);
         },
-        dropCard() {},
-        playCard() {}
+        dropCard() { },
+        playCard() { }
     }
-    const {loginAccessToken} = props;
+    const { loginAccessToken } = props;
     const connection: React.MutableRefObject<HubConnection> = useRef({} as any);
 
     useEffect(() => {
@@ -43,23 +43,32 @@ export const Home = (props: { loginAccessToken: string }) => {
             // setFireworks(gameState.fireworks);
             // setInformationTokens(gameState.informationTokens);
             // setFuseTokens(gameState.fuseTokens);
+            console.log("SetGameState");
             console.log(gameState);
             setGameState(gameState);
+            console.log("____________");
         });
 
-        connection.current.start().then(() => {
+        connection.current.on("RequestUpdate", _ => {
+            // TODO: optimize rendering
+            // setCardsInDeck(gameState.cardsInDeck);
+            // setFireworks(gameState.fireworks);
+            // setInformationTokens(gameState.informationTokens);
+            // setFuseTokens(gameState.fuseTokens);
+            console.log("RequestUpdate");
             getGameState();
-        }).catch(function (err) {
+        });
+
+        connection.current.start().then(getGameState);
+    }
+
+    const getGameState = () =>
+        _getGameStateUnsafe().catch(function (err) {
             return console.error(err.toString());
         });
 
-    }
-
-    const getGameState = () => {
-        connection.current.invoke("GetGameState").catch(function (err) {
-            return console.error(err.toString());
-        });
-    }
+    const _getGameStateUnsafe = () =>
+        connection.current.invoke("GetGameState");
 
     if (!Object.prototype.hasOwnProperty.call(gameState, 'fireworks')) {
         return <span>Loading...</span>
