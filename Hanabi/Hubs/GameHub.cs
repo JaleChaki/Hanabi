@@ -34,6 +34,7 @@ namespace Hanabi.Hubs {
         public async Task GetGameState() {
             var userName = Context.User.Identity.Name;
             var userId = GetPlayerGuid(userName);
+            // TODO: check if we sill need some of the things below
             // Context.User.AddIdentity(new ClaimsIdentity(new NameIdentity(userId.ToString())));
             Context.User.AddIdentity(new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) }));
             // Context.User.FindFirst(ClaimTypes.Name)
