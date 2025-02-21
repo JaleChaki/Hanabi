@@ -72,13 +72,15 @@ namespace Hanabi.Hubs {
             var userId = GetPlayerGuid(Context.User.Identity.Name);
             var targetPlayerId = GetPlayerGuid(targetPlayerNickname);
             GameService.GetController(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardNumber(number));
-            await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
-            // TODO: check how to update other client
-            var tpcid = GameService.GetPlayerConnectionId(targetPlayerNickname);
-            var tpgs = GameService.GetGameState(targetPlayerId);
-            // await Clients.Client(tpcid).SendAsync("SetGameState", tpgs);
-            await Clients.User(targetPlayerNickname).SendAsync("SetGameState", tpgs);
-            // await Clients.Client(GameService.GetPlayerConnectionId(targetPlayerNickname)).SendAsync("SetGameState", GameService.GetGameState(targetPlayerId));
+            await Clients.All.SendAsync("RequestUpdate");
+
+            // await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
+            // // TODO: check how to update other client
+            // var tpcid = GameService.GetPlayerConnectionId(targetPlayerNickname);
+            // var tpgs = GameService.GetGameState(targetPlayerId);
+            // // await Clients.Client(tpcid).SendAsync("SetGameState", tpgs);
+            // await Clients.User(targetPlayerNickname).SendAsync("SetGameState", tpgs);
+            // // await Clients.Client(GameService.GetPlayerConnectionId(targetPlayerNickname)).SendAsync("SetGameState", GameService.GetGameState(targetPlayerId));
         }
 
         public Task DropCard(int cardIndex) {
