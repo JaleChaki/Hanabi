@@ -23,6 +23,9 @@
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
 
+# VSCode
+**/.vscode/**/*.*
+
 *.suo
 *.user
 .vs/
