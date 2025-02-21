@@ -30,8 +30,10 @@ export class HeldCard extends ColoredCard<HeldCardProps> {
 
         if (this.numberIsKnown && !this.isOwn)
             result.push("card-number-known");
+        
+        if(!this.isOwn || this.colorIsKnown)
+            result.push("color-" + getColorByCode(this.color, this.gameMode));
 
-        result.push("color-" + getColorByCode(this.color, this.gameMode))
         return result;
     }
 
@@ -39,10 +41,13 @@ export class HeldCard extends ColoredCard<HeldCardProps> {
         const result = [];
         if (this.isOwn && !this.numberIsKnown)
             result.push("card-unknown-number");
+
         if (this.isOwn && !this.colorIsKnown)
             result.push("card-unknown-color");
-        // if(this.colorIsKnown)
+
+        if(!this.isOwn || this.colorIsKnown)
             result.push("card-" + getColorByCode(this.color, this.gameMode));
+        
         return result;
     }
 

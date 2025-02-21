@@ -34,24 +34,12 @@ export const Home = (props: { loginAccessToken: string }) => {
             .build();
 
         connection.current.on("SetGameState", (gameState: IGameState) => {
-            // TODO: optimize rendering
-            // setCardsInDeck(gameState.cardsInDeck);
-            // setFireworks(gameState.fireworks);
-            // setInformationTokens(gameState.informationTokens);
-            // setFuseTokens(gameState.fuseTokens);
-            console.log("SetGameState");
-            console.log(gameState);
+            // TODO: optimize rendering by not returning anything if turn number is the same as in previous state
             setGameState(gameState);
-            console.log("____________");
         });
 
         connection.current.on("RequestUpdate", _ => {
-            // TODO: optimize rendering
-            // setCardsInDeck(gameState.cardsInDeck);
-            // setFireworks(gameState.fireworks);
-            // setInformationTokens(gameState.informationTokens);
-            // setFuseTokens(gameState.fuseTokens);
-            console.log("RequestUpdate");
+            // TODO: optimize rendering by not returning anything if turn number is the same as in previous state
             getGameState();
         });
 
@@ -72,21 +60,6 @@ export const Home = (props: { loginAccessToken: string }) => {
         return (
             <Fragment>
                 <MainLayout gameState={gameState} playerActions={playerActions}></MainLayout>
-                <br />
-                {/*<div className={"cardsDeck"}>{cardsInDeck}</div>*/}
-                {/*{fireworks.map((firework, i) =>*/}
-                {/*    <div className={"firework"} key={i}>{firework}</div>*/}
-                {/*)}*/}
-                {/*<div className={"informationTokens"}>{informationTokens}</div>*/}
-                {/*<div className={"fuseTokens"}>{fuseTokens}</div>*/}
-                {/*<button onClick={() => getGameState()}>Get game state</button>*/}
-                <div className={"cardsDeck"}>{gameState.cardsInDeck}</div>
-                {gameState.fireworks.map((firework, i) =>
-                    <div className={"firework"} key={`firework-test-${i}`}>{firework}</div>
-                )}
-                <div className={"informationTokens"}>{gameState.informationTokens}</div>
-                <div className={"fuseTokens"}>{gameState.fuseTokens}</div>
-                <button onClick={() => getGameState()}>Get game state</button>
             </Fragment>
         );
     }
