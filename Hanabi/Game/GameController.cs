@@ -48,7 +48,7 @@ namespace Hanabi.Game {
                     Players = _gameModel.PlayerOrder.Select(id => {
                         var isCurrenPlayer = playerId == id;
                         return new SerializedPlayer {
-                            IsCurrentPalyer = isCurrenPlayer,
+                            IsCurrentPlayer = isCurrenPlayer,
                             Nick = GetPlayerName(id.ToString().ToUpper()),
                             HeldCards = _gameModel.PlayerHands[id].Select(card => new SerializedCard {
                                 Color = !isCurrenPlayer || card.ColorIsKnown ? (int)card.Color : (int)default(CardColor),
@@ -57,7 +57,8 @@ namespace Hanabi.Game {
                                 NumberIsKnown = card.NumberIsKnown
                             }).ToArray()
                         };
-                    }).ToArray()
+                    }).ToArray(),
+                    TurnIndex = _gameModel.TotalTurnsCount
                 };
             }
             return result;

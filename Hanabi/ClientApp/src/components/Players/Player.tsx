@@ -6,7 +6,8 @@ import "./Player.scss"
 
 type PlayerProps = {
     info: IPlayer,
-    actions: IPlayerActions
+    actions: IPlayerActions,
+    turnKey: number
 }
 
 export interface IPlayerActions {
@@ -16,7 +17,7 @@ export interface IPlayerActions {
     playCard: Function
 }
 
-export const Player: FC<PlayerProps> = ({ info: { nick, heldCards }, actions }) => {
+export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isCurrentPlayer }, actions, turnKey }) => {
     return (
         <div className="player">
             <p><strong>Nick: </strong>{nick}</p>
@@ -25,10 +26,10 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards }, actions }) 
                     <HeldCard color={card.color}
                         colorIsKnown={card.colorIsKnown}
                         number={card.number}
-                        numberIsKnown={card.colorIsKnown}
-                        isOwn={false}
+                        numberIsKnown={card.numberIsKnown}
+                        isOwn={isCurrentPlayer}
                         className={`card-${i}`}
-                        key={`${nick}PlayerCard${i}`}
+                        key={`Player${nick}Turn${turnKey}Card${i}`}
                         numberClickHandler={() => actions.makeHintByNumber(nick, card.number)}
                         colorClickHandler={() => actions.makeHintByColor(nick, card.color)}>
                     </HeldCard>

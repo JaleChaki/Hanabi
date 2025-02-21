@@ -2,6 +2,6 @@
     public class SerializedPlayer {
         public string Nick { get; init; }
         public IReadOnlyList<SerializedCard> HeldCards { get; init; }
-        public bool IsCurrentPalyer { get; set; }
+        public bool IsCurrentPlayer { get; set; }
     }
 }

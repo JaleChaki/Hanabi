@@ -5,5 +5,6 @@ export interface IGameState {
     fireworks: Array<number>,
     informationTokens: number,
     fuseTokens: number,
-    players: Array<IPlayer>
+    players: Array<IPlayer>,
+    turnIndex: number
 }

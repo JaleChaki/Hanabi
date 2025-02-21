@@ -14,13 +14,13 @@ type MainLayoutProps = {
     gameState: IGameState,
     playerActions: IPlayerActions
 }
-export const MainLayout: FC<MainLayoutProps> = ({ gameState: { players, informationTokens, fuseTokens }, playerActions }) => {
+export const MainLayout: FC<MainLayoutProps> = ({ gameState: { turnIndex, players, informationTokens, fuseTokens }, playerActions }) => {
 
     return (
         <div className="main-field">
             <History></History>
             <div className="main-wrapper">
-                <Players players={players} actions={playerActions} ></Players>
+                <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
                 <div className="main-footer">
                     <div className="card-deck"></div>
                     <Solitaire></Solitaire>

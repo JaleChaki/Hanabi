@@ -76,7 +76,7 @@ export const Home = (props: { loginAccessToken: string }) => {
         return (
             <Fragment>
                 <MainLayout gameState={gameState} playerActions={playerActions}></MainLayout>
-                <br/>
+                <br />
                 {/*<div className={"cardsDeck"}>{cardsInDeck}</div>*/}
                 {/*{fireworks.map((firework, i) =>*/}
                 {/*    <div className={"firework"} key={i}>{firework}</div>*/}
