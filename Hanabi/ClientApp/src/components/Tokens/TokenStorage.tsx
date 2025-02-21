@@ -10,7 +10,7 @@ type TokenStorageProps = {
 
 export const TokenStorage: FC<TokenStorageProps> = ({type, currentCount}) => {
     const maxCount = type === TokenType.Fuse ? 3 : 8;
-    if (maxCount > currentCount)
+    if (maxCount < currentCount)
         // TODO: add some error notification?
         currentCount = maxCount
     return (

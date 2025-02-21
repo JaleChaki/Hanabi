@@ -23,6 +23,9 @@
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
 
+# VSCode
+**/.vscode/**/*.*
+
 *.suo
 *.user
 .vs/
@@ -34,3 +37,6 @@ _UpgradeReport_Files/
 Thumbs.db
 Desktop.ini
 .DS_Store
+*.orig
+/nppBackup/*.*
+**/.config/**/*.*

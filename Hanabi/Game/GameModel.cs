@@ -1,7 +1,11 @@
 ﻿namespace Hanabi.Game {
     public class GameModel {
-
-        public GameModel(IEnumerable<Card> deck, int informationTokens, int fuseTokens, IReadOnlyCollection<CardColor> colors, IEnumerable<Guid> playerOrder, IReadOnlyDictionary<Guid, IEnumerable<HeldCard>> playerHands) {
+        public GameModel(IEnumerable<Card> deck,
+                        int informationTokens,
+                        int fuseTokens,
+                        IReadOnlyCollection<CardColor> colors,
+                        IEnumerable<Guid> playerOrder,
+                        IReadOnlyDictionary<Guid, IEnumerable<HeldCard>> playerHands) {
             Deck = deck.ToList();
             InformationTokens = informationTokens;
             FuseTokens = fuseTokens;
@@ -26,6 +30,7 @@
         public IReadOnlyList<Guid> PlayerOrder { get; }
 
         public int CurrentPlayerIndex { get; set; }
+        public int TotalTurnsCount { get; set; }
 
     }
 }

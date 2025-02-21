@@ -11,5 +11,6 @@
 
         public IReadOnlyList<SerializedPlayer> Players { get; init; }
 
+        public int TurnIndex { get; init; }
     }
 }
