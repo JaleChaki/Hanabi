@@ -24,7 +24,7 @@ export class HeldCard extends ColoredCard<HeldCardProps> {
     }
 
     protected override getWrapperCssClasses(): Array<string> {
-        let result = [];
+        const result = [];
         if (this.colorIsKnown && !this.isOwn)
             result.push("card-color-known");
 
@@ -32,6 +32,17 @@ export class HeldCard extends ColoredCard<HeldCardProps> {
             result.push("card-number-known");
 
         result.push("color-" + getColorByCode(this.color, this.gameMode))
+        return result;
+    }
+
+    protected override getCardCssClasses(): Array<string> {
+        const result = [];
+        if (this.isOwn && !this.numberIsKnown)
+            result.push("card-unknown-number");
+        if (this.isOwn && !this.colorIsKnown)
+            result.push("card-unknown-color");
+        // if(this.colorIsKnown)
+            result.push("card-" + getColorByCode(this.color, this.gameMode));
         return result;
     }
 
@@ -43,11 +54,5 @@ export class HeldCard extends ColoredCard<HeldCardProps> {
             return "?"
 
         return this.number.toString();
-    }
-
-    protected override getCardCssClasses(): Array<string> {
-        if (this.isOwn && !this.colorIsKnown)
-            return ["card-unknown-color"];
-        return ["card-" + getColorByCode(this.color, this.gameMode)];
     }
 }

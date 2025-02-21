@@ -21,12 +21,12 @@ export class FireworkCard extends ColoredCard {
         return ["color-" + getColorByCode(this.color, this.gameMode)];
     }
 
-    protected override getDisplayText(): string {
-        return this.number.toString();
-    }
-
     protected override getCardCssClasses(): Array<string> {
         return ["card-" + getColorByCode(this.color, this.gameMode)];
+    }
+
+    protected override getDisplayText(): string {
+        return this.number.toString();
     }
 
 }

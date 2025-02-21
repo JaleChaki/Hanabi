@@ -6,10 +6,6 @@ import { IGameState } from '../SerializationInterfaces/IGameState';
 import { IPlayerActions } from './Players/Player';
 
 export const Home = (props: { loginAccessToken: string }) => {
-    const [cardsInDeck, setCardsInDeck] = useState(50);
-    const [fireworks, setFireworks] = useState(new Array<any>());
-    const [informationTokens, setInformationTokens] = useState(8);
-    const [fuseTokens, setFuseTokens] = useState(3);
     const [gameState, setGameState] = useState<IGameState>({} as any);
     const playerActions: IPlayerActions = {
         makeHintByColor(nickname, cardcolor) {
