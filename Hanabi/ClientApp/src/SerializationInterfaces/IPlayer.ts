@@ -3,5 +3,6 @@
 export interface IPlayer {
     nick: string,
     heldCards: Array<ICard>,
-    isCurrentPlayer: boolean
+    isActivePlayer: boolean,
+    isSessionOwner: boolean
 }

@@ -21,7 +21,7 @@ namespace Hanabi.Server.Tests {
         public void MakeHint_Color() {
             GameController.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardColor(1));
 
-            Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
+            Assert.Equal(SecondPlayer, GameModel.ActivePlayer);
             Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => (card.ColorIsKnown && card.Color == CardColor.Red) || (!card.ColorIsKnown && card.Color != CardColor.Red)));
             Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => !card.NumberIsKnown));
         }
@@ -30,7 +30,7 @@ namespace Hanabi.Server.Tests {
         public void MakeHint_Number() {
             GameController.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardNumber(5));
 
-            Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
+            Assert.Equal(SecondPlayer, GameModel.ActivePlayer);
             Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => (card.NumberIsKnown && card.Number == 5) || (!card.NumberIsKnown && card.Number != 5)));
             Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => !card.ColorIsKnown));
         }
@@ -67,7 +67,7 @@ namespace Hanabi.Server.Tests {
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
             Assert.True(Enumerable.SequenceEqual(prevHand.Skip(1), newHand.SkipLast(1)));
-            Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
+            Assert.Equal(SecondPlayer, GameModel.ActivePlayer);
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace Hanabi.Server.Tests {
 
             Assert.Equal(0, GameModel.Fireworks[CardColor.Red]);
             Assert.Equal(prevHand.Skip(1), newHand.SkipLast(1));
-            Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
+            Assert.Equal(SecondPlayer, GameModel.ActivePlayer);
         }
 
         [Fact]
@@ -109,7 +109,7 @@ namespace Hanabi.Server.Tests {
 
             Assert.Equal(1, GameModel.FuseTokens);
             Assert.Equal(prevHand.Except(new [] { prevHand[2] }), newHand.SkipLast(1));
-            Assert.Equal(SecondPlayer, GameModel.CurrentPlayer);
+            Assert.Equal(SecondPlayer, GameModel.ActivePlayer);
         }
 
         [Fact]

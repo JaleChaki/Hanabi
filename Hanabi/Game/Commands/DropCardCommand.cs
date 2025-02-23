@@ -8,7 +8,7 @@
         private int CardIndex { get; }
 
         public override void Apply() {
-            GameModel.PlayerHands[GameModel.CurrentPlayer].RemoveAt(CardIndex);
+            GameModel.PlayerHands[GameModel.ActivePlayer].RemoveAt(CardIndex);
             GameModel.InformationTokens++;
 
             DrawCard();

@@ -11,7 +11,7 @@
             FuseTokens = fuseTokens;
             Fireworks = colors.ToDictionary(c => c, _ => 0);
             PlayerOrder = playerOrder.ToArray();
-            CurrentPlayerIndex = 0;
+            ActivePlayerIndex = 0;
             PlayerHands = playerHands.ToDictionary(kv => kv.Key, kv => kv.Value.ToList());
         }
 
@@ -25,11 +25,11 @@
 
         public Dictionary<Guid, List<HeldCard>> PlayerHands { get; }
 
-        public Guid CurrentPlayer => PlayerOrder[CurrentPlayerIndex];
+        public Guid ActivePlayer => PlayerOrder[ActivePlayerIndex];
 
         public IReadOnlyList<Guid> PlayerOrder { get; }
 
-        public int CurrentPlayerIndex { get; set; }
+        public int ActivePlayerIndex { get; set; }
         public int TotalTurnsCount { get; set; }
 
     }

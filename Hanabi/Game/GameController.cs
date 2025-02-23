@@ -46,13 +46,14 @@ namespace Hanabi.Game {
                     CardsInDeck = _gameModel.Deck.Count,
                     Fireworks = _gameModel.Fireworks.OrderBy(x => x.Key).Select(x => x.Value).ToArray(),
                     Players = _gameModel.PlayerOrder.Select(id => {
-                        var isCurrenPlayer = playerId == id;
+                        var isSessionOwner = playerId == id;
                         return new SerializedPlayer {
-                            IsCurrentPlayer = isCurrenPlayer,
+                            IsActivePlayer = _gameModel.ActivePlayer == playerId,
+                            IsSessionOwner = isSessionOwner,
                             Nick = GetPlayerName(id.ToString().ToUpper()),
                             HeldCards = _gameModel.PlayerHands[id].Select(card => new SerializedCard {
-                                Color = !isCurrenPlayer || card.ColorIsKnown ? (int)card.Color : (int)default(CardColor),
-                                Number = !isCurrenPlayer || card.NumberIsKnown ? card.Number : 0,
+                                Color = !isSessionOwner || card.ColorIsKnown ? (int)card.Color : (int)default(CardColor),
+                                Number = !isSessionOwner || card.NumberIsKnown ? card.Number : 0,
                                 ColorIsKnown = card.ColorIsKnown,
                                 NumberIsKnown = card.NumberIsKnown
                             }).ToArray()
@@ -81,7 +82,7 @@ namespace Hanabi.Game {
                 throw new ArgumentException("specified card color is not presented in game");
 
             lock(_syncRoot) {
-                EnsureCurrentPlayer(currentPlayerId);
+                EnsureActivePlayer(currentPlayerId);
 
                 var command = new MakeHintCommand(_gameModel, targetPlayerId, options);
                 command.Apply();
@@ -92,7 +93,7 @@ namespace Hanabi.Game {
             EnsurePlayerExists(currentPlayerId);
 
             lock(_syncRoot) {
-                EnsureCurrentPlayer(currentPlayerId);
+                EnsureActivePlayer(currentPlayerId);
                 EnsureCardIndex(currentPlayerId, cardIndex);
 
                 var command = new DropCardCommand(_gameModel, cardIndex);
@@ -104,7 +105,7 @@ namespace Hanabi.Game {
             EnsurePlayerExists(currentPlayerId);
 
             lock(_syncRoot) {
-                EnsureCurrentPlayer(currentPlayerId);
+                EnsureActivePlayer(currentPlayerId);
                 EnsureCardIndex(currentPlayerId, cardIndex);
 
                 var command = new PlayCardCommand(_gameModel, cardIndex);
@@ -118,9 +119,9 @@ namespace Hanabi.Game {
                 throw new ArgumentException("Invalid player id", nameof(playerId));
         }
 
-        private void EnsureCurrentPlayer(Guid playerId) {
-            if(playerId != _gameModel.CurrentPlayer)
-                throw new ArgumentException("Invalid current player", nameof(playerId));
+        private void EnsureActivePlayer(Guid playerId) {
+            if(playerId != _gameModel.ActivePlayer)
+                throw new ArgumentException("Invalid active player", nameof(playerId));
         }
 
         private void EnsureCardIndex(Guid playerId, int cardIndex) {
