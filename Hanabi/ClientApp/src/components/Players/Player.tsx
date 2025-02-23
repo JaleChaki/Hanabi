@@ -21,6 +21,7 @@ export interface IPlayerActions {
 }
 
 export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isCurrentPlayer }, actions, turnKey }) => {
+    const emptyFunction = () => {};
     const [cardFilter, setCardFilter] = useState<CardFilterCriteria>(new CardFilterCriteria());
 
     const getCardWrapperCssClass = (card: ICard): string => cardFilter.testCard(card) ? "preselected" : "";
@@ -28,6 +29,8 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isCurrentPlay
     const preselectionClickHandler = (isEqual: boolean, isColor: boolean, card: ICard) => {
         setCardFilter(new CardFilterCriteria(isEqual, isColor ? card.color : undefined, !isColor ? card.number : undefined));
     }
+
+    const actionNotForCurrentPlayer = (action: Function): any => isCurrentPlayer ? emptyFunction : action;
 
     return (
         <div className={`player ${isCurrentPlayer ? "current-player" : ""}`}>
@@ -42,9 +45,9 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isCurrentPlay
                         wrapperCssClass={getCardWrapperCssClass(card)}
                         className={`card-${i}`}
                         key={`Player${nick}Turn${turnKey}Card${i}`}
-                        numberClickHandler={() => actions.makeHintByNumber(nick, card.number)}
-                        colorClickHandler={() => actions.makeHintByColor(nick, card.color)}
-                        preselectionClickHandler={preselectionClickHandler}>
+                        numberClickHandler={actionNotForCurrentPlayer(() => actions.makeHintByNumber(nick, card.number))}
+                        colorClickHandler={actionNotForCurrentPlayer(() => actions.makeHintByColor(nick, card.color))}
+                        preselectionClickHandler={actionNotForCurrentPlayer(preselectionClickHandler)}>
                     </HeldCard>
                 )}
             </div>
