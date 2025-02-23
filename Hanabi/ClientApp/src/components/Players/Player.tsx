@@ -83,11 +83,11 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlaye
     }
 
     return (
-        <div className={`player ${isActivePlayer ? "current-player" : ""}`}>
+        <div className={`player ${isActivePlayer && isSessionOwner ? "current-player" : ""}`}>
             <div className="player-header">
                 <p><strong>Nick: </strong>{nick}</p>
                 {
-                    isActivePlayer ?
+                    isActivePlayer && isSessionOwner ?
                     <div className="actions">
                         <button onClick={() => setCurrentPlayerMode(CurrentPlayerMode.Hint)}>Hint</button>
                         <button onClick={() => setCurrentPlayerMode(CurrentPlayerMode.Play)}>Play</button>
