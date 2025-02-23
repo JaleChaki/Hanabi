@@ -1,8 +1,11 @@
-﻿import React, { FC, useState } from "react";
+﻿import React, { FC, useCallback, useEffect, useState } from "react";
 import { IPlayer } from "../../SerializationInterfaces/IPlayer";
+import { ICard } from "../../SerializationInterfaces/ICard";
 import { HeldCard } from "../Card/HeldCard";
 
 import "./Player.scss"
+import { CardProps } from "reactstrap";
+import CardFilterCriteria from "../Card/Utils/CardFilterCriteria";
 
 type PlayerProps = {
     info: IPlayer,
@@ -18,6 +21,14 @@ export interface IPlayerActions {
 }
 
 export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isCurrentPlayer }, actions, turnKey }) => {
+    const [cardFilter, setCardFilter] = useState<CardFilterCriteria>(new CardFilterCriteria());
+
+    const getCardWrapperCssClass = (card: ICard): string => cardFilter.testCard(card) ? "preselected" : "";
+
+    const preselectionClickHandler = (isEqual: boolean, isColor: boolean, card: ICard) => {
+        setCardFilter(new CardFilterCriteria(isEqual, isColor ? card.color : undefined, !isColor ? card.number : undefined));
+    }
+
     return (
         <div className="player">
             <p><strong>Nick: </strong>{nick}</p>
@@ -28,10 +39,12 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isCurrentPlay
                         number={card.number}
                         numberIsKnown={card.numberIsKnown}
                         isOwn={isCurrentPlayer}
+                        wrapperCssClass={getCardWrapperCssClass(card)}
                         className={`card-${i}`}
                         key={`Player${nick}Turn${turnKey}Card${i}`}
                         numberClickHandler={() => actions.makeHintByNumber(nick, card.number)}
-                        colorClickHandler={() => actions.makeHintByColor(nick, card.color)}>
+                        colorClickHandler={() => actions.makeHintByColor(nick, card.color)}
+                        preselectionClickHandler={preselectionClickHandler}>
                     </HeldCard>
                 )}
             </div>
