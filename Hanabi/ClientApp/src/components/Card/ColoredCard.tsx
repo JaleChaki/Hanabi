@@ -3,14 +3,19 @@ import { ICard } from "../../SerializationInterfaces/ICard";
 import "./Card.scss"
 import "../../Colors.scss"
 
+export enum CardClickedZone {
+    Color,
+    // NegateColor // TODO
+    Number,
+    // NeagteNumber, // TODO
+}
+
 export interface CardProps {
     color: number,
     number: number,
     gameMode?: string,
     wrapperCssClass?: string
-    numberClickHandler?: MouseEventHandler<HTMLElement>,
-    colorClickHandler?: MouseEventHandler<HTMLElement>,
-    preselectionClickHandler?: (isEqual: boolean, isColor: boolean, card: ICard) => void
+    clickHandler?: (zone: CardClickedZone) => void
 }
 
 export abstract class ColoredCard<P extends CardProps = CardProps> extends Component<P> {
@@ -18,16 +23,12 @@ export abstract class ColoredCard<P extends CardProps = CardProps> extends Compo
     protected color: number;
     protected number: number;
     protected gameMode: string;
-    protected numberClickHandler?: MouseEventHandler<HTMLElement>;
-    protected colorClickHandler?: MouseEventHandler<HTMLElement>;
 
     protected constructor(props: P) {
         super(props);
         this.color = props.color;
         this.number = props.number;
         this.gameMode = props.gameMode || "";
-        this.numberClickHandler = props.numberClickHandler;
-        this.colorClickHandler = props.colorClickHandler;
     }
 
     render() {
@@ -36,10 +37,10 @@ export abstract class ColoredCard<P extends CardProps = CardProps> extends Compo
         return (
             <div className={wrapperCssClasses}>
                 <div className={cardCssClasses}>
-                    <div className="card-number" onClick={() => this.props.preselectionClickHandler?.(true, false, this as unknown as ICard)}>
+                    <div className="card-number" onClick={() => this.props.clickHandler?.(CardClickedZone.Number)}>
                         <p>{this.getDisplayText()}</p>
                     </div>
-                    <div className="card-color" onClick={() => this.props.preselectionClickHandler?.(true, true, this as unknown as ICard)}></div>
+                    <div className="card-color" onClick={() => this.props.clickHandler?.(CardClickedZone.Color)}></div>
                 </div>
             </div>
         );
