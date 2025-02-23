@@ -4,6 +4,10 @@
   border: 1px solid;
   flex: 0 1 auto;
 
+  &.current-player {
+    background-color: beige;
+  }
+
   .cards-wrapper {
     display: flex;
     flex-flow: row nowrap;

@@ -30,7 +30,7 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isCurrentPlay
     }
 
     return (
-        <div className="player">
+        <div className={`player ${isCurrentPlayer ? "current-player" : ""}`}>
             <p><strong>Nick: </strong>{nick}</p>
             <div className="cards-wrapper">
                 {heldCards.map((card, i) =>
