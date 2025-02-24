@@ -20,8 +20,8 @@ type PlayerProps = {
 export interface IPlayerActions {
     makeHintByColor: (nickname: string, cardcolor: number) => void,
     makeHintByNumber: (nickname: string, cardNumber: number) => void,
-    dropCard: Function,
-    playCard: Function
+    dropCard: (cardIndex: number) => void,
+    playCard: (cardIndex: number) => void
 }
 
 export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlayer, isSessionOwner }, actions, turnKey, activePlayerMode, onActivePlayerModeChanged: activePlayerModeChanged }) => {

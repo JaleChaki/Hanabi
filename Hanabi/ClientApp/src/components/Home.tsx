@@ -14,8 +14,12 @@ export const Home = (props: { loginAccessToken: string }) => {
         makeHintByNumber(nickname, cardNumber) {
             connection.current.invoke("MakeNumberHint", nickname, cardNumber);
         },
-        dropCard() { },
-        playCard() { }
+        playCard(cardIndex) {
+            connection.current.invoke("PlayCard", cardIndex);
+        },
+        dropCard(cardIndex) {
+            connection.current.invoke("DropCard", cardIndex);
+        },
     }
     const { loginAccessToken } = props;
     const connection: React.MutableRefObject<HubConnection> = useRef({} as any);

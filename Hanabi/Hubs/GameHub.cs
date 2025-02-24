@@ -62,16 +62,16 @@ namespace Hanabi.Hubs {
             await Clients.All.SendAsync("RequestUpdate");
         }
 
-        public Task DropCard(int cardIndex) {
+        public async Task DropCard(int cardIndex) {
             var userId = GetPlayerGuid(Context.User.Identity.Name);
             GameService.GetController(userId).DropCard(userId, cardIndex);
-            return Task.CompletedTask;
+            await Clients.All.SendAsync("RequestUpdate");
         }
 
-        public Task PlayCard(int cardIndex) {
+        public async Task PlayCard(int cardIndex) {
             var userId = GetPlayerGuid(Context.User.Identity.Name);
             GameService.GetController(userId).PlayCard(userId, cardIndex);
-            return Task.CompletedTask;
+            await Clients.All.SendAsync("RequestUpdate");
         }
 
         private Guid GetPlayerGuid(string nickname) => nickname switch { // TODO
