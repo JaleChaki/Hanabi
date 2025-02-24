@@ -76,7 +76,7 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlaye
             `color ${card.colorIsKnown ? getColorByCode(card.color) : "unknown"} and ` +
             `number ${card.numberIsKnown ? card.number : "unknown"}?`);
         if(result)
-            actions.playCard(heldCards.indexOf(card));
+            actions.dropCard(heldCards.indexOf(card));
     }
 
     return (
