@@ -7,17 +7,14 @@ import CardFilterCriteria from "../Card/Utils/CardFilterCriteria";
 import { getColorByCode } from "../Card/ColorUtils";
 
 import "./Player.scss"
-
-enum CurrentPlayerMode {
-    Hint,
-    Play,
-    Drop
-}
+import { ActivePlayerMode } from "./Players";
 
 type PlayerProps = {
     info: IPlayer,
     actions: IPlayerActions,
-    turnKey: number
+    turnKey: number,
+    activePlayerMode: ActivePlayerMode,
+    onActivePlayerModeChanged: (mode: ActivePlayerMode) => void
 }
 
 export interface IPlayerActions {
@@ -27,23 +24,23 @@ export interface IPlayerActions {
     playCard: Function
 }
 
-export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlayer, isSessionOwner }, actions, turnKey }) => {
+export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlayer, isSessionOwner }, actions, turnKey, activePlayerMode, onActivePlayerModeChanged: activePlayerModeChanged }) => {
     const [cardFilter, setCardFilter] = useState<CardFilterCriteria>(new CardFilterCriteria());
-    const [currentPlayerMode, setCurrentPlayerMode] = useState<CurrentPlayerMode>(CurrentPlayerMode.Hint);
+    
 
     const getCardWrapperCssClass = (card: ICard): string => cardFilter.testCard(card) ? "preselected" : "";
 
     const cardClickedHandler = (card: ICard, cardZone: CardClickedZone): void => {
-        switch (currentPlayerMode) {
-            case CurrentPlayerMode.Hint:
+        switch (activePlayerMode) {
+            case ActivePlayerMode.Hint:
                 if (!isSessionOwner)
                     makeHint(card, cardZone);
                 break;
-            case CurrentPlayerMode.Play:
+            case ActivePlayerMode.Play:
                 if (isSessionOwner)
                     playCard(card);
                 break;
-            case CurrentPlayerMode.Drop:
+            case ActivePlayerMode.Drop:
                 if (isSessionOwner)
                     dropCard(card);
                 break;
@@ -71,7 +68,7 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlaye
             `color ${card.colorIsKnown ? getColorByCode(card.color) : "unknown"} and ` +
             `number ${card.numberIsKnown ? card.number : "unknown"}?`);
         if(result)
-            actions.playCard(card);
+            actions.playCard(heldCards.indexOf(card));
     }
 
     const dropCard = (card: ICard) => {
@@ -79,7 +76,7 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlaye
             `color ${card.colorIsKnown ? getColorByCode(card.color) : "unknown"} and ` +
             `number ${card.numberIsKnown ? card.number : "unknown"}?`);
         if(result)
-            actions.playCard(card);
+            actions.playCard(heldCards.indexOf(card));
     }
 
     return (
@@ -89,9 +86,9 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlaye
                 {
                     isActivePlayer && isSessionOwner ?
                     <div className="actions">
-                        <button onClick={() => setCurrentPlayerMode(CurrentPlayerMode.Hint)}>Hint</button>
-                        <button onClick={() => setCurrentPlayerMode(CurrentPlayerMode.Play)}>Play</button>
-                        <button onClick={() => setCurrentPlayerMode(CurrentPlayerMode.Drop)}>Drop</button>
+                        <button onClick={() => activePlayerModeChanged(ActivePlayerMode.Hint)}>Hint</button>
+                        <button onClick={() => activePlayerModeChanged(ActivePlayerMode.Play)}>Play</button>
+                        <button onClick={() => activePlayerModeChanged(ActivePlayerMode.Drop)}>Drop</button>
                     </div>
                     : null
                 }
