@@ -1,0 +1,14 @@
+@import "../Card/Card.scss";
+$card-vertical-offset: $card-height * 2 / 3;
+
+.fireworks {
+    display: flex;
+    flex-flow: row wrap;
+
+    &>.firework {
+
+        .card-wrapper + .card-wrapper {
+            margin-top: -$card-vertical-offset;
+          }
+    }
+}

@@ -5,9 +5,9 @@ import { HeldCard } from "../Card/HeldCard";
 import { CardClickedZone } from "../Card/ColoredCard";
 import CardFilterCriteria from "../Card/Utils/CardFilterCriteria";
 import { getColorByCode } from "../Card/ColorUtils";
+import { ActivePlayerMode } from "./Players";
 
 import "./Player.scss"
-import { ActivePlayerMode } from "./Players";
 
 type PlayerProps = {
     info: IPlayer,

@@ -9,12 +9,7 @@ export type FireworkCardProps = {
 export class FireworkCard extends ColoredCard {
 
     constructor(props: FireworkCardProps) {
-        let superProps: CardProps = {
-            color: props.color,
-            gameMode: "default", // TODO
-            number: props.number
-        }
-        super(superProps);
+        super(props);
     }
 
     protected override getWrapperCssClasses() : Array<string> {

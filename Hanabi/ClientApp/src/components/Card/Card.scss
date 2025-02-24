@@ -1,6 +1,5 @@
 ﻿$card-height: 8rem;
 $card-width: $card-height / 1.5;
-$card-offset: $card-width / 2;
 
 .card-wrapper {
 	width: fit-content;
@@ -15,13 +14,10 @@ $card-offset: $card-width / 2;
 		margin-top: -1rem;
 	}
 
-	&+.card-wrapper {
-		margin-left: -$card-offset;
-	}
-
 	&>.card {
 		display: flex;
 		flex-direction: column;
+		border-color: #eee;
 		border-radius: 1rem;
 		width: $card-width;
 		height: $card-height;

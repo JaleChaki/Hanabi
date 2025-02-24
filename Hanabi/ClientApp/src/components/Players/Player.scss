@@ -1,4 +1,7 @@
-﻿.player {
+﻿@import "../Card/Card.scss";
+$card-offset: $card-width / 2;
+
+.player {
   width: 32%;
   height: 50%;
   border: 1px solid;
@@ -22,5 +25,11 @@
     height: 83%;
     align-items: center;
     justify-content: center;
+
+    
+
+    .card-wrapper + .card-wrapper {
+      margin-left: -$card-offset;
+    }
   }
 }

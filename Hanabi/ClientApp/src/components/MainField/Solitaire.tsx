@@ -1,13 +1,22 @@
-﻿import React from "react";
+﻿import React, { FC } from "react";
+import { FireworkCard } from "../Card/FireworkCard";
 
-export const Solitaire = () => {
+import "./Solitare.scss"
+
+interface SolitareProps {
+    fireworks: Array<number>
+}
+
+export const Solitaire: FC<SolitareProps> = ({ fireworks }) => {
     return (
         <div className="fireworks">
-            <div className="firework">firework set 1</div>
-            <div className="firework">firework set 2</div>
-            <div className="firework">firework set 3</div>
-            <div className="firework">firework set 4</div>
-            <div className="firework">firework set 5</div>
+            {fireworks.map((cardsPlayed, colorIndex) =>
+                <div className="firework" key={colorIndex}>
+                    {[...Array(cardsPlayed).keys()].map(cardNumber =>
+                        <FireworkCard color={colorIndex + 1} number={cardNumber + 1} key={`color_${colorIndex}+number_${cardNumber}`}/>
+                    )}
+                </div>
+            )}
         </div>
     )
 }
