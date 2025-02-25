@@ -74,6 +74,9 @@ namespace Hanabi.Game {
 
         #region PlayerActions
         public void MakeHint(Guid currentPlayerId, Guid targetPlayerId, HintOptions options) {
+            if(_gameModel.InformationTokens < 1) {
+                throw new ArgumentOutOfRangeException("You cannot give hints when there's no information tokens left");
+            }
             EnsurePlayerExists(targetPlayerId);
             EnsurePlayerExists(currentPlayerId);
             if(currentPlayerId == targetPlayerId)
@@ -90,6 +93,9 @@ namespace Hanabi.Game {
         }
 
         public void DropCard(Guid currentPlayerId, int cardIndex) {
+            if(_gameModel.InformationTokens == 8) {
+                throw new ArgumentOutOfRangeException("You cannot drop cards when there's all 8 information tokens available");
+            }
             EnsurePlayerExists(currentPlayerId);
 
             lock(_syncRoot) {
