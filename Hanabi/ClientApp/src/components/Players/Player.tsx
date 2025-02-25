@@ -83,12 +83,13 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlaye
         <div className={`player ${isActivePlayer && isSessionOwner ? "current-player" : ""}`}>
             <div className="player-header">
                 <p><strong>Nick: </strong>{nick}</p>
-                {
-                    isActivePlayer && isSessionOwner ?
+                {isActivePlayer && isSessionOwner ?
                     <div className="actions">
-                        <button onClick={() => onActivePlayerModeChanged(ActivePlayerMode.Hint)}>Hint</button>
-                        <button onClick={() => onActivePlayerModeChanged(ActivePlayerMode.Play)}>Play</button>
-                        <button onClick={() => onActivePlayerModeChanged(ActivePlayerMode.Drop)}>Drop</button>
+                        {Object.keys(ActivePlayerMode).filter(key => !isNaN(Number(ActivePlayerMode[key as keyof typeof ActivePlayerMode]))).map(mode =>
+                            <button className={activePlayerMode === ActivePlayerMode[(mode as keyof typeof ActivePlayerMode)] ? "selected-action" : ""} 
+                                    onClick={() => onActivePlayerModeChanged(ActivePlayerMode[mode as keyof typeof ActivePlayerMode])}
+                                    key={mode}>{mode}</button>
+                        )}
                     </div>
                     : null
                 }
