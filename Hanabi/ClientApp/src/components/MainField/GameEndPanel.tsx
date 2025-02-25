@@ -14,7 +14,7 @@ export const GameEndPanel: FC<GameEndPanelProps> = ({ status, totalScore }) => {
                 : null
             }
             {status === GameStatus.Victory
-                ? <h3>You final score is {totalScore}. Try harde next time, and maybe you'll do it even better :)</h3>
+                ? <h3>You final score is {totalScore}. Try harder next time, and maybe you'll do it even better :)</h3>
                 : null
             }
             <h4>Good luck!</h4>
