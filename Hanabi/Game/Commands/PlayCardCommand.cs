@@ -14,6 +14,8 @@
 
             if(GameModel.Fireworks[card.Color] + 1 == card.Number) {
                 GameModel.Fireworks[card.Color]++;
+                if(card.Number == 5 && GameModel.InformationTokens < 8)
+                    GameModel.InformationTokens++;
             } else {
                 GameModel.FuseTokens++;
             }
