@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { GameStatus } from "../../SerializationTypes/GameStatus";
 
-type GameEndPanelProps {
+type GameEndPanelProps = {
     status: GameStatus
     totalScore: number
 }
