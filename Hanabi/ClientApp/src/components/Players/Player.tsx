@@ -24,7 +24,7 @@ export interface IPlayerActions {
     playCard: (cardIndex: number) => void
 }
 
-export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlayer, isSessionOwner }, actions, turnKey, activePlayerMode, onActivePlayerModeChanged: activePlayerModeChanged }) => {
+export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlayer, isSessionOwner }, actions, turnKey, activePlayerMode, onActivePlayerModeChanged }) => {
     const [cardFilter, setCardFilter] = useState<CardFilterCriteria>(new CardFilterCriteria());
     
 
@@ -86,9 +86,9 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlaye
                 {
                     isActivePlayer && isSessionOwner ?
                     <div className="actions">
-                        <button onClick={() => activePlayerModeChanged(ActivePlayerMode.Hint)}>Hint</button>
-                        <button onClick={() => activePlayerModeChanged(ActivePlayerMode.Play)}>Play</button>
-                        <button onClick={() => activePlayerModeChanged(ActivePlayerMode.Drop)}>Drop</button>
+                        <button onClick={() => onActivePlayerModeChanged(ActivePlayerMode.Hint)}>Hint</button>
+                        <button onClick={() => onActivePlayerModeChanged(ActivePlayerMode.Play)}>Play</button>
+                        <button onClick={() => onActivePlayerModeChanged(ActivePlayerMode.Drop)}>Drop</button>
                     </div>
                     : null
                 }
