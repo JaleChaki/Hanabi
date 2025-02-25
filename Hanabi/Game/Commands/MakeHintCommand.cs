@@ -12,6 +12,7 @@ namespace Hanabi.Game.Commands {
         private HintOptions Options { get; }
 
         public override void Apply() {
+            base.Apply();
             GameModel.InformationTokens--;
             foreach(var card in GameModel.PlayerHands[TargetPlayerId]) {
                 if(Options.CardColor == card.Color) {

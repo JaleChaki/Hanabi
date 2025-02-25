@@ -59,7 +59,8 @@ namespace Hanabi.Game {
                             }).ToArray()
                         };
                     }).ToArray(),
-                    TurnIndex = _gameModel.TotalTurnsCount
+                    TurnIndex = _gameModel.TotalTurnsCount,
+                    GameStatus = _gameModel.GameStatus
                 };
             }
             return result;

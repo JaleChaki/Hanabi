@@ -1,4 +1,6 @@
-﻿namespace Hanabi.Game {
+﻿using Hanabi.Models;
+
+namespace Hanabi.Game {
     public class GameModel {
         public GameModel(IEnumerable<Card> deck,
                         int informationTokens,
@@ -16,21 +18,15 @@
         }
 
         public List<Card> Deck { get; }
-
         public int InformationTokens { get; set; }
-
         public int FuseTokens { get; set; }
-
         public Dictionary<CardColor, int> Fireworks { get; }
-
         public Dictionary<Guid, List<HeldCard>> PlayerHands { get; }
-
         public Guid ActivePlayer => PlayerOrder[ActivePlayerIndex];
-
         public IReadOnlyList<Guid> PlayerOrder { get; }
-
         public int ActivePlayerIndex { get; set; }
         public int TotalTurnsCount { get; set; }
-
+        public GameStatus GameStatus { get; set; }
+        public int LastThreeTurns { get; set; } = -1;
     }
 }

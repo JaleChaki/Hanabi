@@ -1,4 +1,7 @@
-﻿namespace Hanabi.Game.Commands {
+﻿using System.ComponentModel;
+using Hanabi.Models;
+
+namespace Hanabi.Game.Commands {
     public abstract class Command {
 
         protected Command(GameModel gameModel) {
@@ -7,7 +10,10 @@
 
         protected GameModel GameModel { get; }
 
-        public abstract void Apply();
+        public virtual void Apply() {
+            if(GameModel.GameStatus != Models.GameStatus.InProgress)
+                throw new InvalidAsynchronousStateException("You cannot continue already finished game");
+        }
 
         protected void EndTurn() {
             GameModel.ActivePlayerIndex = (GameModel.ActivePlayerIndex + 1) % GameModel.PlayerOrder.Count;
@@ -22,10 +28,14 @@
                 GameModel.PlayerHands[GameModel.ActivePlayer].Add(new HeldCard(newCard.Number, newCard.Color, false, false));
 
                 if(GameModel.Deck.Count == 0) {
-                    // TODO
+                    GameModel.LastThreeTurns = 3;
                 }
 
+            } else {
+                GameModel.LastThreeTurns--;
             }
+            if(GameModel.LastThreeTurns == 0)
+                GameModel.GameStatus = GameStatus.Victory;
         }
 
     }
