@@ -7,7 +7,7 @@ import CardFilterCriteria from "../Card/Utils/CardFilterCriteria";
 import { getColorByCode } from "../Card/ColorUtils";
 import { ActivePlayerMode } from "./Players";
 
-import "./Player.scss"
+import "./Player.scss";
 
 type PlayerProps = {
     info: IPlayer,

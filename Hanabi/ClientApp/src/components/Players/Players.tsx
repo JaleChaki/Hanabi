@@ -2,7 +2,7 @@
 import { IPlayer } from "../../SerializationTypes/IPlayer";
 import { IPlayerActions, Player } from "./Player";
 
-import "./Players.scss"
+import "./Players.scss";
 
 export enum ActivePlayerMode {
     Hint,

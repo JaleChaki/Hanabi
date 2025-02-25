@@ -1,13 +1,15 @@
 import React, { FC } from "react";
 import { GameStatus } from "../../SerializationTypes/GameStatus";
 
+import "./GameEndPanel.scss";
+
 type GameEndPanelProps = {
     status: GameStatus
     totalScore: number
 }
 export const GameEndPanel: FC<GameEndPanelProps> = ({ status, totalScore }) => {
     return(
-        <div className="game-end-panel">
+        <div className={`game-end-panel ${status === GameStatus.Failure ? "failure" : "victory"}`}>
             <h1>You {status === GameStatus.FlawlessVictory ? "dramatically" : ""} {status === GameStatus.Failure ? "failed!" : "won the game!"}</h1>
             {status !== GameStatus.Failure 
                 ? <h2>Congratulations on {status === GameStatus.FlawlessVictory ? "such a tremendous" : ""} success!</h2>

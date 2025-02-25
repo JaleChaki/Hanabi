@@ -1,0 +1,19 @@
+.game-end-panel {
+    background-color: aliceblue;
+    width: 95%;
+    height: 95%;
+    margin: auto;
+    border-radius: 2rem;
+    text-align: center;
+    align-content: center;
+    border-width: 3rem;
+    border-style: dotted;
+
+    &.victory {
+        border-color: chartreuse;
+    }
+
+    &.failure {
+        border-color: crimson;
+    }
+}
