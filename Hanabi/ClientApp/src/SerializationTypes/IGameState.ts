@@ -1,4 +1,5 @@
-﻿import { IPlayer } from "./IPlayer";
+﻿import { GameStatus } from "./GameStatus";
+import { IPlayer } from "./IPlayer";
 
 export interface IGameState {
     cardsInDeck: number,
@@ -6,5 +7,6 @@ export interface IGameState {
     informationTokens: number,
     fuseTokens: number,
     players: Array<IPlayer>,
-    turnIndex: number
+    turnIndex: number,
+    gameStatus: GameStatus
 }

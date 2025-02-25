@@ -1,5 +1,5 @@
 ﻿import React, {Component, MouseEventHandler, PropsWithChildren} from "react";
-import { ICard } from "../../SerializationInterfaces/ICard";
+import { ICard } from "../../SerializationTypes/ICard";
 import "./Card.scss"
 import "../../Colors.scss"
 

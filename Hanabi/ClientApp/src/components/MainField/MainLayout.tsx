@@ -4,9 +4,9 @@ import { Players } from "../Players/Players";
 import { Solitaire } from "./Solitaire";
 import { TokenStorage } from "../Tokens/TokenStorage";
 import { TokenType } from "../Tokens/Token";
-import { IPlayer } from "../../SerializationInterfaces/IPlayer";
+import { IPlayer } from "../../SerializationTypes/IPlayer";
 import { IPlayerActions } from "../Players/Player";
-import { IGameState } from "../../SerializationInterfaces/IGameState";
+import { IGameState } from "../../SerializationTypes/IGameState";
 
 import "./MainLayout.scss"
 

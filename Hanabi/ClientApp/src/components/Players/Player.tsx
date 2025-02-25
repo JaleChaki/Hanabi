@@ -1,6 +1,6 @@
 ﻿import React, { FC, useCallback, useEffect, useState } from "react";
-import { IPlayer } from "../../SerializationInterfaces/IPlayer";
-import { ICard } from "../../SerializationInterfaces/ICard";
+import { IPlayer } from "../../SerializationTypes/IPlayer";
+import { ICard } from "../../SerializationTypes/ICard";
 import { HeldCard } from "../Card/HeldCard";
 import { CardClickedZone } from "../Card/ColoredCard";
 import CardFilterCriteria from "../Card/Utils/CardFilterCriteria";

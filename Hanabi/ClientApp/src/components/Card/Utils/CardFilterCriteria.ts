@@ -1,4 +1,4 @@
-import { ICard } from "../../../SerializationInterfaces/ICard";
+import { ICard } from "../../../SerializationTypes/ICard";
 
 export default class CardFilterCriteria {
     public isEqual: boolean; 

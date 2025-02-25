@@ -1,5 +1,5 @@
 ﻿import React, { useState } from "react";
-import { IPlayer } from "../../SerializationInterfaces/IPlayer";
+import { IPlayer } from "../../SerializationTypes/IPlayer";
 import { IPlayerActions, Player } from "./Player";
 
 import "./Players.scss"

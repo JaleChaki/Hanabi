@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from 'react';
 import * as signalR from "@microsoft/signalr";
 import { MainLayout } from "./MainField/MainLayout";
 import { HubConnection } from "@microsoft/signalr";
-import { IGameState } from '../SerializationInterfaces/IGameState';
+import { IGameState } from '../SerializationTypes/IGameState';
 import { IPlayerActions } from './Players/Player';
 
 export const Home = (props: { loginAccessToken: string }) => {
