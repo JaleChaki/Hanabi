@@ -44,34 +44,34 @@ namespace Hanabi.Hubs {
             await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
         }
 
-        public async Task SendGameStateUpdate(Guid playerId) {
-            await Clients.AllExcept(playerId.ToString()).SendAsync("SetGameState", new{});
+        public async Task ScheduleGameStateUpdate() {
+            await Clients.All.SendAsync("RequestUpdate");
         }
 
         public async Task MakeColorHint(string targetPlayerNickname, int color) {
             var userId = GetPlayerGuid(Context.User.Identity.Name);
             var targetPlayerId = GetPlayerGuid(targetPlayerNickname);
             GameService.GetController(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardColor(color));
-            await Clients.All.SendAsync("RequestUpdate");
+            await ScheduleGameStateUpdate();
         }
 
         public async Task MakeNumberHint(string targetPlayerNickname, int number) {
             var userId = GetPlayerGuid(Context.User.Identity.Name);
             var targetPlayerId = GetPlayerGuid(targetPlayerNickname);
             GameService.GetController(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardNumber(number));
-            await Clients.All.SendAsync("RequestUpdate");
+            await ScheduleGameStateUpdate();
         }
 
         public async Task DropCard(int cardIndex) {
             var userId = GetPlayerGuid(Context.User.Identity.Name);
             GameService.GetController(userId).DropCard(userId, cardIndex);
-            await Clients.All.SendAsync("RequestUpdate");
+            await ScheduleGameStateUpdate();
         }
 
         public async Task PlayCard(int cardIndex) {
             var userId = GetPlayerGuid(Context.User.Identity.Name);
             GameService.GetController(userId).PlayCard(userId, cardIndex);
-            await Clients.All.SendAsync("RequestUpdate");
+            await ScheduleGameStateUpdate();
         }
 
         private Guid GetPlayerGuid(string nickname) => nickname switch { // TODO
