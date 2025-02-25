@@ -11,12 +11,13 @@ import { IGameState } from "../../SerializationTypes/IGameState";
 import "./MainLayout.scss"
 import { GameStatus } from "../../SerializationTypes/GameStatus";
 import { GameEndPanel } from "./GameEndPanel";
+import { HeldCard } from "../Card/HeldCard";
 
 type MainLayoutProps = {
     gameState: IGameState,
     playerActions: IPlayerActions
 }
-export const MainLayout: FC<MainLayoutProps> = ({ gameState: { turnIndex, players, informationTokens, fuseTokens, fireworks, gameStatus }, playerActions }) => {
+export const MainLayout: FC<MainLayoutProps> = ({ gameState: { turnIndex, players, informationTokens, fuseTokens, fireworks, gameStatus, cardsInDeck }, playerActions }) => {
 
     return (
         <div className="main-field">
@@ -25,7 +26,12 @@ export const MainLayout: FC<MainLayoutProps> = ({ gameState: { turnIndex, player
                 ? <div className="main-wrapper">
                     <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
                     <div className="main-footer">
-                        <div className="card-deck"></div>
+                        <div className="card-deck">
+                            <p><strong>Deck:</strong></p>
+                            {[...Array(cardsInDeck > 5 ? 5 : cardsInDeck).keys()].map(cardIndex =>
+                                <HeldCard color={0} colorIsKnown={false} number={0} numberIsKnown={false} isOwn={true} key={cardIndex} />
+                            )}
+                        </div>
                         <Solitaire fireworks={fireworks}></Solitaire>
                         <div className="token-storages">
                             <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
