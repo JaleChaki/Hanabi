@@ -4,11 +4,11 @@ using Hanabi.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Hanabi.Game {
-    public class GameController {
+    public class GameSessionManager {
         private readonly object _syncRoot = new object();
         private GameModel _gameModel;
 
-		public GameController(GameModel gameModel) {
+		public GameSessionManager(GameModel gameModel) {
             _gameModel = gameModel;
             Players = new();
         }

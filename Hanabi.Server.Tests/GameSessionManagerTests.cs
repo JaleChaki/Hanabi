@@ -3,23 +3,23 @@ using Hanabi.Models;
 using Xunit;
 
 namespace Hanabi.Server.Tests {
-    public class GameControllerTests {
+    public class GameSessionManagerTests {
 
-        public GameControllerTests() {
+        public GameSessionManagerTests() {
             GameModel = GameModelBuilder.CreateNew(1337);
             FirstPlayer = GameModel.PlayerOrder[0];
             SecondPlayer = GameModel.PlayerOrder[1];
-            GameController = new GameController(GameModel);
+            GameSessionManager = new GameSessionManager(GameModel);
         }
 
         private GameModel GameModel { get; }
-        private GameController GameController { get; }
+        private GameSessionManager GameSessionManager { get; }
         private Guid FirstPlayer { get; }
         private Guid SecondPlayer { get; }
 
         [Fact]
         public void MakeHint_Color() {
-            GameController.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardColor(1));
+            GameSessionManager.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardColor(1));
 
             Assert.Equal(SecondPlayer, GameModel.ActivePlayer);
             Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => (card.ColorIsKnown && card.Color == CardColor.Red) || (!card.ColorIsKnown && card.Color != CardColor.Red)));
@@ -28,7 +28,7 @@ namespace Hanabi.Server.Tests {
 
         [Fact]
         public void MakeHint_Number() {
-            GameController.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardNumber(5));
+            GameSessionManager.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardNumber(5));
 
             Assert.Equal(SecondPlayer, GameModel.ActivePlayer);
             Assert.True(GameModel.PlayerHands[SecondPlayer].All(card => (card.NumberIsKnown && card.Number == 5) || (!card.NumberIsKnown && card.Number != 5)));
@@ -38,7 +38,7 @@ namespace Hanabi.Server.Tests {
         [Fact]
         public void MakeHint_Oneself() {
             AssertThrowsArgumentException(delegate {
-                GameController.MakeHint(FirstPlayer, FirstPlayer, HintOptions.FromCardColor(0));
+                GameSessionManager.MakeHint(FirstPlayer, FirstPlayer, HintOptions.FromCardColor(0));
             });
         }
 
@@ -47,14 +47,14 @@ namespace Hanabi.Server.Tests {
         [InlineData(6)]
         public void MakeHint_WrongCardColor(int color) {
             AssertThrowsArgumentException(delegate {
-                GameController.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardColor(color));
+                GameSessionManager.MakeHint(FirstPlayer, SecondPlayer, HintOptions.FromCardColor(color));
             });
         }
 
         [Fact]
         public void MakeHint_WrongCurrentPlayer() {
             AssertThrowsArgumentException(delegate {
-                GameController.MakeHint(SecondPlayer, FirstPlayer, HintOptions.FromCardColor(4));
+                GameSessionManager.MakeHint(SecondPlayer, FirstPlayer, HintOptions.FromCardColor(4));
             });
         }
 
@@ -62,7 +62,7 @@ namespace Hanabi.Server.Tests {
         public void DropCard() {
             var prevHand = GameModel.PlayerHands[FirstPlayer].ToArray();
 
-            GameController.DropCard(FirstPlayer, 0);
+            GameSessionManager.DropCard(FirstPlayer, 0);
 
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
@@ -73,7 +73,7 @@ namespace Hanabi.Server.Tests {
         [Fact]
         public void DropCard_WrongCurrentPlayer() {
             AssertThrowsArgumentException(delegate {
-                GameController.DropCard(SecondPlayer, 0);
+                GameSessionManager.DropCard(SecondPlayer, 0);
             });
         }
 
@@ -82,7 +82,7 @@ namespace Hanabi.Server.Tests {
         [InlineData(5)]
         public void DropCard_WrongIndex(int cardIndex) {
             AssertThrowsArgumentException(delegate {
-                GameController.DropCard(FirstPlayer, cardIndex);
+                GameSessionManager.DropCard(FirstPlayer, cardIndex);
             });
         }
 
@@ -90,7 +90,7 @@ namespace Hanabi.Server.Tests {
         public void PlayCard_Ok() {
             var prevHand = GameModel.PlayerHands[FirstPlayer].ToArray();
 
-            GameController.PlayCard(FirstPlayer, 0);
+            GameSessionManager.PlayCard(FirstPlayer, 0);
 
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
@@ -103,7 +103,7 @@ namespace Hanabi.Server.Tests {
         public void PlayCard_Fall() {
             var prevHand = GameModel.PlayerHands[FirstPlayer].ToArray();
 
-            GameController.PlayCard(FirstPlayer, 2);
+            GameSessionManager.PlayCard(FirstPlayer, 2);
 
             var newHand = GameModel.PlayerHands[FirstPlayer];
 
@@ -115,7 +115,7 @@ namespace Hanabi.Server.Tests {
         [Fact]
         public void PlayCard_WrongCurrentPlayer() {
             AssertThrowsArgumentException(delegate {
-                GameController.PlayCard(SecondPlayer, 0);
+                GameSessionManager.PlayCard(SecondPlayer, 0);
             });
         }
 
@@ -124,7 +124,7 @@ namespace Hanabi.Server.Tests {
         [InlineData(5)]
         public void PlayCard_WrongIndex(int cardIndex) {
             AssertThrowsArgumentException(delegate {
-                GameController.PlayCard(FirstPlayer, cardIndex);
+                GameSessionManager.PlayCard(FirstPlayer, cardIndex);
             });
         }
 

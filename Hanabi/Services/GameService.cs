@@ -3,10 +3,10 @@ using Hanabi.Models;
 
 namespace Hanabi.Services {
     public class GameService {
-        private GameController CurrentGame { get; }
+        private GameSessionManager CurrentGame { get; }
 
         public GameService() {
-            CurrentGame = new GameController(GameModelBuilder.CreateNew());
+            CurrentGame = new GameSessionManager(GameModelBuilder.CreateNew());
         }
 
         public void RegisterPlayer(string nickname, string connectionId) {
@@ -16,7 +16,7 @@ namespace Hanabi.Services {
             return CurrentGame.GetPlayerConnectionId(nickname);
         }
 
-        public GameController GetController(Guid playerId) {
+        public GameSessionManager GetController(Guid playerId) {
             return CurrentGame;
         }
 
