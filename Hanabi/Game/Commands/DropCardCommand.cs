@@ -1,19 +1,18 @@
-﻿namespace Hanabi.Game.Commands {
-    public class DropCardCommand : Command {
+﻿namespace Hanabi.Game.Commands;
+public class DropCardCommand : Command {
 
-        public DropCardCommand(GameModel gameModel, int cardIndex) : base(gameModel) {
-            CardIndex = cardIndex;
-        }
+    public DropCardCommand(GameModel gameModel, int cardIndex) : base(gameModel) {
+        CardIndex = cardIndex;
+    }
 
-        private int CardIndex { get; }
+    private int CardIndex { get; }
 
-        public override void Apply() {
-            base.Apply();
-            GameModel.PlayerHands[GameModel.ActivePlayer].RemoveAt(CardIndex);
-            GameModel.InformationTokens++;
+    public override void Apply() {
+        base.Apply();
+        GameModel.PlayerHands[GameModel.ActivePlayer].RemoveAt(CardIndex);
+        GameModel.InformationTokens++;
 
-            DrawCard();
-            EndTurn();
-        }
+        DrawCard();
+        EndTurn();
     }
 }

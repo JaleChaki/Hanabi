@@ -1,7 +1,7 @@
 ﻿using Hanabi.Game;
 using Xunit;
 
-namespace Hanabi.Server.Tests {
+namespace Hanabi.Server.Tests;
     public class GameModelBuilderTests {
 
         [Fact]
@@ -14,4 +14,3 @@ namespace Hanabi.Server.Tests {
         }
 
     }
-}
