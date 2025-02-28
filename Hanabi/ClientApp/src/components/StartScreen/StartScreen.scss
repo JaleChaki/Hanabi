@@ -1,0 +1,24 @@
+.start-screen {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    gap: 2rem;
+
+    &>.start-screen-actions {
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 2rem;
+
+        &>button {
+            border-radius: 0.5rem;
+            border: 0.3rem solid #0acaff78;
+            padding: unset;
+            width: 5rem;
+            height: 5rem;
+
+            &>img {
+                width: 100%;
+            }
+        }
+    }
+}
