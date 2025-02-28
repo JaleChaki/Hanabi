@@ -1,4 +1,4 @@
-﻿import React, {useState} from "react";
+﻿import React, {FC, useEffect, useState} from "react";
 import './Login.scss'
 
 export interface IToken {
@@ -6,9 +6,22 @@ export interface IToken {
     access_token: string,
     expired_at: string
 }
-export const Login = (props: { setToken: (token: IToken) => void }) => {
+type LoginProps = { 
+    setToken: (token: IToken) => void,
+    setUserUUID: (userId: string) => void,
+    setUserNick: (userNick: string) => void
+}
+
+export const Login: FC<LoginProps> = ({ setToken, setUserUUID, setUserNick }) => {
+    const [userId, setUserId] = useState('');
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        const newUserId = window.crypto.randomUUID();
+        setUserId(newUserId);
+        setUserUUID(newUserId);
+    }, []);
 
     const getLoginToken = async () => {
         return await fetch('/token', {
@@ -18,7 +31,9 @@ export const Login = (props: { setToken: (token: IToken) => void }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                nickName: userName
+                userId: userId,
+                nickName: userName,
+                password: password
             })
         }).then(
             data => data.json(),
@@ -36,8 +51,13 @@ export const Login = (props: { setToken: (token: IToken) => void }) => {
         if (token.err) {
             alert("Our server does not accept your nickname. Please, try another one, like 'jalechaki'")
         } else {
-            props.setToken(token);
+            setToken(token);
         }
+    }
+
+    const setUserNickName = (userNick: string) => {
+        setUserName(userNick);
+        setUserNick(userNick);
     }
 
     return (
@@ -46,13 +66,13 @@ export const Login = (props: { setToken: (token: IToken) => void }) => {
             <form onSubmit={handleSubmit}>
                 <label>
                     <p>Username</p>
-                    <input type="text" className="username" onChange={e => setUserName(e.target.value)}
+                    <input type="text" className="username" onChange={e => setUserNickName(e.target.value)}
                            required/>
                 </label>
                 <label>
                     <p>Password</p>
                     <input type="password" className="password" onChange={e => setPassword(e.target.value)}
-                           placeholder="Password is not required"/>
+                           placeholder="Password is qwerty654" required/>
                 </label>
                 <div>
                     <button type="submit">Submit</button>

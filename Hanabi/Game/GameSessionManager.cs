@@ -8,32 +8,32 @@ public class GameSessionManager {
     private readonly object _syncRoot = new object();
     private GameModel _gameModel;
 
-    public GameSessionManager(GameModel gameModel) {
-        _gameModel = gameModel;
+    public GameSessionManager() {
         Players = new();
+        _gameModel = GameModelBuilder.CreateMock(Players.Select(p => p.Guid).ToArray());
     }
 
     private List<Player> Players { get; }
 
-    public void RegisterPlayer(string nickname, string connectionId) {
-        bool alreadyRegistered = Players.Exists(p => p.NickName == nickname);
+    public void RegisterPlayer(Guid playerId, string nickName, string connectionId) {
+        bool alreadyRegistered = Players.Exists(p => p.Guid == playerId);
         if(!alreadyRegistered) {
             Players.Add(new Player() {
-                NickName = nickname,
-                Guid = GetPlayerGuid(nickname),
+                NickName = nickName,
+                Guid = playerId,
                 ConnectionId = connectionId
             });
+            _gameModel = GameModelBuilder.CreateMock(Players.Select(p => p.Guid).ToArray());
         }
     }
     public string GetPlayerConnectionId(string nickname) {
         return Players.FirstOrDefault(p => p.NickName == nickname).ConnectionId;
     }
-    private Guid GetPlayerGuid(string nickname) => nickname switch { // TODO
-            "staziz" => Guid.Parse("6478E542-4E96-421B-987F-767A3171B766"),
-            "jalechaki" => Guid.Parse("1744A9C2-C357-48BE-B955-50374801877A"),
-            "test_player" => Guid.Parse("E05E5FA4-DA8C-4CBC-B9DB-231BAE63A970"),
-            _ => throw new ArgumentOutOfRangeException(nameof(nickname), $"Player with nickname '{nickname}' does not exist in current game")
-    };
+
+    public void Start() {
+        _gameModel = GameModelBuilder.CreateNew(Players.Select(p => p.Guid).ToArray());
+        _gameModel.GameStatus = GameStatus.InProgress;
+    }
 
     public SerializedGameState GetModelCurrentState(Guid playerId) {
         EnsurePlayerExists(playerId);
@@ -50,8 +50,8 @@ public class GameSessionManager {
                     return new SerializedPlayer {
                         IsActivePlayer = _gameModel.ActivePlayer == playerId,
                         IsSessionOwner = isSessionOwner,
-                        Nick = GetPlayerName(id.ToString().ToUpper()),
-                        HeldCards = _gameModel.PlayerHands[id].Select(card => new SerializedCard {
+                        Nick = GetPlayerName(id),
+                        HeldCards = _gameModel.IsMock() ? null : _gameModel.PlayerHands[id].Select(card => new SerializedCard {
                             Color = !isSessionOwner || card.ColorIsKnown ? (int)card.Color : (int)default(CardColor),
                             Number = !isSessionOwner || card.NumberIsKnown ? card.Number : 0,
                             ColorIsKnown = card.ColorIsKnown,
@@ -66,12 +66,9 @@ public class GameSessionManager {
         return result;
     }
 
-    private string GetPlayerName(string guid) => guid switch { // TODO
-            "6478E542-4E96-421B-987F-767A3171B766" => "staziz",
-            "1744A9C2-C357-48BE-B955-50374801877A" => "jalechaki",
-            "E05E5FA4-DA8C-4CBC-B9DB-231BAE63A970" => "test_player",
-            _ => throw new ArgumentOutOfRangeException(nameof(guid), $"Player with GUID '{guid}' does not exist in current game")
-    };
+    private string GetPlayerName(Guid playerId) => 
+        Players.Find(p => p.Guid.Equals(playerId))?.NickName 
+        ?? throw new ArgumentOutOfRangeException(nameof(playerId), $"Player with GUID '{playerId}' does not exist in current game");
 
     #region PlayerActions
     public void MakeHint(Guid currentPlayerId, Guid targetPlayerId, HintOptions options) {
@@ -134,6 +131,10 @@ public class GameSessionManager {
     private void EnsureCardIndex(Guid playerId, int cardIndex) {
         if(cardIndex >= _gameModel.PlayerHands[playerId].Count || cardIndex < 0)
             throw new ArgumentException("Invalid card index", nameof(cardIndex));
+    }
+
+    internal int GetCurrentPlayersCount() {
+        return Players.Count;
     }
 }
 public class Player : IEquatable<Player> {

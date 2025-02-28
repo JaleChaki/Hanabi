@@ -1,12 +1,15 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as signalR from "@microsoft/signalr";
 import { MainLayout } from "./MainField/MainLayout";
 import { HubConnection } from "@microsoft/signalr";
 import { IGameState } from '../SerializationTypes/IGameState';
 import { IPlayerActions } from './Players/Player';
+import { StartScreen } from './StartScreen/StartScreen';
 
-export const Home = (props: { loginAccessToken: string }) => {
+export const Home = (props: { loginAccessToken: string, userId: string, userNickName: string }) => {
     const [gameState, setGameState] = useState<IGameState>({} as any);
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [isPlayerReady, setIsPlayerReady] = useState(false);
     const playerActions: IPlayerActions = {
         makeHintByColor(nickname, cardcolor) {
             connection.current.invoke("MakeColorHint", nickname, cardcolor);
@@ -21,7 +24,7 @@ export const Home = (props: { loginAccessToken: string }) => {
             connection.current.invoke("DropCard", cardIndex);
         },
     }
-    const { loginAccessToken } = props;
+    const { loginAccessToken, userId, userNickName } = props;
     const connection: React.MutableRefObject<HubConnection> = useRef({} as any);
 
     useEffect(() => {
@@ -35,6 +38,7 @@ export const Home = (props: { loginAccessToken: string }) => {
                 transport: signalR.HttpTransportType.WebSockets,
                 accessTokenFactory: () => loginAccessToken
             })
+            .withAutomaticReconnect()
             .build();
 
         connection.current.on("SetGameState", (gameState: IGameState) => {
@@ -47,24 +51,42 @@ export const Home = (props: { loginAccessToken: string }) => {
             getGameState();
         });
 
-        connection.current.start().then(getGameState);
+        connection.current.start().then(registerPlayer).then(setIsRegistered);
     }
 
-    const getGameState = () =>
-        _getGameStateUnsafe().catch(function (err) {
+    const registerPlayer = () =>
+        connection.current.invoke("RegisterPlayer", userNickName).catch(function (err) {
             return console.error(err.toString());
         });
 
-    const _getGameStateUnsafe = () =>
-        connection.current.invoke("GetGameState");
+    const createGame = () =>
+        connection.current.invoke("CreateGame").catch(function (err) {
+            return console.error(err.toString());
+        }).then(setIsPlayerReady);
 
-    if (!Object.prototype.hasOwnProperty.call(gameState, 'fireworks')) {
+    const joinGame = () =>
+        connection.current.invoke("JoinGame").catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    const startGame = () =>
+        connection.current.invoke("StartGame").catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    const getGameState = () =>
+        connection.current.invoke("GetGameState").catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    if (!isRegistered) {
         return <span>Loading...</span>
+    } else if(!isPlayerReady) {
+        return <StartScreen nickName={userNickName} createGame={createGame} joinGame={joinGame}/>
     } else {
-        return (
-            <Fragment>
-                <MainLayout gameState={gameState} playerActions={playerActions}></MainLayout>
-            </Fragment>
-        );
+        if(!Object.prototype.hasOwnProperty.call(gameState, 'gameStatus'))
+            return <span>Loading...</span>
+        else
+            return <MainLayout gameState={gameState} playerActions={playerActions} startGame={startGame}/>
     }
 }

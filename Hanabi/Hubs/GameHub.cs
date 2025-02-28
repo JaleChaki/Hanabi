@@ -30,17 +30,34 @@ public class GameHub : Hub {
 
     private GameService GameService { get; }
     
+    public bool RegisterPlayer(string userNickName) {
+        var userId = GetRequestPlayerGuid();
+        GameService.RegisterPlayer(userId, userNickName, Context.ConnectionId);
+        return true;
+    }
+
+    public async Task<bool> CreateGame() {
+        var userId = GetRequestPlayerGuid();
+        GameService.CreateGame(userId);
+        await ScheduleGameStateUpdate();
+        return true;
+    }
+
+    public async Task<bool> JoinGame(string gameId) {
+        var userId = GetRequestPlayerGuid();
+        GameService.JoinGame(Guid.Parse(gameId), userId);
+        await ScheduleGameStateUpdate();
+        return true;
+    }
+
+    public async Task StartGame() {
+        var userId = GetRequestPlayerGuid();
+        GameService.StartGame(userId);
+        await ScheduleGameStateUpdate();
+    }
 
     public async Task GetGameState() {
-        var userName = Context.User.Identity.Name;
-        var userId = GetPlayerGuid(userName);
-        // TODO: check if we sill need some of the things below
-        // Context.User.AddIdentity(new ClaimsIdentity(new NameIdentity(userId.ToString())));
-        Context.User.AddIdentity(new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) }));
-        // Context.User.FindFirst(ClaimTypes.Name)
-        // Context.User.AddIdentity(new System.Security.Claims.ClaimsIdentity(new NameIdentity(userName)));
-        GameService.RegisterPlayer(userName, Context.ConnectionId);
-        // GameService.RegisterPlayer(userName, Context.UserIdentifier); // !!!
+        var userId = GetRequestPlayerGuid();
         await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
     }
 
@@ -49,37 +66,33 @@ public class GameHub : Hub {
     }
 
     public async Task MakeColorHint(string targetPlayerNickname, int color) {
-        var userId = GetPlayerGuid(Context.User.Identity.Name);
+        var userId = GetRequestPlayerGuid();
         var targetPlayerId = GetPlayerGuid(targetPlayerNickname);
-        GameService.GetController(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardColor(color));
+        GameService.GetSessionManagerByPlayer(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardColor(color));
         await ScheduleGameStateUpdate();
     }
 
     public async Task MakeNumberHint(string targetPlayerNickname, int number) {
-        var userId = GetPlayerGuid(Context.User.Identity.Name);
+        var userId = GetRequestPlayerGuid();
         var targetPlayerId = GetPlayerGuid(targetPlayerNickname);
-        GameService.GetController(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardNumber(number));
+        GameService.GetSessionManagerByPlayer(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardNumber(number));
         await ScheduleGameStateUpdate();
     }
 
     public async Task DropCard(int cardIndex) {
-        var userId = GetPlayerGuid(Context.User.Identity.Name);
-        GameService.GetController(userId).DropCard(userId, cardIndex);
+        var userId = GetRequestPlayerGuid();
+        GameService.GetSessionManagerByPlayer(userId).DropCard(userId, cardIndex);
         await ScheduleGameStateUpdate();
     }
 
     public async Task PlayCard(int cardIndex) {
-        var userId = GetPlayerGuid(Context.User.Identity.Name);
-        GameService.GetController(userId).PlayCard(userId, cardIndex);
+        var userId = GetRequestPlayerGuid();
+        GameService.GetSessionManagerByPlayer(userId).PlayCard(userId, cardIndex);
         await ScheduleGameStateUpdate();
     }
 
-    private Guid GetPlayerGuid(string nickname) => nickname switch { // TODO
-            "staziz" => Guid.Parse("6478E542-4E96-421B-987F-767A3171B766"),
-            "jalechaki" => Guid.Parse("1744A9C2-C357-48BE-B955-50374801877A"),
-            "test_player" => Guid.Parse("E05E5FA4-DA8C-4CBC-B9DB-231BAE63A970"),
-            _ => throw new ArgumentOutOfRangeException(nameof(nickname), $"Player with nickname '{nickname}' does not exist in current game")
-    };
+    private Guid GetPlayerGuid(string userIdString) => Guid.Parse(userIdString);
+    private Guid GetRequestPlayerGuid() => GetPlayerGuid(Context.User.Identity.Name);
     public override Task OnConnectedAsync() {
         Console.WriteLine("New connection!");
         // this.Clients.Client("XGgSrccsRa6o5GNKkimp9w").SendAsync()

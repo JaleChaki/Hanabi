@@ -22,11 +22,11 @@ public class AccountService {
     private string SigningKey { get; }
 
     public TokenModel Authenticate(AuthenticationModel model) {
-        // TODO
-        if(model.Nickname != "jalechaki" && model.Nickname != "staziz")
+        // TODO move password to environment variables
+        if(model.Password != "qwerty654")
             throw new AuthenticationException();
 
-        var identity = CreateClaimsIdentity(model.Nickname);
+        var identity = CreateClaimsIdentity(model.UserId);
         var jwt = new JwtSecurityToken(
             issuer: Issuer,
             audience: Audience,
@@ -41,10 +41,10 @@ public class AccountService {
         };
     }
 
-    private static ClaimsIdentity CreateClaimsIdentity(string nickname) {
+    private static ClaimsIdentity CreateClaimsIdentity(string userId) {
         var claims = new List<Claim>() {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, nickname),
-            new Claim(ClaimsIdentity.DefaultRoleClaimType, "user")
+            new(ClaimsIdentity.DefaultNameClaimType, userId),
+            new (ClaimsIdentity.DefaultRoleClaimType, "user")
         };
         return new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
     }
