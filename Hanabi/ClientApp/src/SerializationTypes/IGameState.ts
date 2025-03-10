@@ -8,5 +8,6 @@ export interface IGameState {
     fuseTokens: number,
     players: Array<IPlayer>,
     turnIndex: number,
-    gameStatus: GameStatus
+    gameStatus: GameStatus,
+    gameLink: string
 }

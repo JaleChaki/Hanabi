@@ -8,4 +8,5 @@ public class SerializedGameState {
     public int TurnIndex { get; init; }
     public GameStatus GameStatus { get; init; }
     public int LastThreeTurns { get; set; }
+    public string GameLink { get; set; }
 }

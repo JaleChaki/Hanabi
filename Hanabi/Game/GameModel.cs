@@ -7,14 +7,16 @@ public class GameModel {
         Fireworks = new();
         PlayerOrder = playerOrder;
         GameStatus = GameStatus.Pending;
-        _isMock = true;
+        IsMock = true;
     }
-    public GameModel(IEnumerable<Card> deck,
+    public GameModel(Guid id,
+                    IEnumerable<Card> deck,
                     int informationTokens,
                     int fuseTokens,
                     IReadOnlyCollection<CardColor> colors,
                     IReadOnlyList<Guid> playerOrder,
                     IReadOnlyDictionary<Guid, IEnumerable<HeldCard>> playerHands) {
+        GameId = id;
         Deck = deck.ToList();
         InformationTokens = informationTokens;
         FuseTokens = fuseTokens;
@@ -36,6 +38,6 @@ public class GameModel {
     public int TotalTurnsCount { get; set; }
     public GameStatus GameStatus { get; set; }
     public int LastThreeTurns { get; set; } = -1;
-    bool _isMock;
-    public bool IsMock() => _isMock;
+    public Guid GameId { get; }
+    public bool IsMock { get; }
 }

@@ -6,6 +6,13 @@ public static class GameExtensions {
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random) {
         return source.ShuffleIterator(random);
     }
+    public static string ToUrlSafeShortString(this GameModel gameModel) {
+        return Convert.ToBase64String(gameModel.GameId.ToByteArray()).Replace('+', '-').Replace('/', '_')[..^2];
+    }
+
+    public static Guid FromUrlSafeShortString(this string str) {
+        return new Guid(Convert.FromBase64String(str.Replace('_', '/').Replace('-', '+') + "=="));
+    }
     private static IEnumerable<T> ShuffleIterator<T>(this IEnumerable<T> source, Random random) {
         var sourceList = source.ToList();
         var sourceLength = sourceList.Count;

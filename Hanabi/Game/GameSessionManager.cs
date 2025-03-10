@@ -51,7 +51,7 @@ public class GameSessionManager {
                         IsActivePlayer = _gameModel.ActivePlayer == playerId,
                         IsSessionOwner = isSessionOwner,
                         Nick = GetPlayerName(id),
-                        HeldCards = _gameModel.IsMock() ? null : _gameModel.PlayerHands[id].Select(card => new SerializedCard {
+                        HeldCards = _gameModel.IsMock ? null : _gameModel.PlayerHands[id].Select(card => new SerializedCard {
                             Color = !isSessionOwner || card.ColorIsKnown ? (int)card.Color : (int)default(CardColor),
                             Number = !isSessionOwner || card.NumberIsKnown ? card.Number : 0,
                             ColorIsKnown = card.ColorIsKnown,
@@ -60,7 +60,8 @@ public class GameSessionManager {
                     };
                 }).ToArray(),
                 TurnIndex = _gameModel.TotalTurnsCount,
-                GameStatus = _gameModel.GameStatus
+                GameStatus = _gameModel.GameStatus,
+                GameLink = _gameModel.ToUrlSafeShortString() // TODO: ???
             };
         }
         return result;
