@@ -21,11 +21,11 @@ public class PlayCardCommand : Command {
             if(card.Number == 5 && GameModel.InformationTokens < 8)
                 GameModel.InformationTokens++;
             if(GameModel.Fireworks.All(f => f.Value == 5))
-                GameModel.GameStatus = GameStatus.FlawlessVictory;
+                GameModel.Status = GameStatus.FlawlessVictory;
         } else {
             GameModel.FuseTokens++;
             if(GameModel.FuseTokens == 3)
-                GameModel.GameStatus = GameStatus.Failure;
+                GameModel.Status = GameStatus.Failure;
         }
 
         DrawCard();

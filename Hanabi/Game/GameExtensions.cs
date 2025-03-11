@@ -7,7 +7,7 @@ public static class GameExtensions {
         return source.ShuffleIterator(random);
     }
     public static string ToUrlSafeShortString(this GameModel gameModel) {
-        return Convert.ToBase64String(gameModel.GameId.ToByteArray()).Replace('+', '-').Replace('/', '_')[..^2];
+        return Convert.ToBase64String(gameModel.Id.ToByteArray()).Replace('+', '-').Replace('/', '_')[..^2];
     }
 
     public static Guid FromUrlSafeShortString(this string str) {

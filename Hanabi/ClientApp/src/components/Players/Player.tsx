@@ -18,13 +18,13 @@ type PlayerProps = {
 }
 
 export interface IPlayerActions {
-    makeHintByColor: (nickname: string, cardcolor: number) => void,
-    makeHintByNumber: (nickname: string, cardNumber: number) => void,
+    makeHintByColor: (id: string, cardcolor: number) => void,
+    makeHintByNumber: (id: string, cardNumber: number) => void,
     dropCard: (cardIndex: number) => void,
     playCard: (cardIndex: number) => void
 }
 
-export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlayer, isSessionOwner }, actions, turnKey, activePlayerMode, onActivePlayerModeChanged }) => {
+export const Player: FC<PlayerProps> = ({ info: { id, nick, heldCards, isActivePlayer, isSessionOwner }, actions, turnKey, activePlayerMode, onActivePlayerModeChanged }) => {
     const [cardFilter, setCardFilter] = useState<CardFilterCriteria>(new CardFilterCriteria());
     
 
@@ -57,7 +57,7 @@ export const Player: FC<PlayerProps> = ({ info: { nick, heldCards, isActivePlaye
             const result = window.confirm(`Do you really want to tell player ${nick} ` +
                 `their cards with ${isColor ? "color" : "number"} ${isColor ? getColorByCode(card.color) : card.number}?`);
             if (result)
-                isColor ? actions.makeHintByColor(nick, card.color) : actions.makeHintByNumber(nick, card.number);
+                isColor ? actions.makeHintByColor(id, card.color) : actions.makeHintByNumber(id, card.number);
         } else {
             setCardFilter(newFilter);
         }

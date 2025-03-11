@@ -2,12 +2,13 @@
 
 namespace Hanabi.Game;
 public class GameModel {
-    public GameModel(IReadOnlyList<Guid> playerOrder) {
+    public GameModel(Guid id, IReadOnlyList<Guid> playerOrder) {
         Deck = new();
         Fireworks = new();
         PlayerOrder = playerOrder;
-        GameStatus = GameStatus.Pending;
+        Status = GameStatus.Pending;
         IsMock = true;
+        Id = id;
     }
     public GameModel(Guid id,
                     IEnumerable<Card> deck,
@@ -16,7 +17,7 @@ public class GameModel {
                     IReadOnlyCollection<CardColor> colors,
                     IReadOnlyList<Guid> playerOrder,
                     IReadOnlyDictionary<Guid, IEnumerable<HeldCard>> playerHands) {
-        GameId = id;
+        Id = id;
         Deck = deck.ToList();
         InformationTokens = informationTokens;
         FuseTokens = fuseTokens;
@@ -24,7 +25,7 @@ public class GameModel {
         PlayerOrder = playerOrder;
         ActivePlayerIndex = 0;
         PlayerHands = playerHands.ToDictionary(kv => kv.Key, kv => kv.Value.ToList());
-        GameStatus = GameStatus.Pending;
+        Status = GameStatus.Pending;
     }
 
     public List<Card> Deck { get; }
@@ -36,8 +37,8 @@ public class GameModel {
     public IReadOnlyList<Guid> PlayerOrder { get; }
     public int ActivePlayerIndex { get; set; }
     public int TotalTurnsCount { get; set; }
-    public GameStatus GameStatus { get; set; }
+    public GameStatus Status { get; set; }
     public int LastThreeTurns { get; set; } = -1;
-    public Guid GameId { get; }
+    public Guid Id { get; }
     public bool IsMock { get; }
 }

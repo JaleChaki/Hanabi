@@ -43,9 +43,9 @@ public class GameHub : Hub {
         return true;
     }
 
-    public async Task<bool> JoinGame(string gameId) {
+    public async Task<bool> JoinGame(string gameLink) {
         var userId = GetRequestPlayerGuid();
-        GameService.JoinGame(Guid.Parse(gameId), userId);
+        GameService.JoinGame(gameLink.FromUrlSafeShortString(), userId);
         await ScheduleGameStateUpdate();
         return true;
     }

@@ -21,10 +21,10 @@ public class GameService {
     public Guid CreateGame(Guid playerId) {
         CheckPlayerExists(playerId);
         var gameId = Guid.NewGuid();
-        var newSessionManager = new GameSessionManager();
+        var newSessionManager = new GameSessionManager(gameId);
 
         var (nickname, connectionId) = _players[playerId];
-        newSessionManager.RegisterPlayer(playerId, nickname, connectionId);
+        newSessionManager.RegisterPlayer(gameId, playerId, nickname, connectionId);
 
         _games[gameId] = newSessionManager;
         _playerGameMap[playerId] = gameId;
@@ -39,7 +39,7 @@ public class GameService {
             throw new InvalidOperationException("Game is already at full capacity.");
 
         var (nickname, connectionId) = _players[playerId];
-        session.RegisterPlayer(playerId, nickname, connectionId);
+        session.RegisterPlayer(gameId, playerId, nickname, connectionId);
 
         _playerGameMap[playerId] = gameId;
     }

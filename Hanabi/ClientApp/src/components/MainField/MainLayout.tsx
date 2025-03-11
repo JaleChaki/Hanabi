@@ -19,7 +19,7 @@ type MainLayoutProps = {
     startGame: () => {}
 }
 export const MainLayout: FC<MainLayoutProps> = ({ 
-        gameState: { turnIndex, players, informationTokens, fuseTokens, fireworks, gameStatus, cardsInDeck }, 
+        gameState: { turnIndex, players, informationTokens, fuseTokens, fireworks, gameStatus, cardsInDeck, gameLink }, 
         playerActions,
         startGame 
     }) => {
@@ -35,6 +35,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
                             <li>{p.nick}</li>
                         )}
                     </ul>
+                    <span>Room code:</span><input type="text" readOnly value={gameLink}></input>
                     <button onClick={startGame}>Start game</button>
                 </div>
                 : gameStatus === GameStatus.InProgress

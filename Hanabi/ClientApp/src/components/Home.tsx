@@ -11,11 +11,11 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
     const [isRegistered, setIsRegistered] = useState(false);
     const [isPlayerReady, setIsPlayerReady] = useState(false);
     const playerActions: IPlayerActions = {
-        makeHintByColor(nickname, cardcolor) {
-            connection.current.invoke("MakeColorHint", nickname, cardcolor);
+        makeHintByColor(id, cardcolor) {
+            connection.current.invoke("MakeColorHint", id, cardcolor);
         },
-        makeHintByNumber(nickname, cardNumber) {
-            connection.current.invoke("MakeNumberHint", nickname, cardNumber);
+        makeHintByNumber(id, cardNumber) {
+            connection.current.invoke("MakeNumberHint", id, cardNumber);
         },
         playCard(cardIndex) {
             connection.current.invoke("PlayCard", cardIndex);
@@ -64,10 +64,10 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
             return console.error(err.toString());
         }).then(setIsPlayerReady);
 
-    const joinGame = () =>
-        connection.current.invoke("JoinGame").catch(function (err) {
+    const joinGame = (gameLink: string) =>
+        connection.current.invoke("JoinGame", gameLink).catch(function (err) {
             return console.error(err.toString());
-        });
+        }).then(setIsPlayerReady);
 
     const startGame = () =>
         connection.current.invoke("StartGame").catch(function (err) {

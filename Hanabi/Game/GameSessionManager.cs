@@ -5,17 +5,19 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Hanabi.Game;
 public class GameSessionManager {
+    private readonly Guid _gameId;
     private readonly object _syncRoot = new object();
     private GameModel _gameModel;
 
-    public GameSessionManager() {
+    public GameSessionManager(Guid gameId) {
         Players = new();
-        _gameModel = GameModelBuilder.CreateMock(Players.Select(p => p.Guid).ToArray());
+        _gameModel = GameModelBuilder.CreateMock(gameId, Players.Select(p => p.Guid).ToArray());
+        _gameId = gameId;
     }
 
     private List<Player> Players { get; }
 
-    public void RegisterPlayer(Guid playerId, string nickName, string connectionId) {
+    public void RegisterPlayer(Guid gameId, Guid playerId, string nickName, string connectionId) {
         bool alreadyRegistered = Players.Exists(p => p.Guid == playerId);
         if(!alreadyRegistered) {
             Players.Add(new Player() {
@@ -23,7 +25,7 @@ public class GameSessionManager {
                 Guid = playerId,
                 ConnectionId = connectionId
             });
-            _gameModel = GameModelBuilder.CreateMock(Players.Select(p => p.Guid).ToArray());
+            _gameModel = GameModelBuilder.CreateMock(gameId, Players.Select(p => p.Guid).ToArray());
         }
     }
     public string GetPlayerConnectionId(string nickname) {
@@ -31,8 +33,8 @@ public class GameSessionManager {
     }
 
     public void Start() {
-        _gameModel = GameModelBuilder.CreateNew(Players.Select(p => p.Guid).ToArray());
-        _gameModel.GameStatus = GameStatus.InProgress;
+        _gameModel = GameModelBuilder.CreateNew(_gameId, Players.Select(p => p.Guid).ToArray());
+        _gameModel.Status = GameStatus.InProgress;
     }
 
     public SerializedGameState GetModelCurrentState(Guid playerId) {
@@ -50,6 +52,7 @@ public class GameSessionManager {
                     return new SerializedPlayer {
                         IsActivePlayer = _gameModel.ActivePlayer == playerId,
                         IsSessionOwner = isSessionOwner,
+                        Id = id,
                         Nick = GetPlayerName(id),
                         HeldCards = _gameModel.IsMock ? null : _gameModel.PlayerHands[id].Select(card => new SerializedCard {
                             Color = !isSessionOwner || card.ColorIsKnown ? (int)card.Color : (int)default(CardColor),
@@ -60,7 +63,7 @@ public class GameSessionManager {
                     };
                 }).ToArray(),
                 TurnIndex = _gameModel.TotalTurnsCount,
-                GameStatus = _gameModel.GameStatus,
+                GameStatus = _gameModel.Status,
                 GameLink = _gameModel.ToUrlSafeShortString() // TODO: ???
             };
         }

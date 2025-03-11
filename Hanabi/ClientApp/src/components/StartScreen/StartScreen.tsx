@@ -4,11 +4,21 @@ import "./StartScreen.scss";
 type StartScreenProps = {
     nickName: string,
     createGame: () => void,
-    joinGame: () => void,
+    joinGame: (gameLink: string) => void,
 }
 
 export const StartScreen: FC<StartScreenProps> = ({ nickName, createGame, joinGame }) => {
     const [userName, setUserName] = useState<string>(nickName);
+    const gameLinkRegex = new RegExp("^[\\w\\-_]{22}$", "gm");
+
+    const onJoinButtonClick = () => {
+        const gameLinkEntered = window.prompt("Enter a room code:");
+        if(!gameLinkEntered || !gameLinkRegex.test(gameLinkEntered)) {
+            alert("You need  to ender a valid room code")
+        } else {
+            joinGame(gameLinkEntered);
+        }
+    }
     return(
         <div className="start-screen">
             <label>
@@ -19,7 +29,7 @@ export const StartScreen: FC<StartScreenProps> = ({ nickName, createGame, joinGa
                 <button onClick={createGame}>
                     <img src={require("./icons/new_game_light.svg").default} alt="Start new game"/>
                 </button>
-                <button onClick={joinGame}>
+                <button onClick={onJoinButtonClick}>
                     <img src={require("./icons/join_game.svg").default} alt="Join game"/>
                 </button>
             </div>

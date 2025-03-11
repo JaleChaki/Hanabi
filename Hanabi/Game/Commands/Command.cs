@@ -11,7 +11,7 @@ public abstract class Command {
     protected GameModel GameModel { get; }
 
     public virtual void Apply() {
-        if(GameModel.GameStatus != Models.GameStatus.InProgress)
+        if(GameModel.Status != Models.GameStatus.InProgress)
             throw new InvalidAsynchronousStateException("You cannot continue already finished game");
     }
 
@@ -35,7 +35,7 @@ public abstract class Command {
             GameModel.LastThreeTurns--;
         }
         if(GameModel.LastThreeTurns == 0)
-            GameModel.GameStatus = GameStatus.Victory;
+            GameModel.Status = GameStatus.Victory;
     }
 
 }

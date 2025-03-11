@@ -1,7 +1,7 @@
 ﻿namespace Hanabi.Game;
 public class GameModelBuilder {
 
-    public static GameModel CreateNew(Guid[] playerIds, long? seed = null) {
+    public static GameModel CreateNew(Guid gameId, Guid[] playerIds, long? seed = null) {
         seed ??= DateTime.Now.Ticks;
         // TODO KISS
         var cards = Enumerable.Range(1, 5).SelectMany(
@@ -22,11 +22,11 @@ public class GameModelBuilder {
             cards.RemoveRange(cards.Count - 5, 5);
         }
 
-        return new GameModel(cards, 8, 0, Enum.GetValues<CardColor>().Take(5).ToArray(), playerIds, playerHands);
+        return new GameModel(gameId, cards, 8, 0, Enum.GetValues<CardColor>().Take(5).ToArray(), playerIds, playerHands);
     }
 
-    public static GameModel CreateMock(Guid[] playerIds) {
-        return new GameModel(playerIds);
+    public static GameModel CreateMock(Guid gameId, Guid[] playerIds) {
+        return new GameModel(gameId, playerIds);
     }
 
 }
