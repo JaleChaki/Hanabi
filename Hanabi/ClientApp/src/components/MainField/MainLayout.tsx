@@ -23,6 +23,9 @@ export const MainLayout: FC<MainLayoutProps> = ({
         playerActions,
         startGame 
     }) => {
+    const copyGameLink = () => {
+        navigator.clipboard.writeText(gameLink);
+    }
 
     return (
         <div className="main-field">
@@ -32,11 +35,11 @@ export const MainLayout: FC<MainLayoutProps> = ({
                     <p>Players already joined:</p>
                     <ul>
                         {players.map(p => 
-                            <li>{p.nick}</li>
+                            <li key={p.id}>{p.nick}</li>
                         )}
                     </ul>
-                    <span>Room code:</span><input type="text" readOnly value={gameLink}></input>
-                    <button onClick={startGame}>Start game</button>
+                    <p><span>Room code:</span><input type="text" readOnly value={gameLink}></input><button onClick={copyGameLink}>Copy code</button></p>
+                    <button disabled={players.length <= 1} onClick={startGame}>Start game</button>
                 </div>
                 : gameStatus === GameStatus.InProgress
                     ? <div className="main-wrapper">

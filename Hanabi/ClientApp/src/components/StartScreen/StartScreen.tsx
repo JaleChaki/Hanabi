@@ -14,7 +14,7 @@ export const StartScreen: FC<StartScreenProps> = ({ nickName, createGame, joinGa
     const onJoinButtonClick = () => {
         const gameLinkEntered = window.prompt("Enter a room code:");
         if(!gameLinkEntered || !gameLinkRegex.test(gameLinkEntered)) {
-            alert("You need  to ender a valid room code")
+            alert("You need to ender a valid room code")
         } else {
             joinGame(gameLinkEntered);
         }
