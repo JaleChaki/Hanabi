@@ -9,9 +9,11 @@ public class DropCardCommand : Command {
 
     public override void Apply() {
         base.Apply();
-        GameModel.PlayerHands[GameModel.ActivePlayer].RemoveAt(CardIndex);
+        var droppedCard = GameModel.PlayerHands[GameModel.ActivePlayer].ElementAt(CardIndex);
+        GameModel.DiscardPile.Add(droppedCard);
         GameModel.InformationTokens++;
 
+        GameModel.PlayerHands[GameModel.ActivePlayer].RemoveAt(CardIndex);
         DrawCard();
         EndTurn();
     }

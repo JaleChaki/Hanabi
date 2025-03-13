@@ -4,6 +4,7 @@ namespace Hanabi.Game;
 public class GameModel {
     public GameModel(Guid id, IReadOnlyList<Guid> playerOrder) {
         Deck = new();
+        DiscardPile = new();
         Fireworks = new();
         PlayerOrder = playerOrder;
         Status = GameStatus.Pending;
@@ -19,6 +20,7 @@ public class GameModel {
                     IReadOnlyDictionary<Guid, IEnumerable<HeldCard>> playerHands) {
         Id = id;
         Deck = deck.ToList();
+        DiscardPile = new();
         InformationTokens = informationTokens;
         FuseTokens = fuseTokens;
         Fireworks = colors.ToDictionary(c => c, _ => 0);
@@ -29,6 +31,7 @@ public class GameModel {
     }
 
     public List<Card> Deck { get; }
+    public List<Card> DiscardPile { get; }
     public int InformationTokens { get; set; }
     public int FuseTokens { get; set; }
     public Dictionary<CardColor, int> Fireworks { get; }

@@ -5,6 +5,7 @@ public class SerializedGameState {
     public int FuseTokens { get; init; }
     public IReadOnlyList<int> Fireworks { get; init; }
     public IReadOnlyList<SerializedPlayer> Players { get; init; }
+    public IReadOnlyList<SerializedCard> DiscardPile { get; init; }
     public int TurnIndex { get; init; }
     public GameStatus GameStatus { get; init; }
     public int LastThreeTurns { get; set; }

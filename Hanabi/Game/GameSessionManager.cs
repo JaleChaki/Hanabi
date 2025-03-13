@@ -62,6 +62,10 @@ public class GameSessionManager {
                         }).ToArray()
                     };
                 }).ToArray(),
+                DiscardPile = _gameModel.DiscardPile.Select(card => new SerializedCard {
+                    Color = (int) card.Color,
+                    Number = card.Number
+                }).ToArray(),
                 TurnIndex = _gameModel.TotalTurnsCount,
                 GameStatus = _gameModel.Status,
                 GameLink = _gameModel.ToUrlSafeShortString() // TODO: ???

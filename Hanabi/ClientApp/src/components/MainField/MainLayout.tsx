@@ -20,7 +20,7 @@ type MainLayoutProps = {
     startGame: () => {}
 }
 export const MainLayout: FC<MainLayoutProps> = ({ 
-        gameState: { turnIndex, players, informationTokens, fuseTokens, fireworks, gameStatus, cardsInDeck, gameLink }, 
+        gameState: { turnIndex, players, discardPile, informationTokens, fuseTokens, fireworks, gameStatus, cardsInDeck, gameLink }, 
         playerActions,
         startGame 
     }) => {
@@ -30,7 +30,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
 
     return (
         <div className="main-field">
-            <History></History>
+            <History discardPile={discardPile}/>
             {gameStatus === GameStatus.Pending ?
                 <div>
                     <p>Players already joined:</p>

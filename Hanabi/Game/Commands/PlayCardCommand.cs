@@ -13,8 +13,6 @@ public class PlayCardCommand : Command {
         base.Apply();
         var card = GameModel.PlayerHands[GameModel.ActivePlayer][CardIndex];
 
-        GameModel.PlayerHands[GameModel.ActivePlayer].RemoveAt(CardIndex);
-
         if(GameModel.Fireworks[card.Color] + 1 == card.Number) {
             GameModel.Fireworks[card.Color]++;
             // TODO: move somwhere else
@@ -23,11 +21,14 @@ public class PlayCardCommand : Command {
             if(GameModel.Fireworks.All(f => f.Value == 5))
                 GameModel.Status = GameStatus.FlawlessVictory;
         } else {
+            var discardedCard = GameModel.PlayerHands[GameModel.ActivePlayer].ElementAt(CardIndex);
+            GameModel.DiscardPile.Add(discardedCard);
             GameModel.FuseTokens++;
             if(GameModel.FuseTokens == 3)
                 GameModel.Status = GameStatus.Failure;
         }
 
+        GameModel.PlayerHands[GameModel.ActivePlayer].RemoveAt(CardIndex);
         DrawCard();
         EndTurn();
     }

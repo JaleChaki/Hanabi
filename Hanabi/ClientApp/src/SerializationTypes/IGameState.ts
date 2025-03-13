@@ -1,4 +1,5 @@
 ﻿import { GameStatus } from "./GameStatus";
+import { ICard } from "./ICard";
 import { IPlayer } from "./IPlayer";
 
 export interface IGameState {
@@ -7,6 +8,7 @@ export interface IGameState {
     informationTokens: number,
     fuseTokens: number,
     players: Array<IPlayer>,
+    discardPile: Array<ICard>,
     turnIndex: number,
     gameStatus: GameStatus,
     gameLink: string
