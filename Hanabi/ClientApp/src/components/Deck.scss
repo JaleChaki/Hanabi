@@ -1,0 +1,8 @@
+@import "./Card/Card.scss";
+$card-vertical-offset: $card-height - 0.25;
+
+.card-deck {    
+    .card-wrapper + .card-wrapper {
+      margin-top: -$card-vertical-offset;
+    }
+  }

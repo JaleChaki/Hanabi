@@ -1,7 +1,4 @@
-﻿@import "../Card/Card.scss";
-$card-vertical-offset: $card-height - 0.25;
-
-.main-field {
+﻿.main-field {
   display: flex;
   flex-direction: row;
   width: 100vw;
@@ -21,13 +18,6 @@ $card-vertical-offset: $card-height - 0.25;
       height: 30%;
       background-color: peachpuff;
       justify-content: space-between;
-
-      &>.card-deck {
-        
-        .card-wrapper + .card-wrapper {
-          margin-top: -$card-vertical-offset;
-        }
-      }
       
       .token-storages {
         display: flex;

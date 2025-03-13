@@ -12,6 +12,7 @@ import "./MainLayout.scss"
 import { GameStatus } from "../../SerializationTypes/GameStatus";
 import { GameEndPanel } from "./GameEndPanel";
 import { HeldCard } from "../Card/HeldCard";
+import { Deck } from "../Deck";
 
 type MainLayoutProps = {
     gameState: IGameState,
@@ -45,12 +46,7 @@ export const MainLayout: FC<MainLayoutProps> = ({
                     ? <div className="main-wrapper">
                         <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
                         <div className="main-footer">
-                            <div className="card-deck">
-                                <p><strong>Deck:</strong></p>
-                                {[...Array(cardsInDeck > 5 ? 5 : cardsInDeck).keys()].map(cardIndex =>
-                                    <HeldCard color={0} colorIsKnown={false} number={0} numberIsKnown={false} isOwn={true} key={cardIndex} />
-                                )}
-                            </div>
+                            <Deck name="Deck:" cardsInDeck={cardsInDeck}/>
                             <Solitaire fireworks={fireworks}></Solitaire>
                             <div className="token-storages">
                                 <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
