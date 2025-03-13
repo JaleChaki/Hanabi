@@ -1,7 +1,7 @@
 ﻿import React, { FC } from "react";
 import { FireworkCard } from "../Card/FireworkCard";
 
-import "./Solitare.scss"
+import "./Solitaire.scss"
 
 interface SolitareProps {
     fireworks: Array<number>
