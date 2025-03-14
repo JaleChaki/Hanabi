@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@microsoft/signalr": "^6.0.8",
+    "@tailwindcss/vite": "^4.0.14",
     "bootstrap": "^5.1.3",
     "http-proxy-middleware": "^0.19.1",
     "jquery": "^3.6.0",
@@ -20,6 +21,7 @@
     "reactstrap": "^8.9.0",
     "rimraf": "^2.6.2",
     "sass": "^1.54.5",
+    "tailwindcss": "^4.0.14",
     "web-vitals": "^0.2.4",
     "workbox-background-sync": "^5.1.3",
     "workbox-broadcast-update": "^5.1.3",
