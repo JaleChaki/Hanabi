@@ -9,6 +9,9 @@ type HistoryProps = {
 }
 
 export const History: FC<HistoryProps> = ({ discardPile }) => {
+    const showDiscardPlie = () => {
+        console.log("Discard pile clicked");
+    }
     return (
         <div className="history">
             <figure>
@@ -17,7 +20,12 @@ export const History: FC<HistoryProps> = ({ discardPile }) => {
                     <li>History 1</li>
                 </ol>
             </figure>
-            <Deck name="Discard:" cardsInDeck={discardPile?.length} topCardColor={discardPile.at(-1)?.color} topCardNumber={discardPile.at(-1)?.number}/>
+            <Deck name="Discard:" 
+                  cardsInDeck={discardPile?.length} 
+                  topCardColor={discardPile.at(-1)?.color} 
+                  topCardNumber={discardPile.at(-1)?.number}
+                  onClick={showDiscardPlie}
+            />
         </div>
     )
 }

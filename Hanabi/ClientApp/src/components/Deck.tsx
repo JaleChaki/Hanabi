@@ -7,13 +7,14 @@ type DeckProps = {
     name: string,
     cardsInDeck: number,
     topCardColor?: number,
-    topCardNumber?: number
+    topCardNumber?: number,
+    onClick?: () => void
 }
 
-export const Deck: FC<DeckProps> = ({ name, cardsInDeck, topCardColor, topCardNumber }) => {
+export const Deck: FC<DeckProps> = ({ name, cardsInDeck, topCardColor, topCardNumber, onClick }) => {
     const realCardsNumber = cardsInDeck > 5 ? 5 : cardsInDeck;
     return(
-        <div className="card-deck">
+        <div className="card-deck" onClick={_ => cardsInDeck && onClick?.()}>
             {name && <p><strong>{name}</strong></p>}
             {[...Array(realCardsNumber).keys()].map(cardIndex => {
                 const isTopCard = cardIndex === realCardsNumber - 1;
