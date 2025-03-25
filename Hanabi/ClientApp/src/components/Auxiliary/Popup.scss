@@ -1,0 +1,34 @@
+/* Backdrop is only displayed when dialog is opened with dialog.showModal() */
+dialog.popup[open] {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 35vw;
+  height: 35vh;
+
+  .popup-header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 1rem;
+  }
+
+  .popup-content {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  &::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+  
