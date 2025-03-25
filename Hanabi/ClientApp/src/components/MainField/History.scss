@@ -11,3 +11,10 @@
     text-align: left;
   }
 }
+
+dialog.popup[open] .popup-content .cards-wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  height: 100%;
+}
