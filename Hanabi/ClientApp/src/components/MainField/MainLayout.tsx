@@ -32,20 +32,20 @@ export const MainLayout: FC<MainLayoutProps> = ({
             {gameStatus === GameStatus.Pending ?
                 <Lobby players={players} gameLink={gameLink} startGame={startGame}/>
                 : gameStatus === GameStatus.InProgress
-                    ? <div className="main-wrapper">
-                        <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
-                        <div className="main-footer">
-                            <Deck name="Deck:" cardsInDeck={cardsInDeck}/>
-                            <Solitaire fireworks={fireworks}></Solitaire>
-                            <div className="token-storages">
-                                <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
-                                <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens}></TokenStorage>
-                            </div>
+                ? <div className="main-wrapper">
+                    <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
+                    <div className="main-footer">
+                        <Deck name="Deck:" cardsInDeck={cardsInDeck}/>
+                        <Solitaire fireworks={fireworks}></Solitaire>
+                        <div className="token-storages">
+                            <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
+                            <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens}></TokenStorage>
                         </div>
                     </div>
-                    : <div className="main-wrapper">
-                        <GameEndPanel status={gameStatus} totalScore={fireworks.reduce((acc, cur) => acc + cur, 0)}/>
-                    </div>
+                </div>
+                : <div className="main-wrapper">
+                    <GameEndPanel status={gameStatus} totalScore={fireworks.reduce((acc, cur) => acc + cur, 0)}/>
+                </div>
             }
         </div>
     )
