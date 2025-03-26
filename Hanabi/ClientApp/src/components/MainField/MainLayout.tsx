@@ -13,6 +13,7 @@ import { GameStatus } from "../../SerializationTypes/GameStatus";
 import { GameEndPanel } from "./GameEndPanel";
 import { HeldCard } from "../Card/HeldCard";
 import { Deck } from "../Deck";
+import { Lobby } from "./Lobby";
 
 type MainLayoutProps = {
     gameState: IGameState,
@@ -24,24 +25,12 @@ export const MainLayout: FC<MainLayoutProps> = ({
         playerActions,
         startGame 
     }) => {
-    const copyGameLink = () => {
-        navigator.clipboard.writeText(gameLink);
-    }
 
     return (
         <div className="main-field">
             <History discardPile={discardPile}/>
             {gameStatus === GameStatus.Pending ?
-                <div>
-                    <p>Players already joined:</p>
-                    <ul>
-                        {players.map(p => 
-                            <li key={p.id}>{p.nick}</li>
-                        )}
-                    </ul>
-                    <p><span>Room code:</span><input type="text" readOnly value={gameLink}></input><button onClick={copyGameLink}>Copy code</button></p>
-                    <button disabled={players.length <= 1} onClick={startGame}>Start game</button>
-                </div>
+                <Lobby players={players} gameLink={gameLink} startGame={startGame}/>
                 : gameStatus === GameStatus.InProgress
                     ? <div className="main-wrapper">
                         <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
