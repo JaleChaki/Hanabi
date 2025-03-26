@@ -28,11 +28,11 @@ export const MainLayout: FC<MainLayoutProps> = ({
 
     return (
         <div className="main-field">
-            <History discardPile={discardPile}/>
             {gameStatus === GameStatus.Pending ?
                 <Lobby players={players} gameLink={gameLink} startGame={startGame}/>
                 : gameStatus === GameStatus.InProgress
                 ? <div className="main-wrapper">
+                    <History discardPile={discardPile}/>
                     <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
                     <div className="main-footer">
                         <Deck name="Deck:" cardsInDeck={cardsInDeck}/>
