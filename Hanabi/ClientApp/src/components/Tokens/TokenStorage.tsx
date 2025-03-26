@@ -15,7 +15,7 @@ export const TokenStorage: FC<TokenStorageProps> = ({type, currentCount}) => {
         currentCount = maxCount
     return (
         <div className="token-storage-wrapper">
-            <strong>x {currentCount}</strong>
+            <strong className="token-storage-count">x {currentCount}</strong>
             <div className="token-storage">
                 {[...Array(currentCount).keys()].map((i) => {
                     return <Token type={type} key={`${type}Token_${i}`} className={`token-${i} div${i + 1}`}></Token>

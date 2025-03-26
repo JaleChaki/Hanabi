@@ -8,8 +8,6 @@ import {Login} from "./components/Login/Login";
 import {instanceOf} from 'prop-types';
 import {withCookies, Cookies} from 'react-cookie';
 
-import './custom.scss'
-
 class App extends Component {
     static displayName = App.name;
     static propTypes = {
