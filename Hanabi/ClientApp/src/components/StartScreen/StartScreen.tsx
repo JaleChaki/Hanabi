@@ -23,7 +23,7 @@ export const StartScreen: FC<StartScreenProps> = ({ nickName, createGame, joinGa
         <div className="start-screen">
             <label>
                 <p>Username:</p>
-                <input type="text" className="username" value={userName} onBlur={e => setUserName(e.target.value)} required/>
+                <input type="text" className="username" defaultValue={userName} onBlur={e => setUserName(e.target.value)} required/>
             </label>
             <div className="start-screen-actions">
                 <button onClick={createGame}>
