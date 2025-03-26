@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
@@ -10,13 +10,13 @@ import {CookiesProvider} from "react-cookie";
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
 
-ReactDOM.render(
+createRoot(rootElement).render(
     <CookiesProvider>
         <BrowserRouter basename={baseUrl} >
             <App/>
         </BrowserRouter>
     </CookiesProvider>,
-    rootElement);
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
