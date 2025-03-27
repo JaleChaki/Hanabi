@@ -26,10 +26,16 @@ export const GameField: FC<GameFieldProps> = ({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
     const isMobile = screenWidth < 768;
-    const [isHistoryShown, setIsHistoryShown] = React.useState(!isMobile);
+    // const [isHistoryShown, setIsHistoryShown] = React.useState(!isMobile);
+    const [isHistoryShown, setIsHistoryShown] = React.useState(false);
 
     return (
         <Fragment>
+            <div className="sidebar">
+                <button onClick={() => setIsHistoryShown(true)}>
+                    <img src={require("./icons/drawer-hamburger-menu.svg").default} alt="Open game history drawer"/>
+                </button>
+            </div>
             <Drawer isOpen={isHistoryShown} onClose={() => setIsHistoryShown(false)}>
                 <History discardPile={discardPile}/>
             </Drawer>
