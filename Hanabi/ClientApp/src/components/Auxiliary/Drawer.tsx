@@ -26,7 +26,6 @@ export const Drawer: FC<DrawerProps> = ({ title, isOpen, children, onClose }) =>
     }, [isOpen]);
     return (
         <div className={`drawer ${isOpen ? "open" : ""}`}>
-            <div className="drawer-overlay" onClick={onClose}></div>
             <div className="drawer-header">
                 <button className="drawer-close-button" onClick={onClose}>X</button>
                 <h4 className="drawer-title">{title ?? "Default drawer title"}</h4>
@@ -34,6 +33,7 @@ export const Drawer: FC<DrawerProps> = ({ title, isOpen, children, onClose }) =>
             <div className="drawer-content">
                 {children}
             </div>
+            <div className="drawer-overlay" onClick={onClose}></div>
         </div>
     );
 }
