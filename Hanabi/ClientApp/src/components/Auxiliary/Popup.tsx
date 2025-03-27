@@ -25,7 +25,7 @@ export const Popup: FC<PopupProps> = ({ title, children, isOpen, onClose }) => {
     return (
         <dialog ref={dialogRef} className="popup">
             <div className="popup-header">
-                <h4>{title ?? "Default popup value"}</h4>
+                <h4 className="popup-title">{title ?? "Default popup tile"}</h4>
                 <button className="popup-close-button" onClick={() => onClose?.(null)}>X</button>
             </div>
             <div className="popup-content">

@@ -36,7 +36,7 @@ export const GameField: FC<GameFieldProps> = ({
                     <img src={require("./icons/drawer-hamburger-menu.svg").default} alt="Open game history drawer"/>
                 </button>
             </div>
-            <Drawer isOpen={isHistoryShown} onClose={() => setIsHistoryShown(false)}>
+            <Drawer title="Game history" isOpen={isHistoryShown} onClose={() => setIsHistoryShown(false)}>
                 <History discardPile={discardPile}/>
             </Drawer>
             <div className="main-wrapper">
