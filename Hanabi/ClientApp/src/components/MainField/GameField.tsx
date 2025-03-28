@@ -8,7 +8,7 @@ import { Solitaire } from "./Solitaire";
 import { TokenStorage } from "../Tokens/TokenStorage";
 import { IGameState } from "../../SerializationTypes/IGameState";
 import { IPlayerActions } from "../Players/Player";
-import { TokenType } from "../Tokens/Token";
+import { Token, TokenType } from "../Tokens/Token";
 import { PanelPosition, SidePanel } from "../Auxiliary/SidePanel/SidePanel";
 import { SidePanelItem } from "../Auxiliary/SidePanel/SidePanelItem";
 import { SidePanelContents } from "../Auxiliary/SidePanel/SidePanelContents";
@@ -38,17 +38,33 @@ export const GameField: FC<GameFieldProps> = ({
                 <History discardPile={discardPile} />
             } />
             <SidePanelContents>
-                <div className="main-wrapper">
-                    <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
-                    <div className="main-footer">
+                <SidePanel openedStateTitle="Game state" isOpen={false} position={PanelPosition.bottom}>
+                    <SidePanelItem compactContent={
+                        <span>Deck: {cardsInDeck} cards</span>
+                    } expandedContent={
                         <Deck name="Deck:" cardsInDeck={cardsInDeck} />
+                    } />
+                    <SidePanelItem compactContent={
+                        <span>Fireworks: {fireworks}</span> // TODO: add fireworks colors
+                    } expandedContent={
                         <Solitaire fireworks={fireworks}></Solitaire>
-                        <div className="token-storages">
-                            <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
-                            <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens}></TokenStorage>
+                    } />
+                    <SidePanelItem compactContent={
+                        <span><Token type={TokenType.Info}/>: {informationTokens}</span>
+                    } expandedContent={
+                        <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
+                    } />
+                    <SidePanelItem compactContent={
+                        <span><Token type={TokenType.Fuse}/>: {fuseTokens}</span>
+                    } expandedContent={
+                        <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens}></TokenStorage>
+                    } />
+                    <SidePanelContents>
+                        <div className="main-wrapper">
+                            <Players turnIndex={turnIndex} players={players} actions={playerActions} />
                         </div>
-                    </div>
-                </div>
+                    </SidePanelContents>
+                </SidePanel>
             </SidePanelContents>
         </SidePanel>
     );
