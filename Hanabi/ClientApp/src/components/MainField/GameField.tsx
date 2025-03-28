@@ -9,6 +9,8 @@ import { TokenStorage } from "../Tokens/TokenStorage";
 import { IGameState } from "../../SerializationTypes/IGameState";
 import { IPlayerActions } from "../Players/Player";
 import { TokenType } from "../Tokens/Token";
+import { SidePanel } from "../Auxiliary/SidePanel";
+import { SidePanelItem } from "../Auxiliary/SidePanelItem";
 
 type GameFieldProps = {
     gameState: IGameState,
@@ -25,20 +27,17 @@ export const GameField: FC<GameFieldProps> = ({
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-    const isMobile = screenWidth < 768;
-    // const [isHistoryShown, setIsHistoryShown] = React.useState(!isMobile);
-    const [isHistoryShown, setIsHistoryShown] = React.useState(false);
+    const isMobile = screenWidth < 768; // TODO: change sidebar position
 
     return (
         <Fragment>
-            <div className="sidebar">
-                <button onClick={() => setIsHistoryShown(true)}>
+            <SidePanel openedStateTitle="Game history" isOpen={false}>
+                <SidePanelItem compactContent={
                     <img src={require("./icons/drawer-hamburger-menu.svg").default} alt="Open game history drawer"/>
-                </button>
-            </div>
-            <Drawer title="Game history" isOpen={isHistoryShown} onClose={() => setIsHistoryShown(false)}>
-                <History discardPile={discardPile}/>
-            </Drawer>
+                } expandedContent={
+                    <History discardPile={discardPile}/>
+                }/>
+            </SidePanel>
             <div className="main-wrapper">
                 <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
                 <div className="main-footer">
