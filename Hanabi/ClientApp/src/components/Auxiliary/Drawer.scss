@@ -13,6 +13,7 @@
     &.open {
         transform: translateX(0);
     }
+
     .drawer-header {
         display: flex;
         justify-content: space-between;
@@ -37,6 +38,7 @@
 
         .drawer-title {
             margin-right: 0.5rem;
+            margin-bottom: 0;
         }
     }
 
