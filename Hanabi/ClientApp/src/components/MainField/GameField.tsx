@@ -9,18 +9,19 @@ import { TokenStorage } from "../Tokens/TokenStorage";
 import { IGameState } from "../../SerializationTypes/IGameState";
 import { IPlayerActions } from "../Players/Player";
 import { TokenType } from "../Tokens/Token";
-import { SidePanel } from "../Auxiliary/SidePanel";
-import { SidePanelItem } from "../Auxiliary/SidePanelItem";
+import { PanelPosition, SidePanel } from "../Auxiliary/SidePanel/SidePanel";
+import { SidePanelItem } from "../Auxiliary/SidePanel/SidePanelItem";
+import { SidePanelContents } from "../Auxiliary/SidePanel/SidePanelContents";
 
 type GameFieldProps = {
     gameState: IGameState,
     playerActions: IPlayerActions,
 }
 
-export const GameField: FC<GameFieldProps> = ({ 
-        gameState: { turnIndex, players, discardPile, informationTokens, fuseTokens, fireworks, cardsInDeck },
-        playerActions
-    }) => {
+export const GameField: FC<GameFieldProps> = ({
+    gameState: { turnIndex, players, discardPile, informationTokens, fuseTokens, fireworks, cardsInDeck },
+    playerActions
+}) => {
     const [screenWidth, setScreenWidth] = React.useState(window.innerWidth);
     React.useEffect(() => {
         const handleResize = () => setScreenWidth(window.innerWidth);
@@ -30,25 +31,25 @@ export const GameField: FC<GameFieldProps> = ({
     const isMobile = screenWidth < 768; // TODO: change sidebar position
 
     return (
-        <Fragment>
-            <SidePanel openedStateTitle="Game history" isOpen={false}>
-                <SidePanelItem compactContent={
-                    <img src={require("./icons/drawer-hamburger-menu.svg").default} alt="Open game history drawer"/>
-                } expandedContent={
-                    <History discardPile={discardPile}/>
-                }/>
-            </SidePanel>
-            <div className="main-wrapper">
-                <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
-                <div className="main-footer">
-                    <Deck name="Deck:" cardsInDeck={cardsInDeck}/>
-                    <Solitaire fireworks={fireworks}></Solitaire>
-                    <div className="token-storages">
-                        <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
-                        <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens}></TokenStorage>
+        <SidePanel openedStateTitle="Game history" isOpen={false} position={isMobile ? PanelPosition.top : PanelPosition.left}>
+            <SidePanelItem compactContent={
+                <img src={require("./icons/drawer-hamburger-menu.svg").default} alt="Open game history drawer" />
+            } expandedContent={
+                <History discardPile={discardPile} />
+            } />
+            <SidePanelContents>
+                <div className="main-wrapper">
+                    <Players turnIndex={turnIndex} players={players} actions={playerActions} ></Players>
+                    <div className="main-footer">
+                        <Deck name="Deck:" cardsInDeck={cardsInDeck} />
+                        <Solitaire fireworks={fireworks}></Solitaire>
+                        <div className="token-storages">
+                            <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
+                            <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens}></TokenStorage>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </Fragment>
+            </SidePanelContents>
+        </SidePanel>
     );
 }
