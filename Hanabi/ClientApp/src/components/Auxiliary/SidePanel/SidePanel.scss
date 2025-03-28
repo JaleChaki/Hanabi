@@ -7,7 +7,8 @@
   background-color: #f4f4f4;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 
-  &.position-left, &.position-right {
+  &.position-left,
+  &.position-right {
     flex-flow: row nowrap;
 
     &>.side-panel-items {
@@ -17,19 +18,28 @@
     }
   }
 
-  &.position-top, &.position-bottom {
+  &.position-top,
+  &.position-bottom {
     flex-flow: column nowrap;
 
     &>.side-panel-items {
-      flex-flow: column nowrap;
+      flex-flow: row nowrap;
       height: 2rem;
       width: 100%;
     }
   }
 
+  &.position-right {
+    flex-direction: row-reverse;
+  }
+
+  &.position-bottom {
+    flex-direction: column-reverse;
+  }
+
   &>.side-panel-items {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     align-items: flex-start;
     background-color: #f4f4f4;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
