@@ -38,8 +38,8 @@ export const SidePanel: FC<SidePanelProps> = ({ openedStateTitle, isOpen, positi
             : expandedContent
     });
     return (
-        <div className={`side-panel position-${PanelPosition[position]}`} onClick={() => isCollapsed && setIsCollapsed(false)}>
-            <div className="side-panel-items">
+        <div className={`side-panel position-${PanelPosition[position]}`}>
+            <div className="side-panel-items" onClick={() => isCollapsed && setIsCollapsed(false)}>
                 {isCollapsed
                     ? renderedItems
                     : <Drawer title={openedStateTitle} isOpen={true} onClose={() => setIsCollapsed(true)}>{renderedItems}</Drawer>
