@@ -1,39 +1,85 @@
 ﻿@import "../Card/Card.scss";
+
 $card-offset: $card-width / 2;
+$main-bg: #f8f8f8;
+$highlight-bg: #fff9e6;
+$highlight-border: #ffc107;
+$button-selected-bg: #87cefa;
+$button-hover-bg: #dff0ff;
+$transition-speed: 0.3s;
 
 .player {
-  width: 32%;
-  height: 50%;
-  border: 1px solid;
-  flex: 0 1 auto;
+  background-color: $main-bg;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow $transition-speed ease-in-out, background-color $transition-speed;
 
   &.current-player {
-    background-color: beige;
+    background-color: $highlight-bg;
+    border-color: $highlight-border;
+    box-shadow: 0 0 8px rgba($highlight-border, 0.4);
   }
 
   &>.player-header {
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
 
-    &>.actions > .selected-action {
-      background-color: skyblue;
+    &>p {
+      margin: 0;
+      font-weight: 500;
+      font-size: 1.05rem;
+    }
+
+    &>.actions {
+      display: flex;
+      gap: 0.5rem;
+
+      button {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        transition: background-color $transition-speed;
+
+        &:hover {
+          background-color: $button-hover-bg;
+        }
+
+        &.selected-action {
+          background-color: $button-selected-bg;
+          color: #fff;
+          border-color: $button-selected-bg;
+        }
+      }
     }
   }
 
-  .cards-wrapper {
+  &>.cards-wrapper {
     display: flex;
     flex-flow: row nowrap;
-    overflow-x: auto;
-    overflow-y: visible;
-    height: 83%;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
 
-    
+    &>.card-wrapper {
+      &:hover {
+        transform: scale(1.05);
+        transition: transform $transition-speed;
+      }
 
-    .card-wrapper + .card-wrapper {
-      margin-left: -$card-offset;
+      &+.card-wrapper {
+        margin-left: -$card-offset;
+      }
+
+      &.preselected {
+        outline: 2px dashed #87cefa;
+        outline-offset: -4px;
+      }
     }
   }
 }
