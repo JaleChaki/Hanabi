@@ -16,6 +16,10 @@
       height: 100%;
       width: 2rem;
     }
+
+    &>.side-panel-contents {
+      width: calc(100% - 2rem);
+    }
   }
 
   &.position-top,
@@ -26,6 +30,10 @@
       flex-flow: row nowrap;
       height: 2rem;
       width: 100%;
+    }
+
+    &>.side-panel-contents {
+      height: calc(100% - 2rem);
     }
   }
 
