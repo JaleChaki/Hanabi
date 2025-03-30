@@ -54,5 +54,9 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+
+        &+button {
+            margin-left: 0.625rem;
+        }
     }
 }
