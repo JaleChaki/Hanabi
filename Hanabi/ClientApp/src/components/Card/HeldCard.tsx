@@ -1,6 +1,5 @@
-﻿import { PropsWithChildren } from "react";
-import { ColoredCard, CardProps } from "./ColoredCard";
-import { getColorByCode } from "./ColorUtils";
+﻿import { ColoredCard, CardProps } from "./ColoredCard";
+import { getColorByCode, getColorClassName } from "./ColorUtils";
 
 interface HeldCardProps extends
     Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "color">,
@@ -30,9 +29,9 @@ export class HeldCard extends ColoredCard<HeldCardProps> {
 
         if (this.numberIsKnown && !this.isOwn)
             result.push("card-number-known");
-        
-        if(!this.isOwn || this.colorIsKnown)
-            result.push("color-" + getColorByCode(this.color, this.gameMode));
+
+        if (!this.isOwn || this.colorIsKnown)
+            result.push(getColorClassName(this.color, this.gameMode));
 
         return result;
     }
@@ -45,9 +44,9 @@ export class HeldCard extends ColoredCard<HeldCardProps> {
         if (this.isOwn && !this.colorIsKnown)
             result.push("card-unknown-color");
 
-        if(!this.isOwn || this.colorIsKnown)
+        if (!this.isOwn || this.colorIsKnown)
             result.push("card-" + getColorByCode(this.color, this.gameMode));
-        
+
         return result;
     }
 

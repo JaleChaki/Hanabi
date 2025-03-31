@@ -1,5 +1,5 @@
-﻿import {ColoredCard, CardProps} from "./ColoredCard";
-import {getColorByCode} from "./ColorUtils";
+﻿import { ColoredCard } from "./ColoredCard";
+import { getColorByCode, getColorClassName } from "./ColorUtils";
 
 export type FireworkCardProps = {
     color: number;
@@ -12,8 +12,8 @@ export class FireworkCard extends ColoredCard {
         super(props);
     }
 
-    protected override getWrapperCssClasses() : Array<string> {
-        return ["color-" + getColorByCode(this.color, this.gameMode)];
+    protected override getWrapperCssClasses(): Array<string> {
+        return [getColorClassName(this.color, this.gameMode)];
     }
 
     protected override getCardCssClasses(): Array<string> {

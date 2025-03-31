@@ -12,6 +12,7 @@ import { Token, TokenType } from "../Tokens/Token";
 import { PanelPosition, SidePanel } from "../Auxiliary/SidePanel/SidePanel";
 import { SidePanelItem } from "../Auxiliary/SidePanel/SidePanelItem";
 import { SidePanelContents } from "../Auxiliary/SidePanel/SidePanelContents";
+import { getColorClassName } from "../Card/ColorUtils";
 
 type GameFieldProps = {
     gameState: IGameState,
@@ -45,17 +46,21 @@ export const GameField: FC<GameFieldProps> = ({
                         <Deck name="Deck:" cardsInDeck={cardsInDeck} />
                     } />
                     <SidePanelItem compactContent={
-                        <span>Fireworks: {fireworks}</span> // TODO: add fireworks colors
+                        <span>Fireworks:
+                            {fireworks.map((color, index) =>
+                                <span className={getColorClassName(index + 1)}>{color}</span> // TODO: game mode
+                            )}
+                        </span>
                     } expandedContent={
                         <Solitaire fireworks={fireworks}></Solitaire>
                     } />
                     <SidePanelItem compactContent={
-                        <span><Token type={TokenType.Info}/>: {informationTokens}</span>
+                        <span><Token type={TokenType.Info} />: {informationTokens}</span>
                     } expandedContent={
                         <TokenStorage type={TokenType.Info} currentCount={informationTokens}></TokenStorage>
                     } />
                     <SidePanelItem compactContent={
-                        <span><Token type={TokenType.Fuse}/>: {fuseTokens}</span>
+                        <span><Token type={TokenType.Fuse} />: {fuseTokens}</span>
                     } expandedContent={
                         <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens}></TokenStorage>
                     } />

@@ -26,3 +26,6 @@
         }
     }
 }
+export const getColorClassName = (code: number, gameMode: string = "default") : string => {
+    return `color-${getColorByCode(code, gameMode)}`;
+}
