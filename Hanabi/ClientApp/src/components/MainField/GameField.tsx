@@ -46,7 +46,7 @@ export const GameField: FC<GameFieldProps> = ({
                         <Deck name="Deck:" cardsInDeck={cardsInDeck} />
                     } />
                     <SidePanelItem compactContent={
-                        <span>Fireworks:
+                        <span className="footer-fireworks-item">Fireworks:
                             {fireworks.map((color, index) =>
                                 <span className={getColorClassName(index + 1)}>{color}</span> // TODO: game mode
                             )}
