@@ -31,17 +31,20 @@ export const SidePanel: FC<SidePanelProps> = ({ openedStateTitle, isOpen, positi
             mainContent = child;
         }
     });
-    const renderedItems = panelItems.map((item, idx) => {
+    const renderItems = (compact: boolean) => panelItems.map((item, idx) => {
         const { compactContent, expandedContent } = item.props as SidePanelItemProps;
-        return isCollapsed
-            ? <div key={idx} className="side-panel-item">{compactContent}</div>
-            : expandedContent
+        return <div key={idx} className="side-panel-item">{compact ? compactContent : expandedContent}</div>
     });
     return (
         <div className={`side-panel position-${PanelPosition[position]}`}>
             <div className="side-panel-items" onClick={() => isCollapsed && setIsCollapsed(false)}>
-                {renderedItems}
-                <Drawer title={openedStateTitle} isOpen={!isCollapsed} position={position} onClose={() => setIsCollapsed(true)}>{renderedItems}</Drawer>
+                {renderItems(true)}
+                <Drawer title={openedStateTitle}
+                    isOpen={!isCollapsed}
+                    position={position}
+                    onClose={() => setIsCollapsed(true)}>
+                    {renderItems(false)}
+                </Drawer>
             </div>
             {mainContent &&
                 <div className="side-panel-contents">
