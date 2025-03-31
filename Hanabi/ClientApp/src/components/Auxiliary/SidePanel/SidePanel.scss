@@ -60,6 +60,12 @@
       width: 2rem;
       height: 2rem;
     }
+
+    &>.side-panel-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   &>.side-panel-contents {
