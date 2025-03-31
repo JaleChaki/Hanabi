@@ -1,14 +1,16 @@
 import "./Drawer.scss";
 import React, { FC, ReactNode } from "react";
+import { PanelPosition } from "./SidePanel/SidePanel";
 
 type DrawerProps = {
     title?: string,
     isOpen?: boolean,
+    position?: PanelPosition,
     children?: Array<JSX.Element | ReactNode | null> | any,
     onClose?: () => void
 }
 
-export const Drawer: FC<DrawerProps> = ({ title, isOpen, children, onClose }) => {
+export const Drawer: FC<DrawerProps> = ({ title, isOpen, position = PanelPosition.left, children, onClose }) => {
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === "Escape") {
             onClose?.();
@@ -25,7 +27,7 @@ export const Drawer: FC<DrawerProps> = ({ title, isOpen, children, onClose }) =>
         };
     }, [isOpen]);
     return (
-        <div className={`drawer ${isOpen ? "open" : ""}`}>
+        <div className={`drawer ${isOpen ? "open" : ""} position-${PanelPosition[position]}`}>
             <div className="drawer-header">
                 <button className="drawer-close-button" onClick={onClose}>X</button>
                 <h4 className="drawer-title">{title ?? "Default drawer title"}</h4>
