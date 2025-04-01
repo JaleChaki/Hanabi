@@ -46,9 +46,17 @@ export const Popup: FC<PopupProps> = ({ title, children, isOpen, onClose }) => {
         const handlePointerMove = (event: MouseEvent) => {
             if (isDragging) {
                 const dialog = dialogRef.current!;
-                
-                dialog.style.left = `${event.clientX - offset.x}px`;
-                dialog.style.top = `${event.clientY - offset.y}px`;
+                const newPosition = { x: event.clientX - offset.x, y: event.clientY - offset.y };
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                const dialogWidth = dialog.offsetWidth;
+                const dialogHeight = dialog.offsetHeight;
+                if (newPosition.x < 0) newPosition.x = 0;
+                if (newPosition.y < 0) newPosition.y = 0;
+                if (newPosition.x + dialogWidth > windowWidth) newPosition.x = windowWidth - dialogWidth;
+                if (newPosition.y + dialogHeight > windowHeight) newPosition.y = windowHeight - dialogHeight;
+                dialog.style.left = `${newPosition.x}px`;
+                dialog.style.top = `${newPosition.y}px`;
             }
         }
         const handlePointerUp = () => {
