@@ -39,6 +39,9 @@ public class GameService {
         if (session.GetCurrentPlayersCount() >= 5)
             throw new GameAlreadyFullException();
 
+        if(session.GameStatus == GameStatus.InProgress)
+            throw new GameAlreadyStartedException();
+
         var (nickname, connectionId) = _players[playerId];
         session.RegisterPlayer(gameId, playerId, nickname, connectionId);
 

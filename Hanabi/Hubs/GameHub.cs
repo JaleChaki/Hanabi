@@ -46,9 +46,14 @@ public class GameHub : Hub {
 
     public async Task<bool> JoinGame(string gameLink) {
         var userId = GetRequestPlayerGuid();
-        GameService.JoinGame(gameLink.FromUrlSafeShortString(), userId);
-        await ScheduleGameStateUpdate();
-        return true;
+        try {
+            GameService.JoinGame(gameLink.FromUrlSafeShortString(), userId);
+            await ScheduleGameStateUpdate();
+            return true;
+        } catch (GameExceptionBase e) {
+            await Clients.Caller.SendAsync("Error", e.Message);
+            return false;
+        }
     }
 
     public async Task StartGame() {
@@ -62,7 +67,8 @@ public class GameHub : Hub {
         try {
             await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
             return true;
-        } catch (GameNotFoundException) {
+        } catch (GameNotFoundException e) {
+            await Clients.Caller.SendAsync("Error", e.Message);
             return false;
         }
     }

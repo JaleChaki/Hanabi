@@ -17,6 +17,7 @@ public class GameSessionManager {
     }
 
     private List<Player> Players { get; }
+    public GameStatus GameStatus => _gameModel.Status;
 
     public void RegisterPlayer(Guid gameId, Guid playerId, string nickName, string connectionId) {
         bool alreadyRegistered = Players.Exists(p => p.Guid == playerId);
