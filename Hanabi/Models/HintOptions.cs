@@ -1,4 +1,5 @@
-﻿using Hanabi.Game;
+﻿using Hanabi.Exceptions;
+using Hanabi.Game;
 
 namespace Hanabi.Models;
 public class HintOptions {
@@ -18,7 +19,7 @@ public class HintOptions {
 
     public static HintOptions FromCardColor(int cardColor) {
         if(cardColor > 5 || cardColor < 1)
-            throw new ArgumentException("wrong card color", nameof(cardColor));
+            throw new CardNotFoundException(cardColor);
         return new HintOptions(null, (CardColor) cardColor);
     }
 

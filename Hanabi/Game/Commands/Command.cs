@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Hanabi.Exceptions;
 using Hanabi.Models;
 
 namespace Hanabi.Game.Commands;
@@ -12,7 +13,7 @@ public abstract class Command {
 
     public virtual void Apply() {
         if(GameModel.Status != Models.GameStatus.InProgress)
-            throw new InvalidAsynchronousStateException("You cannot continue already finished game");
+            throw new GameAlreadyFinishedException();
     }
 
     protected void EndTurn() {

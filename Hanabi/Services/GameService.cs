@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Hanabi.Exceptions;
 using Hanabi.Game;
 using Hanabi.Models;
 
@@ -8,7 +9,7 @@ public class GameService {
     private readonly ConcurrentDictionary<Guid, GameSessionManager> _games = new();
     private readonly ConcurrentDictionary<Guid, (string Nickname, string ConnectionId)> _players = new();
 
-    public void RegisterPlayer(Guid playerId, string nickname, string connectionId) {
+    public void RegisterOrUpdatePlayer(Guid playerId, string nickname, string connectionId) {
         _players[playerId] = (nickname, connectionId);
     }
 
@@ -36,7 +37,7 @@ public class GameService {
         var session = TryGetGame(gameId);
 
         if (session.GetCurrentPlayersCount() >= 5)
-            throw new InvalidOperationException("Game is already at full capacity.");
+            throw new GameAlreadyFullException();
 
         var (nickname, connectionId) = _players[playerId];
         session.RegisterPlayer(gameId, playerId, nickname, connectionId);
@@ -49,9 +50,9 @@ public class GameService {
         var playersCount = session.GetCurrentPlayersCount();
 
         if (playersCount <= 1)
-            throw new InvalidOperationException("Cannot start game with 1 or less players.");
+            throw new InvalidGameStateException("Cannot start game with 1 or less players.");
         if (playersCount > 5)
-            throw new InvalidOperationException("Cannot start game with 6 or more players.");
+            throw new InvalidGameStateException("Cannot start game with 6 or more players.");
 
         session.Start();
     }
@@ -69,18 +70,18 @@ public class GameService {
     public GameSessionManager GetSessionManagerByPlayer(Guid playerId) {
         CheckPlayerExists(playerId);
         if (!_playerGameMap.TryGetValue(playerId, out var gameId))
-            throw new InvalidOperationException("No game found for this player.");
+            throw new GameNotFoundException();
         return TryGetGame(gameId);
     }
 
     private void CheckPlayerExists(Guid playerId) {
         if (!_players.ContainsKey(playerId))
-            throw new InvalidOperationException("Player not found.");
+            throw new PlayerNotFoundException(playerId);
     }
 
     private GameSessionManager TryGetGame(Guid gameId) {
         if (!_games.TryGetValue(gameId, out var session))
-            throw new InvalidOperationException("Game not found.");
+            throw new GameNotFoundException();
         return session;
     }
 }

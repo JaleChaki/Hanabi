@@ -1,4 +1,5 @@
-﻿using Hanabi.Game.Commands;
+﻿using Hanabi.Exceptions;
+using Hanabi.Game.Commands;
 using Hanabi.Hubs;
 using Hanabi.Models;
 using Microsoft.AspNetCore.SignalR;
@@ -76,19 +77,19 @@ public class GameSessionManager {
 
     private string GetPlayerName(Guid playerId) => 
         Players.Find(p => p.Guid.Equals(playerId))?.NickName 
-        ?? throw new ArgumentOutOfRangeException(nameof(playerId), $"Player with GUID '{playerId}' does not exist in current game");
+        ?? throw new PlayerNotFoundException(playerId);
 
     #region PlayerActions
     public void MakeHint(Guid currentPlayerId, Guid targetPlayerId, HintOptions options) {
         if(_gameModel.InformationTokens < 1) {
-            throw new ArgumentOutOfRangeException("You cannot give hints when there's no information tokens left");
+            throw new InvalidGameActionException("You cannot give hints when there's no information tokens left");
         }
         EnsurePlayerExists(targetPlayerId);
         EnsurePlayerExists(currentPlayerId);
         if(currentPlayerId == targetPlayerId)
-            throw new ArgumentException("current and target player can not be equal");
+            throw new InvalidGameActionException("current and target player can not be equal");
         if(options.CardColor.HasValue && !_gameModel.Fireworks.ContainsKey(options.CardColor.Value))
-            throw new ArgumentException("specified card color is not presented in game");
+            throw new InvalidGameActionException("specified card color is not presented in game");
 
         lock(_syncRoot) {
             EnsureActivePlayer(currentPlayerId);
@@ -100,7 +101,7 @@ public class GameSessionManager {
 
     public void DropCard(Guid currentPlayerId, int cardIndex) {
         if(_gameModel.InformationTokens == 8) {
-            throw new ArgumentOutOfRangeException("You cannot drop cards when there's all 8 information tokens available");
+            throw new InvalidGameActionException("You cannot drop cards when there's all 8 information tokens available");
         }
         EnsurePlayerExists(currentPlayerId);
 
@@ -128,17 +129,17 @@ public class GameSessionManager {
 
     private void EnsurePlayerExists(Guid playerId) {
         if(!_gameModel.PlayerOrder.Contains(playerId))
-            throw new ArgumentException("Invalid player id", nameof(playerId));
+            throw new PlayerNotFoundException(playerId, "Invalid player id");
     }
 
     private void EnsureActivePlayer(Guid playerId) {
         if(playerId != _gameModel.ActivePlayer)
-            throw new ArgumentException("Invalid active player", nameof(playerId));
+            throw new PlayerNotFoundException(playerId, "Invalid active player");
     }
 
     private void EnsureCardIndex(Guid playerId, int cardIndex) {
         if(cardIndex >= _gameModel.PlayerHands[playerId].Count || cardIndex < 0)
-            throw new ArgumentException("Invalid card index", nameof(cardIndex));
+            throw new CardNotFoundException(cardIndex);
     }
 
     internal int GetCurrentPlayersCount() {
