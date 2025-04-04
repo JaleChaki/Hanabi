@@ -1,0 +1,43 @@
+.toast {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+
+    &.visible {
+        opacity: 1;
+        display: block;
+    }
+
+    &:not(.visible) {
+        opacity: 0;
+        display: none;
+    }
+
+    &.success {
+        background-color: #4caf50;
+        color: white;
+    }
+    &.error {
+        background-color: #f44336;
+        color: white;
+    }
+    &.info {
+        background-color: #2196F3;
+        color: white;
+    }
+    &.warning {
+        background-color: #ff9800;
+        color: white;
+    }
+    &.dark {
+        background-color: #333;
+        color: white;
+    }
+
+}
