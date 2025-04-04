@@ -32,7 +32,7 @@ public class GameHub : Hub {
     
     public bool RegisterPlayer(string userNickName) {
         var userId = GetRequestPlayerGuid();
-        GameService.RegisterPlayer(userId, userNickName, Context.ConnectionId);
+        GameService.RegisterOrUpdatePlayer(userId, userNickName, Context.ConnectionId);
         return true;
     }
 
