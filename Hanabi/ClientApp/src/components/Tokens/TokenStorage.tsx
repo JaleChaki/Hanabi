@@ -1,5 +1,5 @@
-﻿import React, {FC} from "react"
-import {Token, TokenType} from "./Token";
+﻿import React, { FC } from "react"
+import { Token, TokenType } from "./Token";
 
 import "./TokenStorage.scss"
 
@@ -8,11 +8,10 @@ type TokenStorageProps = {
     currentCount: number
 }
 
-export const TokenStorage: FC<TokenStorageProps> = ({type, currentCount}) => {
+export const TokenStorage: FC<TokenStorageProps> = ({ type, currentCount }) => {
     const maxCount = type === TokenType.Fuse ? 3 : 8;
-    if (maxCount < currentCount)
-        // TODO: add some error notification?
-        currentCount = maxCount
+    // TODO: add some error notification?
+    currentCount = Math.min(currentCount, maxCount);
     return (
         <div className="token-storage-wrapper">
             <strong className="token-storage-count">x {currentCount}</strong>
