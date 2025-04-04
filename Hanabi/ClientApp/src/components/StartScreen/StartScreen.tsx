@@ -9,15 +9,16 @@ type StartScreenProps = {
 
 export const StartScreen: FC<StartScreenProps> = ({ nickName, createGame, joinGame }) => {
     const [userName, setUserName] = useState<string>(nickName);
-    const gameLinkRegex = new RegExp("^[\\w\\-_]{22}$", "gm");
+    const gameLinkRegex = new RegExp("^[\\w\\-_]{22}$", "g");
 
     const onJoinButtonClick = () => {
         const gameLinkEntered = window.prompt("Enter a room code:");
         if(!gameLinkEntered || !gameLinkRegex.test(gameLinkEntered)) {
-            alert("You need to ender a valid room code")
+            alert("You need to ender a valid room code");
         } else {
             joinGame(gameLinkEntered);
         }
+        gameLinkRegex.lastIndex = 0;
     }
     return(
         <div className="start-screen">
