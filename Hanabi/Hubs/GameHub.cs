@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 using System.Security.Principal;
+using Hanabi.Exceptions;
 
 namespace Hanabi.Hubs;
 public class NameIdentity : IIdentity {
@@ -56,9 +57,14 @@ public class GameHub : Hub {
         await ScheduleGameStateUpdate();
     }
 
-    public async Task GetGameState() {
+    public async Task<bool> GetGameState() {
         var userId = GetRequestPlayerGuid();
-        await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
+        try {
+            await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
+            return true;
+        } catch (GameNotFoundException) {
+            return false;
+        }
     }
 
     public async Task ScheduleGameStateUpdate() {

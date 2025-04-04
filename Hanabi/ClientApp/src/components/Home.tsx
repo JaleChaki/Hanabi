@@ -51,11 +51,16 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
             getGameState();
         });
 
-        connection.current.start().then(registerPlayer).then(setIsRegistered);
+        connection.current.start().then(registerPlayer).then(setIsRegistered).then(tryRestoreSession);
     }
 
     const registerPlayer = () =>
         connection.current.invoke("RegisterPlayer", userNickName).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    const tryRestoreSession = () =>
+        getGameState().then(setIsPlayerReady).catch(function (err) {
             return console.error(err.toString());
         });
 
