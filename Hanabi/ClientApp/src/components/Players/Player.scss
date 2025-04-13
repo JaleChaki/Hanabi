@@ -40,17 +40,15 @@ $transition-speed: 0.3s;
       gap: 0.5rem;
 
       button {
+        --button-hover-bg: #{$button-hover-bg};
+
         border: 1px solid #ccc;
         border-radius: 4px;
         background-color: white;
         transition: background-color $transition-speed;
 
-        &:hover {
-          background-color: $button-hover-bg;
-        }
-
         &.selected-action {
-          background-color: $button-selected-bg;
+          --button-bg: #{$button-selected-bg};
           color: #fff;
           border-color: $button-selected-bg;
         }

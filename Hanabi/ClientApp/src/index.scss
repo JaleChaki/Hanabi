@@ -9,3 +9,35 @@ html, body {
     align-items: center;
     justify-content: center;
 }
+
+button {
+    --button-bg: #007bff;
+    --button-hover-bg: #0056b3;
+    --button-disabled-bg: #cccccc;
+
+    padding: 0.5rem 1rem;
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--button-hover-bg);
+    }
+
+    &:disabled {
+        background-color: var(--button-disabled-bg);
+        cursor: not-allowed;
+    }
+
+    &+button {
+        margin-left: 0.625rem;
+    }
+
+    &.warning {
+        --button-bg: #dc3545;
+        --button-hover-bg: #c82333;
+        --button-disabled-bg: #ff9090;
+    }
+}
