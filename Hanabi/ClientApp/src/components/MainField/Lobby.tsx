@@ -26,7 +26,7 @@ export const Lobby: FC<LobbyProps> = ({ players, gameLink, startGame }) => {
                 <button onClick={copyGameLink}>Copy code</button>
                 <ShareButton title="Hanabi" text="Join me in Hanabi!" url={gameLink} />
             </p>
-            <button disabled={players.length <= 1} onClick={startGame}>Start game</button>
+            <button disabled={players.length <= 1 || players.length > 5} onClick={startGame}>Start game</button>
         </div>
     );
 }
