@@ -68,7 +68,7 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
         });
 
     const tryRestoreSession = () =>
-        getGameState().then(setIsPlayerReady).catch(function (err) {
+        getGameState(true).then(setIsPlayerReady).catch(function (err) {
             return console.error(err.toString());
         });
 
@@ -87,8 +87,8 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
             return console.error(err.toString());
         });
 
-    const getGameState = () =>
-        connection.current.invoke("GetGameState").catch(function (err) {
+    const getGameState = (isFirstAttempt: boolean = false) =>
+        connection.current.invoke("GetGameState", isFirstAttempt).catch(function (err) {
             return console.error(err.toString());
         });
 

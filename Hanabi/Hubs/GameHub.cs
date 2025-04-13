@@ -62,13 +62,14 @@ public class GameHub : Hub {
         await ScheduleGameStateUpdate();
     }
 
-    public async Task<bool> GetGameState() {
+    public async Task<bool> GetGameState(bool isFirstAttempt) {
         var userId = GetRequestPlayerGuid();
         try {
             await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
             return true;
         } catch (GameNotFoundException e) {
-            await Clients.Caller.SendAsync("Error", e.Message);
+            if(!isFirstAttempt)
+                await Clients.Caller.SendAsync("Error", e.Message);
             return false;
         }
     }
