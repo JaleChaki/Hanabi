@@ -9,6 +9,7 @@ public class GameSessionManager {
     private readonly Guid _gameId;
     private readonly object _syncRoot = new object();
     private GameModel _gameModel;
+    private List<Player> Players { get; }
 
     public GameSessionManager(Guid gameId) {
         Players = new();
@@ -16,8 +17,8 @@ public class GameSessionManager {
         _gameId = gameId;
     }
 
-    private List<Player> Players { get; }
     public GameStatus GameStatus => _gameModel.Status;
+    public Guid GameId => _gameId;
 
     public void RegisterPlayer(Guid gameId, Guid playerId, string nickName, string connectionId) {
         bool alreadyRegistered = Players.Exists(p => p.Guid == playerId);
@@ -30,6 +31,28 @@ public class GameSessionManager {
             _gameModel = GameModelBuilder.CreateMock(gameId, Players.Select(p => p.Guid).ToArray());
         }
     }
+
+    public void RemovePlayer(Guid playerId) {
+        lock (_syncRoot) {
+            EnsurePlayerExists(playerId);
+            var index = Players.FindIndex(p => p.Guid == playerId);
+            if (index == -1) {
+                throw new PlayerNotFoundException(playerId, "Player not found in the session (how?)");
+            }
+            if(_gameModel.Status != GameStatus.Pending) {
+                _gameModel.Status = GameStatus.Paused;
+                throw new InvalidPlayerStateException($"Player {Players[index].NickName} exit the game, let's wait for him to rejoin");
+            }
+            if(!_gameModel.IsMock) {
+                throw new GameAlreadyStartedException();
+            }
+            Players.RemoveAt(index);
+            if(GetCurrentPlayersCount() != 0) {
+                _gameModel = GameModelBuilder.CreateMock(_gameId, Players.Select(p => p.Guid).ToArray());
+            }
+        }
+    }
+
     public string GetPlayerConnectionId(string nickname) {
         return Players.FirstOrDefault(p => p.NickName == nickname).ConnectionId;
     }

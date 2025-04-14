@@ -54,6 +54,11 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
             getGameState();
         });
 
+        connection.current.on("GameLeft", _ => {
+            setIsPlayerReady(false);
+            setGameState({} as any);
+        });
+
         connection.current.on("Error", message => {
             setErrorToastMessage(message ?? "Something went wrong. Please try again later.");
             setErrorToastVisible(true);
@@ -68,7 +73,7 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
         });
 
     const tryRestoreSession = () =>
-        getGameState(true).then(setIsPlayerReady).catch(function (err) {
+        getGameState().then(setIsPlayerReady).catch(function (err) {
             return console.error(err.toString());
         });
 
@@ -87,8 +92,13 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
             return console.error(err.toString());
         });
 
-    const getGameState = (isFirstAttempt: boolean = false) =>
-        connection.current.invoke("GetGameState", isFirstAttempt).catch(function (err) {
+    const leaveGame = () =>
+        connection.current.invoke("LeaveGame").catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    const getGameState = () =>
+        connection.current.invoke("GetGameState").catch(function (err) {
             return console.error(err.toString());
         });
 
@@ -100,7 +110,7 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
                     ? <StartScreen nickName={userNickName} createGame={createGame} joinGame={joinGame} />
                     : !Object.prototype.hasOwnProperty.call(gameState, 'gameStatus')
                         ? <span>Loading...</span>
-                        : <MainLayout gameState={gameState} playerActions={playerActions} startGame={startGame} />
+                        : <MainLayout gameState={gameState} playerActions={playerActions} startGame={startGame} leaveGame={leaveGame} />
             }
             <Toast message={errorToastMessage} type={ToastType.Error} isVisible={errorToastVisible} onClose={() => setErrorToastVisible(false)} />
         </Fragment>

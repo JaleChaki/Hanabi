@@ -53,9 +53,9 @@ public class PlayerNotFoundException : PlayerExceptionBase {
 public class PlayerAlreadyInGameException : PlayerExceptionBase {
     public PlayerAlreadyInGameException(string message) : base(message) { }
 }
-// public class InvalidPlayerStateException : PlayerExceptionBase {
-//     public InvalidPlayerStateException(string message) : base(message) { }
-// }
+public class InvalidPlayerStateException : PlayerExceptionBase {
+    public InvalidPlayerStateException(string message) : base(message) { }
+}
 #endregion
 #region CardRelatedExceptions
 public class CardExceptionBase : Exception {

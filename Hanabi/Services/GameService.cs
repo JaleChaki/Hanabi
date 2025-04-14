@@ -60,6 +60,17 @@ public class GameService {
         session.Start();
     }
 
+    public void LeaveGame(Guid playerId) {
+        CheckPlayerExists(playerId);
+        var session = GetSessionManagerByPlayer(playerId);
+        session.RemovePlayer(playerId);
+        _playerGameMap.TryRemove(playerId, out _);
+
+        if(session.GetCurrentPlayersCount() == 0) {
+            _games.TryRemove(session.GameId, out _);
+        }
+    }
+
     public string GetPlayerConnectionId(Guid playerId) {
         CheckPlayerExists(playerId);
         return _players[playerId].ConnectionId;

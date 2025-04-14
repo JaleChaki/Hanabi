@@ -56,20 +56,29 @@ public class GameHub : Hub {
         }
     }
 
+    public async Task LeaveGame() {
+        var userId = GetRequestPlayerGuid();
+        try {
+            GameService.LeaveGame(userId);
+        } catch (InvalidPlayerStateException e) {
+            await Clients.Caller.SendAsync("Error", e.Message);
+        }
+        await Clients.Caller.SendAsync("GameLeft");
+        await ScheduleGameStateUpdate();
+    }
+
     public async Task StartGame() {
         var userId = GetRequestPlayerGuid();
         GameService.StartGame(userId);
         await ScheduleGameStateUpdate();
     }
 
-    public async Task<bool> GetGameState(bool isFirstAttempt) {
+    public async Task<bool> GetGameState() {
         var userId = GetRequestPlayerGuid();
         try {
             await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
             return true;
-        } catch (GameNotFoundException e) {
-            if(!isFirstAttempt)
-                await Clients.Caller.SendAsync("Error", e.Message);
+        } catch {
             return false;
         }
     }

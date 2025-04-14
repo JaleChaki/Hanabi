@@ -6,9 +6,10 @@ import { ShareButton } from "../Auxiliary/ShareButton";
 type LobbyProps = {
     players: IPlayer[],
     gameLink: string,
-    startGame: () => void
+    startGame: () => void,
+    leaveGame: () => void
 }
-export const Lobby: FC<LobbyProps> = ({ players, gameLink, startGame }) => {
+export const Lobby: FC<LobbyProps> = ({ players, gameLink, startGame, leaveGame }) => {
     const copyGameLink = () => {
         navigator.clipboard.writeText(gameLink);
     }
@@ -26,7 +27,10 @@ export const Lobby: FC<LobbyProps> = ({ players, gameLink, startGame }) => {
                 <button onClick={copyGameLink}>Copy code</button>
                 <ShareButton title="Hanabi" text="Join me in Hanabi!" url={gameLink} />
             </p>
-            <button disabled={players.length <= 1 || players.length > 5} onClick={startGame}>Start game</button>
+            <div className="actions">
+                <button disabled={players.length <= 1 || players.length > 5} onClick={startGame}>Start game</button>
+                <button className="warning" onClick={leaveGame}>Leave game</button>
+            </div>
         </div>
     );
 }

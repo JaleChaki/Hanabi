@@ -11,18 +11,19 @@ import { GameField } from "./GameField";
 type MainLayoutProps = {
     gameState: IGameState,
     playerActions: IPlayerActions,
-    startGame: () => {}
+    startGame: () => {},
+    leaveGame: () => {}
 }
-export const MainLayout: FC<MainLayoutProps> = ({ gameState, playerActions, startGame }) => {
+export const MainLayout: FC<MainLayoutProps> = ({ gameState, playerActions, startGame, leaveGame }) => {
     const { gameStatus, players, gameLink, fireworks } = gameState;
 
     return (
         <div className="main-field">
-            {gameStatus === GameStatus.Pending 
-                ? <Lobby players={players} gameLink={gameLink} startGame={startGame}/>
+            {gameStatus === GameStatus.Pending
+                ? <Lobby players={players} gameLink={gameLink} startGame={startGame} leaveGame={leaveGame} />
                 : gameStatus === GameStatus.InProgress
-                    ? <GameField gameState={gameState} playerActions={playerActions}/>
-                    : <GameEndPanel status={gameStatus} totalScore={fireworks.reduce((acc, cur) => acc + cur, 0)}/>
+                    ? <GameField gameState={gameState} playerActions={playerActions} />
+                    : <GameEndPanel status={gameStatus} totalScore={fireworks.reduce((acc, cur) => acc + cur, 0)} />
             }
         </div>
     )
