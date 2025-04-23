@@ -48,8 +48,9 @@ public class Startup {
                 };
             });
 
-        services.AddSingleton<GameService>();
         services.AddSingleton<AccountService>();
+        services.AddSingleton<GameService>();
+        services.AddOptions<PlayerSessionOptions>().BindConfiguration("Session").ValidateOnStart().ValidateDataAnnotations();
 
         services.AddSignalR();
     }
