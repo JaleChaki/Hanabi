@@ -4,7 +4,6 @@ using Hanabi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 using System.Security.Principal;
 using Hanabi.Exceptions;
 
@@ -22,24 +21,18 @@ public class NameIdentity : IIdentity {
 
 }
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-public class GameHub : Hub {
-    Dictionary<string, string> ClientIds;
-    public GameHub(GameService gameService) {
-        GameService = gameService;
-        ClientIds = new();
-    }
-
-    private GameService GameService { get; }
+public class GameHub(IPlayerSessionStoreService playerSessionStore, GameService gameService) : Hub {
+    Dictionary<string, string> ClientIds = new();
     
     public bool RegisterPlayer(string userNickName) {
         var userId = GetRequestPlayerGuid();
-        GameService.RegisterOrUpdatePlayer(userId, userNickName, Context.ConnectionId);
+        gameService.RegisterOrUpdatePlayer(userId, userNickName, Context.ConnectionId);
         return true;
     }
 
     public async Task<bool> CreateGame() {
         var userId = GetRequestPlayerGuid();
-        GameService.CreateGame(userId);
+        gameService.CreateGame(userId);
         await ScheduleGameStateUpdate();
         return true;
     }
@@ -47,7 +40,7 @@ public class GameHub : Hub {
     public async Task<bool> JoinGame(string gameLink) {
         var userId = GetRequestPlayerGuid();
         try {
-            GameService.JoinGame(gameLink.FromUrlSafeShortString(), userId);
+            gameService.JoinGame(gameLink.FromUrlSafeShortString(), userId);
             await ScheduleGameStateUpdate();
             return true;
         } catch (GameExceptionBase e) {
@@ -57,26 +50,20 @@ public class GameHub : Hub {
     }
 
     public async Task LeaveGame() {
-        var userId = GetRequestPlayerGuid();
-        try {
-            GameService.LeaveGame(userId);
-        } catch (InvalidPlayerStateException e) {
-            await Clients.Caller.SendAsync("Error", e.Message);
-        }
-        await Clients.Caller.SendAsync("GameLeft");
+        gameService.LeaveGame(GetRequestPlayerGuid(), true);
         await ScheduleGameStateUpdate();
     }
 
     public async Task StartGame() {
         var userId = GetRequestPlayerGuid();
-        GameService.StartGame(userId);
+        gameService.StartGame(userId);
         await ScheduleGameStateUpdate();
     }
 
     public async Task<bool> GetGameState() {
         var userId = GetRequestPlayerGuid();
         try {
-            await Clients.Caller.SendAsync("SetGameState", GameService.GetGameState(userId));
+            await Clients.Caller.SendAsync("SetGameState", gameService.GetGameState(userId));
             return true;
         } catch {
             return false;
@@ -90,36 +77,46 @@ public class GameHub : Hub {
     public async Task MakeColorHint(string targetPlayerNickname, int color) {
         var userId = GetRequestPlayerGuid();
         var targetPlayerId = GetPlayerGuid(targetPlayerNickname);
-        GameService.GetSessionManagerByPlayer(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardColor(color));
+        gameService.GetSessionManagerByPlayer(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardColor(color));
         await ScheduleGameStateUpdate();
     }
 
     public async Task MakeNumberHint(string targetPlayerNickname, int number) {
         var userId = GetRequestPlayerGuid();
         var targetPlayerId = GetPlayerGuid(targetPlayerNickname);
-        GameService.GetSessionManagerByPlayer(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardNumber(number));
+        gameService.GetSessionManagerByPlayer(userId).MakeHint(userId, targetPlayerId, HintOptions.FromCardNumber(number));
         await ScheduleGameStateUpdate();
     }
 
     public async Task DropCard(int cardIndex) {
         var userId = GetRequestPlayerGuid();
-        GameService.GetSessionManagerByPlayer(userId).DropCard(userId, cardIndex);
+        gameService.GetSessionManagerByPlayer(userId).DropCard(userId, cardIndex);
         await ScheduleGameStateUpdate();
     }
 
     public async Task PlayCard(int cardIndex) {
         var userId = GetRequestPlayerGuid();
-        GameService.GetSessionManagerByPlayer(userId).PlayCard(userId, cardIndex);
+        gameService.GetSessionManagerByPlayer(userId).PlayCard(userId, cardIndex);
         await ScheduleGameStateUpdate();
     }
 
     private Guid GetPlayerGuid(string userIdString) => Guid.Parse(userIdString);
     private Guid GetRequestPlayerGuid() => GetPlayerGuid(Context.User.Identity.Name);
-    public override Task OnConnectedAsync() {
-        Console.WriteLine("New connection!");
-        // this.Clients.Client("XGgSrccsRa6o5GNKkimp9w").SendAsync()
-        // this.Clients.User("XGgSrccsRa6o5GNKkimp9w")
+    public override async Task OnConnectedAsync() {
         ClientIds.Add(Context.User.Identity.Name, Context.ConnectionId);
-        return base.OnConnectedAsync();
+        var userId = GetRequestPlayerGuid();
+        playerSessionStore.AddOrUpdateSession(userId, Context.ConnectionId);
+        if(gameService.TryReconnect(userId, Context.ConnectionId)) {
+            await ScheduleGameStateUpdate();
+        }
+        await base.OnConnectedAsync();
+    }
+    public override async Task OnDisconnectedAsync(Exception exception) {
+        ClientIds.Remove(Context.User.Identity.Name);
+        var userId = GetRequestPlayerGuid();
+        playerSessionStore.MarkDisconnected(userId);
+        gameService.LeaveGame(GetRequestPlayerGuid(), false);
+        await ScheduleGameStateUpdate();
+        await base.OnDisconnectedAsync(exception);
     }
 }

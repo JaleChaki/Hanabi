@@ -24,9 +24,17 @@ export interface IPlayerActions {
     playCard: (cardIndex: number) => void
 }
 
-export const Player: FC<PlayerProps> = ({ info: { id, nick, heldCards, isActivePlayer, isSessionOwner }, actions, turnKey, activePlayerMode, onActivePlayerModeChanged }) => {
+export const Player: FC<PlayerProps> = ({ info: { id, nick, heldCards, isActivePlayer, isSessionOwner, isConnected }, actions, turnKey, activePlayerMode, onActivePlayerModeChanged }) => {
     const [cardFilter, setCardFilter] = useState<CardFilterCriteria>(new CardFilterCriteria());
     
+    const getPlayerCssClass = (): string => {
+        let result = "player";
+        if(isActivePlayer && isSessionOwner) 
+            result += " current-player";
+        if(!isConnected)
+            result += " disconnected-player";
+        return result;
+    }
 
     const getCardWrapperCssClass = (card: ICard): string => cardFilter.testCard(card) ? "preselected" : "";
 
@@ -80,7 +88,7 @@ export const Player: FC<PlayerProps> = ({ info: { id, nick, heldCards, isActiveP
     }
 
     return (
-        <div className={`player ${isActivePlayer && isSessionOwner ? "current-player" : ""}`}>
+        <div className={getPlayerCssClass()}>
             <div className="player-header">
                 <p><strong>Nick: </strong>{nick}</p>
                 {isActivePlayer && isSessionOwner ?
@@ -93,6 +101,7 @@ export const Player: FC<PlayerProps> = ({ info: { id, nick, heldCards, isActiveP
                     </div>
                     : null
                 }
+                {!isConnected && <span className="disconnected-player">Reconnecting...</span>}
             </div>
             <div className="cards-wrapper">
                 {heldCards.map((card, i) =>

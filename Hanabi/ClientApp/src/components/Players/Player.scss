@@ -4,6 +4,8 @@ $card-offset: $card-width / 2;
 $main-bg: #f8f8f8;
 $highlight-bg: #fff9e6;
 $highlight-border: #ffc107;
+$darken-bg: #a1a1aa;
+$darken-border: #52525b;
 $button-selected-bg: #87cefa;
 $button-hover-bg: #dff0ff;
 $transition-speed: 0.3s;
@@ -20,6 +22,12 @@ $transition-speed: 0.3s;
     background-color: $highlight-bg;
     border-color: $highlight-border;
     box-shadow: 0 0 8px rgba($highlight-border, 0.4);
+  }
+
+  &.disconnected-player {
+    background-color: $darken-bg;
+    border-color: $darken-border;
+    box-shadow: 0 0 8px rgba($darken-border, 0.4);
   }
 
   &>.player-header {

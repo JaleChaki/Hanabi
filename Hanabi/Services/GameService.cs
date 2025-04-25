@@ -5,6 +5,7 @@ using Hanabi.Models;
 
 namespace Hanabi.Services;
 public class GameService {
+    private readonly object _syncRoot = new object();
     private readonly ConcurrentDictionary<Guid, Guid> _playerGameMap = new();
     private readonly ConcurrentDictionary<Guid, GameSessionManager> _games = new();
     private readonly ConcurrentDictionary<Guid, (string Nickname, string ConnectionId)> _players = new();
@@ -48,6 +49,16 @@ public class GameService {
         _playerGameMap[playerId] = gameId;
     }
 
+    public bool TryReconnect(Guid playerId, string connectionId) {
+        try {
+            CheckPlayerExists(playerId);
+            var session = GetSessionManagerByPlayer(playerId);
+            session.ReconnectPlayer(playerId, connectionId);
+            return true;
+        } catch (PlayerNotFoundException) { return false; }
+        catch (GameNotFoundException) { return false; }
+    }
+
     public void StartGame(Guid playerId) {
         var session = GetSessionManagerByPlayer(playerId);
         var playersCount = session.GetCurrentPlayersCount();
@@ -60,14 +71,29 @@ public class GameService {
         session.Start();
     }
 
-    public void LeaveGame(Guid playerId) {
+    public void TerminateGame(Guid playerId) {
+        lock(_syncRoot) {
+            var session = GetSessionManagerByPlayer(playerId);
+            session.Terminate();
+            _games.TryRemove(session.GameId, out _);
+            var keysToRemove = _playerGameMap.Where(kvp => kvp.Value == session.GameId).Select(kvp => kvp.Key).ToList();
+            foreach (var key in keysToRemove) {
+                _playerGameMap.TryRemove(key, out _);
+            }
+        }
+    }
+
+    public void LeaveGame(Guid playerId, bool isItentionally) {
         CheckPlayerExists(playerId);
         var session = GetSessionManagerByPlayer(playerId);
-        session.RemovePlayer(playerId);
-        _playerGameMap.TryRemove(playerId, out _);
+        if(isItentionally) {
+            session.RemovePlayer(playerId);
+        } else {
+            session.MarkPlayerDisconnected(playerId);
+        }
 
-        if(session.GetCurrentPlayersCount() == 0) {
-            _games.TryRemove(session.GameId, out _);
+        if(session.AreAllPlayersDisconnected() || session.GetCurrentPlayersCount() == 0) {
+            TerminateGame(playerId);
         }
     }
 

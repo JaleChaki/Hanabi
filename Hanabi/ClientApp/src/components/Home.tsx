@@ -51,7 +51,7 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
 
         connection.current.on("RequestUpdate", _ => {
             // TODO: optimize rendering by not returning anything if turn number is the same as in previous state
-            getGameState();
+            getGameState().then(setIsPlayerReady);
         });
 
         connection.current.on("GameLeft", _ => {

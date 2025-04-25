@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Hanabi.Hubs;
+using Hanabi.Models;
 using Hanabi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -51,6 +52,8 @@ public class Startup {
         services.AddSingleton<AccountService>();
         services.AddSingleton<GameService>();
         services.AddOptions<PlayerSessionOptions>().BindConfiguration("Session").ValidateOnStart().ValidateDataAnnotations();
+        services.AddSingleton<IPlayerSessionStoreService, PlayerSessionStoreService>();
+        services.AddHostedService<PlayerSessionCleanupService>();
 
         services.AddSignalR();
     }
@@ -69,7 +72,9 @@ public class Startup {
 
         app.UseEndpoints(endpoints => {
             endpoints.MapControllers();
-            endpoints.MapHub<GameHub>("/gamehub");
+            endpoints.MapHub<GameHub>("/gamehub", options => {
+                options.AllowStatefulReconnects = true;
+            });
             endpoints.MapFallbackToFile("index.html");
         });
     }

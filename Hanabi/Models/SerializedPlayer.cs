@@ -5,4 +5,5 @@ public class SerializedPlayer {
     public IReadOnlyList<SerializedCard> HeldCards { get; init; }
     public bool IsActivePlayer { get; set; }
     public bool IsSessionOwner { get; set; }
+    public bool IsConnected { get; set; }
 }

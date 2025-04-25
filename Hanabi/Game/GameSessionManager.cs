@@ -21,11 +21,13 @@ public class GameSessionManager {
     public Guid GameId => _gameId;
 
     public void RegisterPlayer(Guid gameId, Guid playerId, string nickName, string connectionId) {
+        EnsureGameIsNotFinished();
         bool alreadyRegistered = Players.Exists(p => p.Guid == playerId);
         if(!alreadyRegistered) {
             Players.Add(new Player() {
-                NickName = nickName,
                 Guid = playerId,
+                NickName = nickName,
+                IsConnected = true,
                 ConnectionId = connectionId
             });
             _gameModel = GameModelBuilder.CreateMock(gameId, Players.Select(p => p.Guid).ToArray());
@@ -34,21 +36,35 @@ public class GameSessionManager {
 
     public void RemovePlayer(Guid playerId) {
         lock (_syncRoot) {
+            EnsureGameIsNotFinished();
+            if(_gameModel.Status == GameStatus.Pending) {
+                Players.RemoveAll(p => p.Guid == playerId);
+            } else {
+                EnsurePlayerExists(playerId);
+                Players.First(p => p.Guid == playerId).IsConnected = false;
+            }
+            _gameModel = GameModelBuilder.CreateMock(_gameId, Players.Select(p => p.Guid).ToArray());
+        }
+    }
+
+    public void MarkPlayerDisconnected(Guid playerId) {
+        lock (_syncRoot) {
+            EnsureGameIsNotFinished();
             EnsurePlayerExists(playerId);
-            var index = Players.FindIndex(p => p.Guid == playerId);
-            if (index == -1) {
-                throw new PlayerNotFoundException(playerId, "Player not found in the session (how?)");
-            }
-            if(_gameModel.Status != GameStatus.Pending) {
-                _gameModel.Status = GameStatus.Paused;
-                throw new InvalidPlayerStateException($"Player {Players[index].NickName} exit the game, let's wait for him to rejoin");
-            }
-            if(!_gameModel.IsMock) {
-                throw new GameAlreadyStartedException();
-            }
-            Players.RemoveAt(index);
-            if(GetCurrentPlayersCount() != 0) {
-                _gameModel = GameModelBuilder.CreateMock(_gameId, Players.Select(p => p.Guid).ToArray());
+            Players.First(p => p.Guid == playerId).IsConnected = false;
+        }
+    }
+
+     public void ReconnectPlayer(Guid playerId, string connectionId) {
+        lock (_syncRoot) {
+            EnsureGameIsNotFinished();
+            EnsurePlayerExists(playerId);
+            var player = Players.First(p => p.Guid == playerId);
+            player.ConnectionId = connectionId;
+            player.IsConnected = true;
+            var areAllPlayersConnected = Players.All(p => p.IsConnected);
+            if(_gameModel.Status == GameStatus.Paused && areAllPlayersConnected) {
+                _gameModel.Status = GameStatus.InProgress;
             }
         }
     }
@@ -58,11 +74,22 @@ public class GameSessionManager {
     }
 
     public void Start() {
+        EnsureGameIsNotFinished();
         _gameModel = GameModelBuilder.CreateNew(_gameId, Players.Select(p => p.Guid).ToArray());
         _gameModel.Status = GameStatus.InProgress;
     }
 
+    public void Terminate() {
+        EnsureGameIsNotFinished();
+        _gameModel.Status = _gameModel.FuseTokens < 3 
+            ? _gameModel.Fireworks.All(s => s.Value == 5)
+                ? GameStatus.FlawlessVictory
+                : GameStatus.Victory 
+            : GameStatus.Failure;
+    }
+
     public SerializedGameState GetModelCurrentState(Guid playerId) {
+        EnsureGameIsNotFinished();
         EnsurePlayerExists(playerId);
 
         SerializedGameState result;
@@ -77,6 +104,7 @@ public class GameSessionManager {
                     return new SerializedPlayer {
                         IsActivePlayer = _gameModel.ActivePlayer == playerId,
                         IsSessionOwner = isSessionOwner,
+                        IsConnected = Players.First(p => p.Guid == id).IsConnected,
                         Id = id,
                         Nick = GetPlayerName(id),
                         HeldCards = _gameModel.IsMock ? null : _gameModel.PlayerHands[id].Select(card => new SerializedCard {
@@ -94,7 +122,7 @@ public class GameSessionManager {
                 TurnIndex = _gameModel.TotalTurnsCount,
                 GameStatus = _gameModel.Status,
                 GameLink = _gameModel.ToUrlSafeShortString() // TODO: ???
-            };
+            }; 
         }
         return result;
     }
@@ -105,6 +133,7 @@ public class GameSessionManager {
 
     #region PlayerActions
     public void MakeHint(Guid currentPlayerId, Guid targetPlayerId, HintOptions options) {
+        EnsureGameIsNotFinished();
         if(_gameModel.InformationTokens < 1) {
             throw new InvalidGameActionException("You cannot give hints when there's no information tokens left");
         }
@@ -124,6 +153,7 @@ public class GameSessionManager {
     }
 
     public void DropCard(Guid currentPlayerId, int cardIndex) {
+        EnsureGameIsNotFinished();
         if(_gameModel.InformationTokens == 8) {
             throw new InvalidGameActionException("You cannot drop cards when there's all 8 information tokens available");
         }
@@ -139,6 +169,7 @@ public class GameSessionManager {
     }
 
     public void PlayCard(Guid currentPlayerId, int cardIndex) {
+        EnsureGameIsNotFinished();
         EnsurePlayerExists(currentPlayerId);
 
         lock(_syncRoot) {
@@ -166,14 +197,24 @@ public class GameSessionManager {
             throw new CardNotFoundException(cardIndex);
     }
 
+    private void EnsureGameIsNotFinished() {
+        if(_gameModel.Status == GameStatus.FlawlessVictory || _gameModel.Status == GameStatus.Victory || _gameModel.Status == GameStatus.Failure)
+            throw new GameAlreadyFinishedException();
+    }
+
     internal int GetCurrentPlayersCount() {
         return Players.Count;
     }
+
+    internal bool AreAllPlayersDisconnected() {
+        return Players.All(p => !p.IsConnected);
+    }
 }
 public class Player : IEquatable<Player> {
-    public string NickName { get; init; }
-    public string ConnectionId { get; init; }
     public Guid Guid { get; init; }
+    public string NickName { get; set; }
+    public bool IsConnected { get; set; }
+    public string ConnectionId { get; set; }
 
     public bool Equals(Player other) {
         if(other == null) {
