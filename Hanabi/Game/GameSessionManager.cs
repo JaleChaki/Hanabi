@@ -102,7 +102,7 @@ public class GameSessionManager {
                 Players = _gameModel.PlayerOrder.Select(id => {
                     var isSessionOwner = playerId == id;
                     return new SerializedPlayer {
-                        IsActivePlayer = _gameModel.ActivePlayer == playerId,
+                        IsActivePlayer = _gameModel.ActivePlayer == id,
                         IsSessionOwner = isSessionOwner,
                         IsConnected = Players.First(p => p.Guid == id).IsConnected,
                         Id = id,

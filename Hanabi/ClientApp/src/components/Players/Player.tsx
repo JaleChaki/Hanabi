@@ -29,7 +29,7 @@ export const Player: FC<PlayerProps> = ({ info: { id, nick, heldCards, isActiveP
     
     const getPlayerCssClass = (): string => {
         let result = "player";
-        if(isActivePlayer && isSessionOwner) 
+        if(isActivePlayer) 
             result += " current-player";
         if(!isConnected)
             result += " disconnected-player";
