@@ -6,5 +6,6 @@ export interface IPlayer {
     heldCards: Array<ICard>,
     isActivePlayer: boolean,
     isSessionOwner: boolean,
-    isConnected: boolean
+    isConnected: boolean,
+    isIntentionallyDisconnected: boolean
 }

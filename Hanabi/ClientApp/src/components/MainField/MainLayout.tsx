@@ -22,7 +22,7 @@ export const MainLayout: FC<MainLayoutProps> = ({ gameState, playerActions, star
             {gameStatus === GameStatus.Pending
                 ? <Lobby players={players} gameLink={gameLink} startGame={startGame} leaveGame={leaveGame} />
                 : gameStatus === GameStatus.InProgress
-                    ? <GameField gameState={gameState} playerActions={playerActions} />
+                    ? <GameField gameState={gameState} playerActions={playerActions} leaveGame={leaveGame} />
                     : <GameEndPanel status={gameStatus} totalScore={fireworks.reduce((acc, cur) => acc + cur, 0)} />
             }
         </div>

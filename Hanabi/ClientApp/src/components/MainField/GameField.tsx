@@ -13,15 +13,18 @@ import { PanelPosition, SidePanel } from "../Auxiliary/SidePanel/SidePanel";
 import { SidePanelItem } from "../Auxiliary/SidePanel/SidePanelItem";
 import { SidePanelContents } from "../Auxiliary/SidePanel/SidePanelContents";
 import { getColorClassName } from "../Card/ColorUtils";
+import { FloatingActionButton } from "../Auxiliary/FloatingActionButton";
 
 type GameFieldProps = {
     gameState: IGameState,
     playerActions: IPlayerActions,
+    leaveGame: () => {}
 }
 
 export const GameField: FC<GameFieldProps> = ({
     gameState: { turnIndex, players, discardPile, informationTokens, fuseTokens, fireworks, cardsInDeck },
-    playerActions
+    playerActions,
+    leaveGame
 }) => {
     const [screenWidth, setScreenWidth] = React.useState(window.innerWidth);
     React.useEffect(() => {
@@ -32,45 +35,48 @@ export const GameField: FC<GameFieldProps> = ({
     const isMobile = screenWidth < 768; // TODO: change sidebar position
 
     return (
-        <SidePanel openedStateTitle="Game history" isOpen={false} position={isMobile ? PanelPosition.top : PanelPosition.left}>
-            <SidePanelItem compactContent={
-                <img src={require("./icons/drawer-hamburger-menu.svg").default} alt="Open game history drawer" />
-            } expandedContent={
-                <History discardPile={discardPile} key="game-state-history" />
-            } />
-            <SidePanelContents>
-                <SidePanel openedStateTitle="Game state" isOpen={false} position={PanelPosition.bottom}>
-                    <SidePanelItem compactContent={
-                        <span>Deck: {cardsInDeck} cards</span>
-                    } expandedContent={
-                        <Deck name="Deck:" cardsInDeck={cardsInDeck} key="game-state-deck" />
-                    } />
-                    <SidePanelItem compactContent={
-                        <span className="footer-fireworks-item">Fireworks:
-                            {fireworks.map((color, index) =>
-                                <span className={getColorClassName(index + 1)} key={`footer-color-${index}`}>{color}</span> // TODO: game mode
-                            )}
-                        </span>
-                    } expandedContent={
-                        <Solitaire fireworks={fireworks} key="game-state-solitare" />
-                    } />
-                    <SidePanelItem compactContent={
-                        <span><Token type={TokenType.Info} />: {informationTokens}</span>
-                    } expandedContent={
-                        <TokenStorage type={TokenType.Info} currentCount={informationTokens} key="game-state-info-token-storage" />
-                    } />
-                    <SidePanelItem compactContent={
-                        <span><Token type={TokenType.Fuse} />: {fuseTokens}</span>
-                    } expandedContent={
-                        <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens} key="game-state-fuse-token-storage" />
-                    } />
-                    <SidePanelContents>
-                        <div className="main-wrapper">
-                            <Players turnIndex={turnIndex} players={players} actions={playerActions} />
-                        </div>
-                    </SidePanelContents>
-                </SidePanel>
-            </SidePanelContents>
-        </SidePanel>
+        <Fragment>
+            <SidePanel openedStateTitle="Game history" isOpen={false} position={isMobile ? PanelPosition.top : PanelPosition.left}>
+                <SidePanelItem compactContent={
+                    <img src={require("./icons/drawer-hamburger-menu.svg").default} alt="Open game history drawer" />
+                } expandedContent={
+                    <History discardPile={discardPile} key="game-state-history" />
+                } />
+                <SidePanelContents>
+                    <SidePanel openedStateTitle="Game state" isOpen={false} position={PanelPosition.bottom}>
+                        <SidePanelItem compactContent={
+                            <span>Deck: {cardsInDeck} cards</span>
+                        } expandedContent={
+                            <Deck name="Deck:" cardsInDeck={cardsInDeck} key="game-state-deck" />
+                        } />
+                        <SidePanelItem compactContent={
+                            <span className="footer-fireworks-item">Fireworks:
+                                {fireworks.map((color, index) =>
+                                    <span className={getColorClassName(index + 1)} key={`footer-color-${index}`}>{color}</span> // TODO: game mode
+                                )}
+                            </span>
+                        } expandedContent={
+                            <Solitaire fireworks={fireworks} key="game-state-solitare" />
+                        } />
+                        <SidePanelItem compactContent={
+                            <span><Token type={TokenType.Info} />: {informationTokens}</span>
+                        } expandedContent={
+                            <TokenStorage type={TokenType.Info} currentCount={informationTokens} key="game-state-info-token-storage" />
+                        } />
+                        <SidePanelItem compactContent={
+                            <span><Token type={TokenType.Fuse} />: {fuseTokens}</span>
+                        } expandedContent={
+                            <TokenStorage type={TokenType.Fuse} currentCount={fuseTokens} key="game-state-fuse-token-storage" />
+                        } />
+                        <SidePanelContents>
+                            <div className="main-wrapper">
+                                <Players turnIndex={turnIndex} players={players} actions={playerActions} />
+                            </div>
+                        </SidePanelContents>
+                    </SidePanel>
+                </SidePanelContents>
+            </SidePanel>
+            <FloatingActionButton icon={require("./icons/leave.png")} tooltipText="Leave game" onClick={leaveGame} />
+        </Fragment>
     );
 }

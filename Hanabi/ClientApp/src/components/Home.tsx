@@ -87,6 +87,11 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
             return console.error(err.toString());
         }).then(setIsPlayerReady);
 
+    const reconnectGame = () =>
+        connection.current.invoke("ReconnectGame").catch(function (err) {
+            return console.error(err.toString());
+        }).then(setIsPlayerReady);
+
     const startGame = () =>
         connection.current.invoke("StartGame").catch(function (err) {
             return console.error(err.toString());
@@ -102,13 +107,20 @@ export const Home = (props: { loginAccessToken: string, userId: string, userNick
             return console.error(err.toString());
         });
 
+    const isGameStateExists = () => gameState !== null && gameState !== undefined && Object.prototype.hasOwnProperty.call(gameState, 'gameStatus');
+    const isCurrentPlayerIntentionallyDisconnected = () => gameState?.players?.find(player => player.id === userId)?.isIntentionallyDisconnected ?? false;
+
     return (
         <Fragment>
             {!isRegistered
                 ? <span>Loading...</span>
-                : !isPlayerReady
-                    ? <StartScreen nickName={userNickName} createGame={createGame} joinGame={joinGame} />
-                    : !Object.prototype.hasOwnProperty.call(gameState, 'gameStatus')
+                : !isPlayerReady || isGameStateExists() && isCurrentPlayerIntentionallyDisconnected()
+                    ? <StartScreen nickName={userNickName} 
+                                   isIntentionallyDisconnected={isCurrentPlayerIntentionallyDisconnected()} 
+                                   createGame={createGame} 
+                                   joinGame={joinGame}
+                                   reconnectGame={reconnectGame} />
+                    : !isGameStateExists()
                         ? <span>Loading...</span>
                         : <MainLayout gameState={gameState} playerActions={playerActions} startGame={startGame} leaveGame={leaveGame} />
             }

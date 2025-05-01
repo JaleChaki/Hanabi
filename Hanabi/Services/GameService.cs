@@ -49,14 +49,16 @@ public class GameService {
         _playerGameMap[playerId] = gameId;
     }
 
-    public bool TryReconnect(Guid playerId, string connectionId) {
-        try {
-            CheckPlayerExists(playerId);
-            var session = GetSessionManagerByPlayer(playerId);
-            session.ReconnectPlayer(playerId, connectionId);
-            return true;
-        } catch (PlayerNotFoundException) { return false; }
-        catch (GameNotFoundException) { return false; }
+    public void TryRejoin(Guid playerId) {
+        CheckPlayerExists(playerId);
+        var session = GetSessionManagerByPlayer(playerId);
+        session.TryRejoin(playerId);
+    }
+
+    public void TryReconnect(Guid playerId, string connectionId) {
+        CheckPlayerExists(playerId);
+        var session = GetSessionManagerByPlayer(playerId);
+        session.TryReconnectPlayer(playerId, connectionId);
     }
 
     public void StartGame(Guid playerId) {

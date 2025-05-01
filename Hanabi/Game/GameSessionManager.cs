@@ -39,11 +39,13 @@ public class GameSessionManager {
             EnsureGameIsNotFinished();
             if(_gameModel.Status == GameStatus.Pending) {
                 Players.RemoveAll(p => p.Guid == playerId);
+                _gameModel = GameModelBuilder.CreateMock(_gameId, Players.Select(p => p.Guid).ToArray());
             } else {
                 EnsurePlayerExists(playerId);
-                Players.First(p => p.Guid == playerId).IsConnected = false;
+                var player = Players.First(p => p.Guid == playerId);
+                player.IsConnected = false;
+                player.IsIntentionallyDisconnected = true;
             }
-            _gameModel = GameModelBuilder.CreateMock(_gameId, Players.Select(p => p.Guid).ToArray());
         }
     }
 
@@ -51,21 +53,37 @@ public class GameSessionManager {
         lock (_syncRoot) {
             EnsureGameIsNotFinished();
             EnsurePlayerExists(playerId);
-            Players.First(p => p.Guid == playerId).IsConnected = false;
+            var player = Players.First(p => p.Guid == playerId);
+            player.IsConnected = false;
+            player.IsIntentionallyDisconnected |= false;
         }
     }
 
-     public void ReconnectPlayer(Guid playerId, string connectionId) {
+    public bool TryRejoin(Guid playerId) {
         lock (_syncRoot) {
             EnsureGameIsNotFinished();
             EnsurePlayerExists(playerId);
             var player = Players.First(p => p.Guid == playerId);
+            player.IsConnected = true;
+            player.IsIntentionallyDisconnected = false;
+            return true;
+        }
+    }
+
+     public bool TryReconnectPlayer(Guid playerId, string connectionId) {
+        lock (_syncRoot) {
+            EnsureGameIsNotFinished();
+            EnsurePlayerExists(playerId);
+            var player = Players.First(p => p.Guid == playerId);
+            if(player.IsIntentionallyDisconnected) return false;
             player.ConnectionId = connectionId;
             player.IsConnected = true;
+            player.IsIntentionallyDisconnected = false;
             var areAllPlayersConnected = Players.All(p => p.IsConnected);
             if(_gameModel.Status == GameStatus.Paused && areAllPlayersConnected) {
                 _gameModel.Status = GameStatus.InProgress;
             }
+            return true;
         }
     }
 
@@ -105,6 +123,7 @@ public class GameSessionManager {
                         IsActivePlayer = _gameModel.ActivePlayer == id,
                         IsSessionOwner = isSessionOwner,
                         IsConnected = Players.First(p => p.Guid == id).IsConnected,
+                        IsIntentionallyDisconnected = Players.First(p => p.Guid == id).IsIntentionallyDisconnected,
                         Id = id,
                         Nick = GetPlayerName(id),
                         HeldCards = _gameModel.IsMock ? null : _gameModel.PlayerHands[id].Select(card => new SerializedCard {
@@ -214,6 +233,7 @@ public class Player : IEquatable<Player> {
     public Guid Guid { get; init; }
     public string NickName { get; set; }
     public bool IsConnected { get; set; }
+    public bool IsIntentionallyDisconnected { get; set; }
     public string ConnectionId { get; set; }
 
     public bool Equals(Player other) {

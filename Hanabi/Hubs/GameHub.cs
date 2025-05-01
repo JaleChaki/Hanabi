@@ -49,6 +49,17 @@ public class GameHub(IPlayerSessionStoreService playerSessionStore, GameService 
         }
     }
 
+    public async Task<bool> ReconnectGame() {
+        try {
+            gameService.TryRejoin(GetRequestPlayerGuid());
+            await ScheduleGameStateUpdate();
+            return true;
+        } catch (GameExceptionBase e) {
+            await Clients.Caller.SendAsync("Error", e.Message);
+            return false;
+        }
+    }
+
     public async Task LeaveGame() {
         gameService.LeaveGame(GetRequestPlayerGuid(), true);
         await ScheduleGameStateUpdate();
@@ -106,9 +117,10 @@ public class GameHub(IPlayerSessionStoreService playerSessionStore, GameService 
         ClientIds.Add(Context.User.Identity.Name, Context.ConnectionId);
         var userId = GetRequestPlayerGuid();
         playerSessionStore.AddOrUpdateSession(userId, Context.ConnectionId);
-        if(gameService.TryReconnect(userId, Context.ConnectionId)) {
-            await ScheduleGameStateUpdate();
-        }
+        try {
+            gameService.TryReconnect(userId, Context.ConnectionId);
+        } catch {}
+        await ScheduleGameStateUpdate();
         await base.OnConnectedAsync();
     }
     public override async Task OnDisconnectedAsync(Exception exception) {

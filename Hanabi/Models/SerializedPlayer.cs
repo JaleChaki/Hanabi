@@ -6,4 +6,5 @@ public class SerializedPlayer {
     public bool IsActivePlayer { get; set; }
     public bool IsSessionOwner { get; set; }
     public bool IsConnected { get; set; }
+    public bool IsIntentionallyDisconnected { get; set; }
 }
