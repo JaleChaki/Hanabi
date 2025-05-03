@@ -50,9 +50,8 @@ public class Startup {
             });
 
         services.AddSingleton<AccountService>();
-        services.AddSingleton<GameService>();
+        services.AddSingleton<IGameService, GameService>();
         services.AddOptions<PlayerSessionOptions>().BindConfiguration("Session").ValidateOnStart().ValidateDataAnnotations();
-        services.AddSingleton<IPlayerSessionStoreService, PlayerSessionStoreService>();
         services.AddHostedService<PlayerSessionCleanupService>();
 
         services.AddSignalR();

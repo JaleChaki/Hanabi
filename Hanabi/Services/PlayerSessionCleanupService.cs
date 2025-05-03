@@ -7,14 +7,13 @@ using Microsoft.Extensions.Options;
 namespace Hanabi.Services;
 
 public sealed class PlayerSessionCleanupService(
-    GameService gameService, 
-    IHubContext<GameHub> hub, 
-    IPlayerSessionStoreService playerSessionStore, 
+    IGameService gameService, 
+    IHubContext<GameHub> hub,  
     IOptions<PlayerSessionOptions> playerSessionOptions
 ) : BackgroundService {
     protected override async Task ExecuteAsync(CancellationToken stop) {
         while (!stop.IsCancellationRequested) {
-            foreach (var playerId in playerSessionStore.CollectExpired()) {
+            foreach (var playerId in gameService.CollectExpired()) {
                 try {
                     gameService.TerminateGame(playerId);
                     await hub.Clients.All.SendAsync("RequestUpdate", stop);
@@ -22,7 +21,7 @@ public sealed class PlayerSessionCleanupService(
                     // swallow or log – a stale player can already be gone
                 }
             }
-            playerSessionStore.CleanupExpired();
+            gameService.CleanupExpired();
             await Task.Delay(playerSessionOptions.Value.GraceTimeout, stop);
         }
     }

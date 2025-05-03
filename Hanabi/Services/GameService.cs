@@ -2,51 +2,123 @@
 using Hanabi.Exceptions;
 using Hanabi.Game;
 using Hanabi.Models;
+using Microsoft.Extensions.Options;
 
 namespace Hanabi.Services;
-public class GameService {
+
+public interface IGameService {
+    void RegisterOrUpdatePlayer(Guid playerId, string nickname, string connectionId);
+    void ChangeNickname(Guid playerId, string newNickname);
+    Guid CreateGame(Guid playerId);
+    void JoinGame(Guid gameId, Guid playerId);
+    void TryRejoin(Guid playerId);
+    void TryReconnect(Guid playerId, string connectionId);
+    void StartGame(Guid playerId);
+    void TerminateGame(Guid playerId);
+    void LeaveGame(Guid playerId, bool isItentionally);
+    string GetPlayerConnectionId(Guid playerId);
+    GameSessionManager GetSessionManagerByPlayer(Guid playerId);
+    SerializedGameState GetGameState(Guid playerId);
+    void MarkDisconnected(Guid playerId);
+    IReadOnlyList<Guid> CollectExpired();
+    void CleanupExpired();
+}
+public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): IGameService {
     private readonly object _syncRoot = new object();
     private readonly ConcurrentDictionary<Guid, Guid> _playerGameMap = new();
     private readonly ConcurrentDictionary<Guid, GameSessionManager> _games = new();
-    private readonly ConcurrentDictionary<Guid, (string Nickname, string ConnectionId)> _players = new();
+    private readonly ConcurrentDictionary<Guid, PlayerSessionInfo> _players = new();
 
     public void RegisterOrUpdatePlayer(Guid playerId, string nickname, string connectionId) {
-        _players[playerId] = (nickname, connectionId);
+        _players.AddOrUpdate(
+            playerId,
+            id => new PlayerSessionInfo(playerSessionOptions) {
+                PlayerId = id,
+                NickName = nickname,
+                IsIntentionallyDisconnected = false,
+                Connected = true,
+                ConnectionId = connectionId,
+                LastActive = null
+            },
+            (id, existing) => {
+                if(existing.IsExpired) {
+                    return new PlayerSessionInfo(playerSessionOptions) {
+                        PlayerId = id,
+                        Connected = true,
+                        LastActive = null
+                    };
+                }
+
+                existing.Connected = true;
+                existing.ConnectionId = connectionId;
+                existing.LastActive = null;
+                return existing;
+            }
+        );
+    }
+
+    public void MarkDisconnected(Guid playerId) {
+        if (_players.TryGetValue(playerId, out var session)) {
+            session.Connected = false;
+            session.LastActive = DateTime.UtcNow;
+        }
+    }
+
+    public IReadOnlyList<Guid> CollectExpired() {
+        return _players
+            .Where(kvp => kvp.Value.IsExpired)
+            .Select(kvp => kvp.Key)
+            .ToList();
+    }
+    
+    public void CleanupExpired() {
+        foreach (var expiredPlayerId in CollectExpired()) {
+            _players.TryRemove(expiredPlayerId, out _);
+        }
     }
 
     public void ChangeNickname(Guid playerId, string newNickname) {
         CheckPlayerExists(playerId);
-        var (_, connId) = _players[playerId];
-        _players[playerId] = (newNickname, connId);
+        if(_players.TryGetValue(playerId, out var session)) {
+            session.NickName = newNickname;
+        }
     }
 
     public Guid CreateGame(Guid playerId) {
-        CheckPlayerExists(playerId);
-        var gameId = Guid.NewGuid();
-        var newSessionManager = new GameSessionManager(gameId);
+        lock(_syncRoot) {
+            CheckPlayerExists(playerId);
 
-        var (nickname, connectionId) = _players[playerId];
-        newSessionManager.RegisterPlayer(gameId, playerId, nickname, connectionId);
-
-        _games[gameId] = newSessionManager;
-        _playerGameMap[playerId] = gameId;
-        return gameId;
+            if(_players.TryGetValue(playerId, out var session)) {
+                var gameId = Guid.NewGuid();
+                var newSessionManager = new GameSessionManager(gameId);
+                newSessionManager.RegisterPlayer(gameId, playerId, session.NickName, session.ConnectionId);
+                _games[gameId] = newSessionManager;
+                _playerGameMap[playerId] = gameId;
+                return gameId;
+            }
+            
+            throw new PlayerNotFoundException(playerId);
+        }
     }
 
     public void JoinGame(Guid gameId, Guid playerId) {
-        CheckPlayerExists(playerId);
-        var session = TryGetGame(gameId);
+        lock(_syncRoot) {
+            CheckPlayerExists(playerId);
+            var gameSession = TryGetGame(gameId);
 
-        if (session.GetCurrentPlayersCount() >= 5)
-            throw new GameAlreadyFullException();
+            if (gameSession.GetCurrentPlayersCount() >= 5)
+                throw new GameAlreadyFullException();
 
-        if(session.GameStatus == GameStatus.InProgress)
-            throw new GameAlreadyStartedException();
+            if(gameSession.GameStatus == GameStatus.InProgress)
+                throw new GameAlreadyStartedException();
 
-        var (nickname, connectionId) = _players[playerId];
-        session.RegisterPlayer(gameId, playerId, nickname, connectionId);
-
-        _playerGameMap[playerId] = gameId;
+            if(_players.TryGetValue(playerId, out var session)) {
+                gameSession.RegisterPlayer(gameId, playerId, session.NickName, session.ConnectionId);
+                _playerGameMap[playerId] = gameId;
+            } else {
+                throw new PlayerNotFoundException(playerId);
+            }
+        }
     }
 
     public void TryRejoin(Guid playerId) {

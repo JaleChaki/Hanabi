@@ -21,9 +21,7 @@ public class NameIdentity : IIdentity {
 
 }
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-public class GameHub(IPlayerSessionStoreService playerSessionStore, GameService gameService) : Hub {
-    Dictionary<string, string> ClientIds = new();
-    
+public class GameHub(IGameService gameService) : Hub {
     public bool RegisterPlayer(string userNickName) {
         var userId = GetRequestPlayerGuid();
         gameService.RegisterOrUpdatePlayer(userId, userNickName, Context.ConnectionId);
@@ -114,9 +112,8 @@ public class GameHub(IPlayerSessionStoreService playerSessionStore, GameService 
     private Guid GetPlayerGuid(string userIdString) => Guid.Parse(userIdString);
     private Guid GetRequestPlayerGuid() => GetPlayerGuid(Context.User.Identity.Name);
     public override async Task OnConnectedAsync() {
-        ClientIds.Add(Context.User.Identity.Name, Context.ConnectionId);
         var userId = GetRequestPlayerGuid();
-        playerSessionStore.AddOrUpdateSession(userId, Context.ConnectionId);
+        // playerSessionStore.AddOrUpdateSession(userId, Context.ConnectionId);
         try {
             gameService.TryReconnect(userId, Context.ConnectionId);
         } catch {}
@@ -124,9 +121,8 @@ public class GameHub(IPlayerSessionStoreService playerSessionStore, GameService 
         await base.OnConnectedAsync();
     }
     public override async Task OnDisconnectedAsync(Exception exception) {
-        ClientIds.Remove(Context.User.Identity.Name);
         var userId = GetRequestPlayerGuid();
-        playerSessionStore.MarkDisconnected(userId);
+        // playerSessionStore.MarkDisconnected(userId);
         gameService.LeaveGame(GetRequestPlayerGuid(), false);
         await ScheduleGameStateUpdate();
         await base.OnDisconnectedAsync(exception);
