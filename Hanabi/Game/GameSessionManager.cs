@@ -229,17 +229,3 @@ public class GameSessionManager {
         return Players.All(p => !p.IsConnected);
     }
 }
-public class Player : IEquatable<Player> {
-    public Guid Guid { get; init; }
-    public string NickName { get; set; }
-    public bool IsConnected { get; set; }
-    public bool IsIntentionallyDisconnected { get; set; }
-    public string ConnectionId { get; set; }
-
-    public bool Equals(Player other) {
-        if(other == null) {
-            return false;
-        }
-        return Guid.Equals(other.Guid);
-    }
-}
