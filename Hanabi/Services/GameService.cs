@@ -32,26 +32,15 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
     public void RegisterOrUpdatePlayer(Guid playerId, string nickname, string connectionId) {
         _players.AddOrUpdate(
             playerId,
-            id => new PlayerSessionInfo(playerSessionOptions) {
+            id => new PlayerSessionInfo {
                 PlayerId = id,
                 NickName = nickname,
-                IsIntentionallyDisconnected = false,
-                Connected = true,
-                ConnectionId = connectionId,
-                LastActive = null
+                ConnectionId = connectionId
             },
             (id, existing) => {
-                if(existing.IsExpired) {
-                    return new PlayerSessionInfo(playerSessionOptions) {
-                        PlayerId = id,
-                        Connected = true,
-                        LastActive = null
-                    };
-                }
-
-                existing.Connected = true;
+                existing.PlayerId = id;
+                existing.NickName = nickname;
                 existing.ConnectionId = connectionId;
-                existing.LastActive = null;
                 return existing;
             }
         );
@@ -59,8 +48,7 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
 
     public void MarkDisconnected(Guid playerId) {
         if (_players.TryGetValue(playerId, out var session)) {
-            session.Connected = false;
-            session.LastActive = DateTime.UtcNow;
+            session.SetConnected(false);
         }
     }
 
@@ -80,6 +68,7 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
     public void ChangeNickname(Guid playerId, string newNickname) {
         CheckPlayerExists(playerId);
         if(_players.TryGetValue(playerId, out var session)) {
+            session.SetConnected(true);
             session.NickName = newNickname;
         }
     }
@@ -89,6 +78,7 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
             CheckPlayerExists(playerId);
 
             if(_players.TryGetValue(playerId, out var session)) {
+                session.SetConnected(true);
                 var gameId = Guid.NewGuid();
                 var newSessionManager = new GameSessionManager(gameId);
                 newSessionManager.RegisterPlayer(gameId, playerId, session.NickName, session.ConnectionId);
@@ -113,6 +103,7 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
                 throw new GameAlreadyStartedException();
 
             if(_players.TryGetValue(playerId, out var session)) {
+                session.SetConnected(true);
                 gameSession.RegisterPlayer(gameId, playerId, session.NickName, session.ConnectionId);
                 _playerGameMap[playerId] = gameId;
             } else {
@@ -134,23 +125,25 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
     }
 
     public void StartGame(Guid playerId) {
-        var session = GetSessionManagerByPlayer(playerId);
-        var playersCount = session.GetCurrentPlayersCount();
+        lock(_syncRoot) {
+            var gameSession = GetSessionManagerByPlayer(playerId);
+            var playersCount = gameSession.GetCurrentPlayersCount();
 
-        if (playersCount <= 1)
-            throw new InvalidGameStateException("Cannot start game with 1 or less players.");
-        if (playersCount > 5)
-            throw new InvalidGameStateException("Cannot start game with 6 or more players.");
+            if (playersCount <= 1)
+                throw new InvalidGameStateException("Cannot start game with 1 or less players.");
+            if (playersCount > 5)
+                throw new InvalidGameStateException("Cannot start game with 6 or more players.");
 
-        session.Start();
+            gameSession.Start();
+        }
     }
 
     public void TerminateGame(Guid playerId) {
         lock(_syncRoot) {
-            var session = GetSessionManagerByPlayer(playerId);
-            session.Terminate();
-            _games.TryRemove(session.GameId, out _);
-            var keysToRemove = _playerGameMap.Where(kvp => kvp.Value == session.GameId).Select(kvp => kvp.Key).ToList();
+            var gameSession = GetSessionManagerByPlayer(playerId);
+            gameSession.Terminate();
+            _games.TryRemove(gameSession.GameId, out _);
+            var keysToRemove = _playerGameMap.Where(kvp => kvp.Value == gameSession.GameId).Select(kvp => kvp.Key).ToList();
             foreach (var key in keysToRemove) {
                 _playerGameMap.TryRemove(key, out _);
             }
@@ -159,14 +152,14 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
 
     public void LeaveGame(Guid playerId, bool isItentionally) {
         CheckPlayerExists(playerId);
-        var session = GetSessionManagerByPlayer(playerId);
+        var gameSession = GetSessionManagerByPlayer(playerId);
         if(isItentionally) {
-            session.RemovePlayer(playerId);
+            gameSession.RemovePlayer(playerId);
         } else {
-            session.MarkPlayerDisconnected(playerId);
+            gameSession.MarkPlayerDisconnected(playerId);
         }
 
-        if(session.AreAllPlayersDisconnected() || session.GetCurrentPlayersCount() == 0) {
+        if(gameSession.AreAllPlayersDisconnected() || gameSession.GetCurrentPlayersCount() == 0) {
             TerminateGame(playerId);
         }
     }
@@ -188,7 +181,7 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
         return TryGetGame(gameId);
     }
 
-    private void CheckPlayerExists(Guid playerId) {
+    private void CheckPlayerExists(Guid playerId) { // TODO: return player
         if (!_players.ContainsKey(playerId))
             throw new PlayerNotFoundException(playerId);
     }
