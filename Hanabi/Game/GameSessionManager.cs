@@ -70,8 +70,8 @@ public class GameSessionManager {
         }
     }
 
-     public bool TryReconnectPlayer(Guid playerId, string connectionId) {
-        lock (_syncRoot) {
+    public bool TryReconnectPlayer(Guid playerId, string connectionId) {
+        lock(_syncRoot) {
             EnsureGameIsNotFinished();
             EnsurePlayerExists(playerId);
             var player = Players.First(p => p.Guid == playerId);
