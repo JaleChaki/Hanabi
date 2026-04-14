@@ -47,8 +47,8 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
     }
 
     public void MarkDisconnected(Guid playerId) {
-        if (_players.TryGetValue(playerId, out var session)) {
-            session.SetConnected(false);
+        if (_players.TryGetValue(playerId, out var playerSession)) {
+            playerSession.SetConnected(false);
         }
     }
 
@@ -67,9 +67,9 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
 
     public void ChangeNickname(Guid playerId, string newNickname) {
         CheckPlayerExists(playerId);
-        if(_players.TryGetValue(playerId, out var session)) {
-            session.SetConnected(true);
-            session.NickName = newNickname;
+        if(_players.TryGetValue(playerId, out var playerSession)) {
+            playerSession.SetConnected(true);
+            playerSession.NickName = newNickname;
         }
     }
 
@@ -77,11 +77,11 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
         lock(_syncRoot) {
             CheckPlayerExists(playerId);
 
-            if(_players.TryGetValue(playerId, out var session)) {
-                session.SetConnected(true);
+            if(_players.TryGetValue(playerId, out var playerSession)) {
+                playerSession.SetConnected(true);
                 var gameId = Guid.NewGuid();
                 var newSessionManager = new GameSessionManager(gameId);
-                newSessionManager.RegisterPlayer(gameId, playerId, session.NickName, session.ConnectionId);
+                newSessionManager.RegisterPlayer(gameId, playerId, playerSession.NickName, playerSession.ConnectionId);
                 _games[gameId] = newSessionManager;
                 _playerGameMap[playerId] = gameId;
                 return gameId;
@@ -102,9 +102,9 @@ public class GameService(IOptions<PlayerSessionOptions> playerSessionOptions): I
             if(gameSession.GameStatus == GameStatus.InProgress)
                 throw new GameAlreadyStartedException();
 
-            if(_players.TryGetValue(playerId, out var session)) {
-                session.SetConnected(true);
-                gameSession.RegisterPlayer(gameId, playerId, session.NickName, session.ConnectionId);
+            if(_players.TryGetValue(playerId, out var playerSession)) {
+                playerSession.SetConnected(true);
+                gameSession.RegisterPlayer(gameId, playerId, playerSession.NickName, playerSession.ConnectionId);
                 _playerGameMap[playerId] = gameId;
             } else {
                 throw new PlayerNotFoundException(playerId);
